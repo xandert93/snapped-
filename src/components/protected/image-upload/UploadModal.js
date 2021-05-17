@@ -30,7 +30,7 @@ const UploadModal = ({
           <label htmlFor="location">Location:</label>
           <input ref={locationRef} name="location" id="location" required />
           <div className="image-preview">
-            <img className="img" src={dataURL} />
+            <img className="img" src={dataURL} alt="Image Preview" />
           </div>
           <div>
             <label htmlFor="date">Date:</label>

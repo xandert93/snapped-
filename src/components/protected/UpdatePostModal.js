@@ -23,8 +23,6 @@ const UpdatePostModal = ({ setShowModal, modalImgDoc }) => {
       date = dateRef.current.value,
       description = descriptionRef.current.value;
 
-    console.log(location, date, description);
-
     try {
       await db.collection('Image URL Data').doc(modalImgDoc.id).set(
         {
@@ -39,8 +37,7 @@ const UpdatePostModal = ({ setShowModal, modalImgDoc }) => {
   return (
     <div
       className="modal"
-      onClick={(e) => e.target === e.currentTarget && setShowModal(false)}
-    >
+      onClick={(e) => e.target === e.currentTarget && setShowModal(false)}>
       <div className="modal-body">
         <button onClick={deletePost}>Delete post</button>
         <form onSubmit={submitHandler}>
@@ -52,7 +49,7 @@ const UpdatePostModal = ({ setShowModal, modalImgDoc }) => {
             defaultValue={modalImgDoc.description.location}
           />
           <div className="image-preview">
-            <img className="img" src={modalImgDoc.url} />
+            <img className="img" src={modalImgDoc.url} alt="Image Preview" />
           </div>
           <div>
             <label htmlFor="date">Date:</label>
@@ -66,8 +63,7 @@ const UpdatePostModal = ({ setShowModal, modalImgDoc }) => {
             <textarea
               ref={descriptionRef}
               defaultValue={modalImgDoc.description.description}
-              required
-            ></textarea>
+              required></textarea>
           </div>
           <button onClick={updatePost}>Update post</button>
         </form>

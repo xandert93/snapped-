@@ -17,12 +17,8 @@ const useStyles = makeStyles({
 
 const MyAccount = () => {
   const classes = useStyles();
-  const {
-    currentUser,
-    updateEmail,
-    updatePassword,
-    updateProfileData,
-  } = useContext(authContext);
+  const { currentUser, updateEmail, updatePassword, updateProfileData } =
+    useContext(authContext);
 
   const [errMsg, setErrMsg] = useState('');
   //inefficient - make into a single message
@@ -37,12 +33,13 @@ const MyAccount = () => {
   const attemptUpdate = async (e) => {
     e.preventDefault();
     setErrMsg('');
+    setSuccessMsg('');
     const username = usernameRef.current.value;
     const email = emailRef.current.value;
     const password = passwordRef.current.value;
     const passwordConfirm = passwordConfirmRef.current.value;
-    if (password != passwordConfirm) {
-      return setErrMsg('two entered Passwords no matcheez');
+    if (password !== passwordConfirm) {
+      return setErrMsg('The two entered password do not match.');
     }
 
     const promises = [];
@@ -52,10 +49,13 @@ const MyAccount = () => {
     if (password && password !== currentUser.password)
       promises.push(updatePassword(password));
 
+    if (!promises.length)
+      return setErrMsg('Please update your account details before submitting.');
+
     try {
       setIsUpdating(true);
       await Promise.all(promises).finally(() => setIsUpdating(false));
-      setSuccessMsg('details updated');
+      setSuccessMsg('Your account details have been updated.');
     } catch (err) {
       setErrMsg(err.message);
     }
@@ -103,8 +103,7 @@ const MyAccount = () => {
         type="submit"
         variant="contained"
         color="primary"
-        disabled={isUpdating}
-      >
+        disabled={isUpdating}>
         Update Details
       </Button>
     </form>

@@ -1,3 +1,4 @@
+import { CircularProgress } from '@material-ui/core';
 import { useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import { auth } from '../../firebase/config';
@@ -12,7 +13,7 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       setCurrentUser(user);
-      setIsCheckingUser(false);
+      setTimeout(setIsCheckingUser, 1200, false);
     });
     return unsubscribe;
   }, []);
@@ -20,11 +21,13 @@ const AuthProvider = ({ children }) => {
   const register = (email, password) =>
     auth.createUserWithEmailAndPassword(email, password);
 
-  const login = useCallback((email, password) =>
-    auth.signInWithEmailAndPassword(email, password)
+  const login = useCallback(
+    (email, password) => auth.signInWithEmailAndPassword(email, password),
+    []
   );
-  const resetPassword = useCallback((email) =>
-    auth.sendPasswordResetEmail(email)
+  const resetPassword = useCallback(
+    (email) => auth.sendPasswordResetEmail(email),
+    []
   );
 
   const updateEmail = (email) => currentUser.updateEmail(email);
@@ -45,7 +48,18 @@ const AuthProvider = ({ children }) => {
     } catch (err) {}
   });
 
-  if (isCheckingUser) return <h1>Loading</h1>;
+  if (isCheckingUser)
+    return (
+      <div style={{ height: 'calc(100vh - 16px)', display: 'flex' }}>
+        <CircularProgress
+          disableShrink
+          size="10rem"
+          style={{
+            margin: 'auto',
+          }}
+        />
+      </div>
+    );
 
   return (
     <authContext.Provider
@@ -58,8 +72,7 @@ const AuthProvider = ({ children }) => {
         updatePassword,
         updateProfileData,
         logout,
-      }}
-    >
+      }}>
       {children}
     </authContext.Provider>
   );

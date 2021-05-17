@@ -21,22 +21,32 @@ const CameraRoll = () => {
   return (
     <>
       <UploadForm />
-      <h3 style={{ color: 'orange' }}>
-        click on your pics to update or delete them
-      </h3>
-      <div
-        className="camera-roll"
-        onClick={(e) => {
-          if (e.target !== e.currentTarget) {
-            setModalImgDoc(usersImgDocs[e.target.dataset.index]);
-            setShowModal(true);
-          }
-        }}
-      >
-        {usersImgDocs.map((userImgDoc, idx) => (
-          <img key={userImgDoc.id} src={userImgDoc.url} data-index={idx} />
-        ))}
-      </div>
+      {usersImgDocs.length ? (
+        <>
+          <h3 style={{ color: 'orange' }}>
+            click on your pics to update or delete them
+          </h3>
+          <div
+            className="camera-roll"
+            onClick={(e) => {
+              if (e.target !== e.currentTarget) {
+                setModalImgDoc(usersImgDocs[e.target.dataset.index]);
+                setShowModal(true);
+              }
+            }}>
+            {usersImgDocs.map((userImgDoc, idx) => (
+              <img
+                key={userImgDoc.id}
+                src={userImgDoc.url}
+                data-index={idx}
+                alt=""
+              />
+            ))}
+          </div>
+        </>
+      ) : (
+        <h3>Your Camera Roll is currently empty.</h3>
+      )}
       {showModal && (
         <UpdatePostModal {...{ setShowModal, modalImgDoc, setModalImgDoc }} />
       )}
