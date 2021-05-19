@@ -1,13 +1,13 @@
 import React, { useContext } from 'react';
+import authContext from '../../../../contexts/auth/authContext';
 import { Link as RouterLink } from 'react-router-dom';
-import authContext from '../../../contexts/auth/authContext';
 import ConditionalWrapper from './ConditionalWrapper';
-import NavButtons from './NavButtons/NavButtons';
+import NavButtons from './NavButtons';
 import useStyles from './styles';
 import { AppBar, Button, Toolbar, Typography } from '@material-ui/core';
-import logo from '../../../assets/snapped.ico';
+import logo from '../../../../assets/snapped.ico';
 
-const Navbar = ({ innerWidth }) => {
+const NavBar = ({ validateFile, fileInfo, innerWidth }) => {
   const classes = useStyles();
   const { currentUser } = useContext(authContext);
 
@@ -21,11 +21,11 @@ const Navbar = ({ innerWidth }) => {
               snapped!
             </Typography>
           </Button>
-          <div className={classes.grow}></div>
+          <div className={classes.grow} />
 
           {currentUser && (
             <ConditionalWrapper innerWidth={innerWidth}>
-              <NavButtons />
+              <NavButtons {...{ validateFile, fileInfo }} />
             </ConditionalWrapper>
           )}
         </Toolbar>
@@ -35,4 +35,4 @@ const Navbar = ({ innerWidth }) => {
   );
 };
 
-export default Navbar;
+export default NavBar;

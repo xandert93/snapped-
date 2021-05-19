@@ -1,102 +1,50 @@
-import React, { useEffect, useRef, useState } from 'react';
-import FileError from './FileError';
-import UploadModal from './UploadModal';
+import { Button } from '@material-ui/core';
+import { Publish } from '@material-ui/icons';
+import React, { useRef, useState } from 'react';
 import ProgressBar from './ProgressBar';
 
-const UploadForm = () => {
-  const [fileErrMsg, setFileErrMsg] = useState('');
-  const [file, setFile] = useState(null);
-  const [fileInfo, setFileInfo] = useState({ file: null, path: '' });
-  const [dataURL, setDataURL] = useState('');
+const UploadForm = ({ dataURL, fileInfo, file, setFile, resetForm }) => {
+  const locationRef = useRef();
+  const captionRef = useRef();
 
-  const [imgDescription, setImgDescription] = useState('');
-  const [isDragged, setIsDragged] = useState(false);
-  const readerRef = useRef(new FileReader());
+  const [description, setDescription] = useState(null);
 
-  const fileInputRef = useRef();
-  const textareaRef = useRef();
+  const createPost = (e) => {
+    e.preventDefault();
+    const location = locationRef.current.value,
+      caption = captionRef.current.value;
 
-  useEffect(() => {
-    readerRef.current.onload = (e) => setDataURL(e.target.result);
-  }, []);
-
-  const validateFile = (selectedFile) => {
-    if (selectedFile) {
-      if (['image/png', 'image/jpeg'].includes(selectedFile.type)) {
-        setFileErrMsg('');
-        setFileInfo({ file: selectedFile });
-        readerRef.current.readAsDataURL(selectedFile);
-        return;
-      } else {
-        setFileErrMsg('Please choose an image file (.png or .jpeg)');
-        return;
-      }
-    } else {
-      setFileErrMsg('');
-      setFileInfo({ file: null, path: '' });
-      return;
-    }
-  };
-
-  const resetForm = () => {
-    setFileInfo({ file: null, path: '' });
-    setFile(null);
-    setDataURL('');
+    setFile(fileInfo.file);
+    setDescription({ location, date: 'dw', description: caption });
   };
 
   return (
-    <>
-      <form>
+    <div className="modal">
+      <div className="modal-body">
         {!file && (
-          <div
-            onDragOver={(e) => {
-              e.preventDefault();
-              setIsDragged(true);
-            }}
-            onDragLeave={() => setIsDragged(false)}
-            onDrop={(e) => {
-              e.preventDefault();
-              setIsDragged(false);
-              validateFile(e.dataTransfer.files[0]);
-            }}
-            style={{
-              textAlign: 'center',
-              margin: 15,
-              background: 'pink',
-              borderRadius: 5,
-              border: `5px solid ${isDragged ? 'green' : 'red'}`,
-            }}
-          >
-            <input
-              type="file"
-              id="file-input"
-              ref={fileInputRef}
-              value={fileInfo.path}
-              onChange={(e) => validateFile(e.target.files[0])}
-            />{' '}
-            <label htmlFor="file-input">Click/Drag image here to upload</label>
-          </div>
+          <form onSubmit={createPost}>
+            <label htmlFor="location">Location:</label>
+            <input ref={locationRef} name="location" id="location" required />
+            <div className="image-preview">
+              <img className="img" src={dataURL} alt="Image Preview" />
+            </div>
+            <div>
+              <p>enter description:</p>
+              <textarea ref={captionRef} required></textarea>
+            </div>
+
+            <Button
+              type="submit"
+              variant="contained"
+              endIcon={<Publish color="primary" />}>
+              Publish
+            </Button>
+          </form>
         )}
-        {fileErrMsg && <FileError fileErrMsg={fileErrMsg} />}
-        {file && (
-          <ProgressBar
-            file={file}
-            imgDescription={imgDescription}
-            resetForm={resetForm}
-          />
-        )}
-      </form>
-      {dataURL && !file && (
-        <UploadModal
-          dataURL={dataURL}
-          resetForm={resetForm}
-          fileInfo={fileInfo}
-          setFile={setFile}
-          textareaRef={textareaRef}
-          setImgDescription={setImgDescription}
-        />
-      )}
-    </>
+        {file && <ProgressBar {...{ file, description, resetForm }} />}
+      </div>
+    </div>
   );
 };
+
 export default UploadForm;

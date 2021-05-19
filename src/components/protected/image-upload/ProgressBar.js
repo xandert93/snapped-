@@ -1,25 +1,31 @@
 import React, { useContext, useEffect } from 'react';
 import useBucket from '../../../custom-hooks/useBucket';
 import authContext from '../../../contexts/auth/authContext';
+import ProgressCircle from './ProgressCircle';
+import { useHistory, useLocation } from 'react-router';
 
-const ProgressBar = ({ file, imgDescription, resetForm }) => {
+const ProgressBar = ({ file, description, resetForm }) => {
   const { currentUser } = useContext(authContext);
+  const { pathname } = useLocation();
+  const { push } = useHistory();
 
   const { uploadProgress, uploadURL, uploadErrMsg } = useBucket(
     currentUser,
     file,
-    imgDescription,
+    description,
     'Image URL Data'
   );
 
-  useEffect(() => uploadURL && resetForm(), [uploadURL]);
+  useEffect(() => {
+    if (!uploadURL) return;
+    resetForm();
+    if (pathname === '/') return;
+    push('/');
+  }, [uploadURL]);
 
   return (
     <>
-      <div
-        className="progress-bar"
-        style={{ width: `${uploadProgress}%` }}
-      ></div>
+      <ProgressCircle uploadProgress={uploadProgress} />
       {uploadErrMsg && <h3>{uploadErrMsg}</h3>}
     </>
   );

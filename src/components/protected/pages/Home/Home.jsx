@@ -1,13 +1,12 @@
 import { Button, Grid, Typography } from '@material-ui/core';
 import React, { useContext, useState } from 'react';
-import authContext from '../../../contexts/auth/authContext';
-import useDb from '../../../custom-hooks/useDb';
-import UploadForm from '../image-upload/UploadForm';
-import ImageModal from '../ImageModal';
-import ImageCard from './ImageCard/ImageCard';
-import useStyles from './styles';
+import authContext from '../../../../contexts/auth/authContext';
+import useDb from '../../../../custom-hooks/useDb';
+import ImageModal from './Posts/ImageModal.jsx';
+import PostsGrid from './Posts/PostsGrid';
+import useStyles from './Posts/styles';
 
-const ImageGrid = ({ innerWidth }) => {
+const Home = ({ innerWidth }) => {
   const classes = useStyles();
   const { currentUser } = useContext(authContext);
   const [numOfImgsShown, setNumofImgsShown] = useState(4);
@@ -25,19 +24,8 @@ const ImageGrid = ({ innerWidth }) => {
 
   return (
     <>
-      <Typography component="h2" variant="h4">
-        Welcome, {currentUser.displayName}!
-      </Typography>
-      <UploadForm />
-      <Grid
-        container
-        spacing={4}
-        className={classes.imagesContainer}
-        onClick={innerWidth > 600 ? toggleModal : null}>
-        {imgDocs.map((imgDoc, idx) => (
-          <ImageCard key={imgDoc.id} {...{ imgDoc, idx }} />
-        ))}
-      </Grid>
+      <PostsGrid {...{ innerWidth, imgDocs, toggleModal }} />
+
       {imgDocs.length > 0 && (
         <div style={{ textAlign: 'center' }}>
           <Button
@@ -54,4 +42,4 @@ const ImageGrid = ({ innerWidth }) => {
   );
 };
 
-export default ImageGrid;
+export default Home;

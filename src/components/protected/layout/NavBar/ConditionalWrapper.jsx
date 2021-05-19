@@ -15,7 +15,10 @@ const ConditionalWrapper = ({ innerWidth, children }) => {
         <Menu fontSize="large" color="secondary" />
       </IconButton>
       <Drawer anchor="right" open={isDrawerOpen} onClose={toggleDrawer}>
-        {React.cloneElement(children, { ...{ isMobile: true }, toggleDrawer })}
+        {React.cloneElement(children, {
+          isMobile: true,
+          toggleDrawer,
+        })}
       </Drawer>
     </>
   );
