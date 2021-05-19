@@ -10,7 +10,7 @@ import {
 } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
 
-const SlidingDialog = ({ showModal, closeModal, modalHeading, children }) => {
+const SlidingModal = ({ showModal, closeModal, modalHeading, children }) => {
   const classes = useStyles();
 
   return (
@@ -29,4 +29,4 @@ const SlidingDialog = ({ showModal, closeModal, modalHeading, children }) => {
   );
 };
 
-export default SlidingDialog;
+export default SlidingModal;

@@ -19,8 +19,7 @@ const ProgressBar = ({ file, description, resetForm }) => {
   useEffect(() => {
     if (!uploadURL) return;
     resetForm();
-    if (pathname === '/') return;
-    push('/');
+    if (pathname !== '/') return push('/');
   }, [uploadURL]);
 
   return (

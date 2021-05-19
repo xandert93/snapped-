@@ -12,9 +12,8 @@ import authContext from './contexts/auth/authContext';
 import Main from './components/protected/pages/Main';
 
 import { Publish } from '@material-ui/icons';
-import useStyles from './styles';
-import SlidingDialog from './components/protected/SlidingDialog';
-import SlidingDialogForm from './components/protected/SlidingDialogForm';
+import SlidingModal from './components/protected/SlidingModal';
+import PostForm from './components/protected/PostForm';
 import ProgressBar from './components/protected/image-upload/ProgressBar';
 
 const App = () => {
@@ -84,14 +83,14 @@ const App = () => {
         </Switch>
       </Main>
 
-      <SlidingDialog
+      <SlidingModal
         {...{
           showModal: dataURL,
           closeModal: resetForm,
           modalHeading: 'Create Your Post!',
         }}>
         {!file ? (
-          <SlidingDialogForm
+          <PostForm
             {...{
               type: 'create',
               imageURL: dataURL,
@@ -104,7 +103,7 @@ const App = () => {
         ) : (
           <ProgressBar {...{ file, description, resetForm }} />
         )}
-      </SlidingDialog>
+      </SlidingModal>
     </>
   );
 };

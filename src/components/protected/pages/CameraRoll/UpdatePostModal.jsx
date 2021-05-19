@@ -1,7 +1,7 @@
 import React from 'react';
 import { Save } from '@material-ui/icons';
-import SlidingDialog from '../../SlidingDialog';
-import SlidingDialogForm from '../../SlidingDialogForm';
+import SlidingDialog from '../../SlidingModal';
+import PostForm from '../../PostForm';
 
 const UpdatePostModal = ({ showModal, setShowModal, modalImgDoc }) => {
   return (
@@ -11,7 +11,7 @@ const UpdatePostModal = ({ showModal, setShowModal, modalImgDoc }) => {
         closeModal: () => setShowModal(false),
         modalHeading: 'Edit Your Post!',
       }}>
-      <SlidingDialogForm
+      <PostForm
         {...{
           type: 'update',
           docID: modalImgDoc.id,

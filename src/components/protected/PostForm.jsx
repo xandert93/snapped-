@@ -11,7 +11,7 @@ import {
 } from '@material-ui/core';
 import { DeleteForever } from '@material-ui/icons';
 
-const SlidingDialogForm = ({
+const DialogForm = ({
   type,
   imageURL,
   submitIcon,
@@ -123,9 +123,9 @@ const SlidingDialogForm = ({
   );
 };
 
-SlidingDialogForm.defaultProps = {
+DialogForm.defaultProps = {
   location: '',
   caption: '',
 };
 
-export default SlidingDialogForm;
+export default DialogForm;
