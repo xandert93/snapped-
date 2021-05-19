@@ -1,10 +1,10 @@
 import React, { useContext, useEffect } from 'react';
-import useBucket from '../../../custom-hooks/useBucket';
-import authContext from '../../../contexts/auth/authContext';
+import useBucket from '../../../../custom-hooks/useBucket';
+import authContext from '../../../../contexts/auth/authContext';
 import ProgressCircle from './ProgressCircle';
 import { useHistory, useLocation } from 'react-router';
 
-const ProgressBar = ({ file, description, resetForm }) => {
+const Progress = ({ file, description, resetForm }) => {
   const { currentUser } = useContext(authContext);
   const { pathname } = useLocation();
   const { push } = useHistory();
@@ -30,4 +30,4 @@ const ProgressBar = ({ file, description, resetForm }) => {
   );
 };
 
-export default ProgressBar;
+export default Progress;

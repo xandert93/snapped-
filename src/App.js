@@ -14,19 +14,13 @@ import Main from './components/protected/pages/Main';
 import { Publish } from '@material-ui/icons';
 import SlidingModal from './components/protected/SlidingModal';
 import PostForm from './components/protected/PostForm';
-import ProgressBar from './components/protected/image-upload/ProgressBar';
+import Progress from './components/protected/layout/Progress/Progress';
+import useGetDeviceWidth from './custom-hooks/useGetDeviceWidth';
 
 const App = () => {
   const { currentUser } = useContext(authContext);
 
-  const [innerWidth, setInnerWidth] = useState(0);
-
-  useEffect(() => {
-    setInnerWidth(window.innerWidth);
-    window.onresize = () => {
-      setInnerWidth(window.innerWidth);
-    };
-  }, []);
+  const innerWidth = useGetDeviceWidth();
 
   const readerRef = useRef(new FileReader());
   const [dataURL, setDataURL] = useState('');
@@ -34,39 +28,42 @@ const App = () => {
     readerRef.current.onload = (e) => setDataURL(e.target.result);
   }, []);
 
-  const [fileErrMsg, setFileErrMsg] = useState('');
+  const [msgData, setMsgData] = useState(null);
+  const [fileData, setFileData] = useState({ file: null, path: '' });
   const [file, setFile] = useState(null);
-  const [fileInfo, setFileInfo] = useState({ file: null, path: '' });
 
   const [description, setDescription] = useState(null);
 
   const validateFile = (selectedFile) => {
     if (selectedFile) {
       if (['image/png', 'image/jpeg'].includes(selectedFile.type)) {
-        setFileErrMsg('');
-        setFileInfo({ file: selectedFile });
+        setMsgData(null);
+        setFileData({ file: selectedFile });
         readerRef.current.readAsDataURL(selectedFile);
         return;
       } else {
-        setFileErrMsg('Please choose an image file (.png or .jpeg)');
+        setMsgData({
+          success: false,
+          msg: 'Please choose an image file (.png or .jpeg)',
+        });
         return;
       }
     } else {
-      setFileErrMsg('');
-      setFileInfo({ file: null, path: '' });
+      setMsgData(null);
+      setFileData({ file: null, path: '' });
       return;
     }
   };
 
   const resetForm = () => {
-    setFileInfo({ file: null, path: '' });
+    setFileData({ file: null, path: '' });
     setFile(null);
     setDataURL('');
   };
 
   return (
     <>
-      {currentUser && <NavBar {...{ validateFile, fileInfo, innerWidth }} />}
+      {currentUser && <NavBar {...{ validateFile, fileData, innerWidth }} />}
       <Main {...{ validateFile }}>
         <Switch>
           <ProtectedRoute
@@ -85,7 +82,7 @@ const App = () => {
 
       <SlidingModal
         {...{
-          showModal: dataURL,
+          showModal: !!dataURL,
           closeModal: resetForm,
           modalHeading: 'Create Your Post!',
         }}>
@@ -94,14 +91,14 @@ const App = () => {
             {...{
               type: 'create',
               imageURL: dataURL,
-              fileInfo,
+              fileData,
               setFile,
               setDescription,
               submitIcon: <Publish color="primary" />,
             }}
           />
         ) : (
-          <ProgressBar {...{ file, description, resetForm }} />
+          <Progress {...{ file, description, resetForm }} />
         )}
       </SlidingModal>
     </>

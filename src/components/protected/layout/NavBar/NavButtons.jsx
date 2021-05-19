@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useRef } from 'react';
 import authContext from '../../../../contexts/auth/authContext';
 import { Link as RouterLink } from 'react-router-dom';
 import useStyles from './styles';
@@ -9,9 +9,8 @@ import {
   CameraRoll,
   ExitToApp,
 } from '@material-ui/icons';
-import { useState, useEffect, useRef } from 'react';
 
-const NavButtons = ({ isMobile, toggleDrawer, validateFile, fileInfo }) => {
+const NavButtons = ({ isMobile, toggleDrawer, validateFile, fileData }) => {
   const classes = useStyles();
   const { logout } = useContext(authContext);
 
@@ -30,7 +29,7 @@ const NavButtons = ({ isMobile, toggleDrawer, validateFile, fileInfo }) => {
           id="file-input"
           style={{ display: 'none' }}
           ref={fileInputRef}
-          value={fileInfo.path}
+          value={fileData.path}
           onChange={(e) => {
             validateFile(e.target.files[0]);
             if (!isMobile) return;

@@ -11,18 +11,16 @@ import {
 } from '@material-ui/core';
 import { DeleteForever } from '@material-ui/icons';
 
-const DialogForm = ({
+const PostForm = ({
   type,
   imageURL,
   submitIcon,
   //create
-  fileInfo,
+  fileData,
   setFile,
   setDescription,
   //update
-  docID,
-  location,
-  caption,
+  doc: { id, location, caption },
   closeModal,
 }) => {
   const classes = useStyles();
@@ -41,7 +39,7 @@ const DialogForm = ({
   const createPost = (e) => {
     const [location, caption] = getUserInput(e);
     setDescription({ location, date: 'we on it', description: caption });
-    setFile(fileInfo.file);
+    setFile(fileData.file);
   };
 
   const updatePost = async (e) => {
@@ -57,7 +55,7 @@ const DialogForm = ({
     try {
       await db
         .collection('Image URL Data')
-        .doc(docID)
+        .doc(id)
         .set(
           {
             description: {
@@ -79,7 +77,7 @@ const DialogForm = ({
     setMsgData(null);
 
     try {
-      await db.collection('Image URL Data').doc(docID).delete();
+      await db.collection('Image URL Data').doc(id).delete();
       setMsgData({ success: true, msg: 'Post deleted.' });
       closeModal();
     } catch (err) {}
@@ -123,9 +121,9 @@ const DialogForm = ({
   );
 };
 
-DialogForm.defaultProps = {
+PostForm.defaultProps = {
   location: '',
   caption: '',
 };
 
-export default DialogForm;
+export default PostForm;

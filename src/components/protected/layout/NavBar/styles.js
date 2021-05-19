@@ -3,8 +3,12 @@ import { makeStyles } from '@material-ui/core';
 export default makeStyles((theme) => ({
   toolbar: theme.mixins.toolbar,
   logoImg: {
-    width: 50,
+    width: 80,
     marginRight: 12,
+    [theme.breakpoints.down('sm')]: {
+      marginRight: 0,
+      width: 60,
+    },
   },
   heading: {
     textTransform: 'lowercase',

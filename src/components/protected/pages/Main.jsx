@@ -1,13 +1,8 @@
-import { Dialog, IconButton, Slide } from '@material-ui/core';
-import { AddToPhotos, Close } from '@material-ui/icons';
-import React from 'react';
-import { useState, useRef, useEffect } from 'react';
-import { useLocation } from 'react-router';
-import UploadForm from '../image-upload/UploadForm';
+import React, { useState } from 'react';
+import { AddToPhotos } from '@material-ui/icons';
 import useStyles from './styles';
 
 const Main = ({ validateFile, children }) => {
-  const { pathname } = useLocation();
   const classes = useStyles();
 
   const [isDragged, setIsDragged] = useState(false);

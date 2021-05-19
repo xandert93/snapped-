@@ -1,48 +1,58 @@
 import React, { useContext, useEffect, useState } from 'react';
 import useDb from '../../../../custom-hooks/useDb';
 import authContext from '../../../../contexts/auth/authContext';
-import UpdatePostModal from './UpdatePostModal.jsx';
+import SlidingModal from '../../SlidingModal';
+import PostForm from '../../PostForm';
+import { Save } from '@material-ui/icons';
 
 const CameraRoll = () => {
   const { currentUser } = useContext(authContext);
-  const imgDocs = useDb('Image URL Data');
-  const [usersImgDocs, setUsersImgDocs] = useState([]);
+  const imageDocs = useDb('Image URL Data');
+  const [usersImageDocs, setUsersImageDocs] = useState([]);
 
-  const [showModal, setShowModal] = useState(false);
-  const [modalImgDoc, setModalImgDoc] = useState(null);
+  const [modalImageDoc, setModalImageDoc] = useState(null);
 
   useEffect(() => {
-    setUsersImgDocs(
-      imgDocs.filter((imgDoc) => imgDoc.userId === currentUser.uid)
+    setUsersImageDocs(
+      imageDocs.filter((imgDoc) => imgDoc.userId === currentUser.uid)
     );
-  }, [imgDocs]);
+  }, [imageDocs]);
 
   return (
     <>
-      {usersImgDocs.length ? (
+      {usersImageDocs.length ? (
         <div
           className="camera-roll"
           onClick={(e) => {
             if (e.target == e.currentTarget) return;
-            setModalImgDoc(usersImgDocs[e.target.dataset.index]);
-            setShowModal(true);
+            setModalImageDoc(usersImageDocs[e.target.dataset.index]);
           }}>
-          {usersImgDocs.map((userImgDoc, idx) => (
-            <img
-              key={userImgDoc.id}
-              src={userImgDoc.url}
-              data-index={idx}
-              alt=""
-            />
+          {usersImageDocs.map(({ id, url }, idx) => (
+            <img key={id} src={url} data-index={idx} alt="" />
           ))}
         </div>
       ) : (
         <h3>Your Camera Roll is currently empty.</h3>
       )}
 
-      {showModal && (
-        <UpdatePostModal {...{ showModal, setShowModal, modalImgDoc }} />
-      )}
+      <SlidingModal
+        {...{
+          showModal: !!modalImageDoc,
+          closeModal: () => setModalImageDoc(null),
+          modalHeading: 'Edit Your Post!',
+        }}>
+        {modalImageDoc && (
+          <PostForm
+            {...{
+              type: 'update',
+              imageURL: modalImageDoc.url,
+              doc: modalImageDoc,
+              submitIcon: <Save color="primary" />,
+              closeModal: () => setModalImageDoc(null),
+            }}
+          />
+        )}
+      </SlidingModal>
     </>
   );
 };
