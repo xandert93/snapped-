@@ -13,11 +13,13 @@ import {
 } from '@material-ui/core';
 import { ExpandMore, MyLocation, Today } from '@material-ui/icons';
 import useStyles from './styles';
+import moment from 'moment';
 
 const PostCard = ({
-  imgDoc: {
+  doc: {
+    createdAt,
     username,
-    description: { location, date, description },
+    description: { location, caption },
     url,
   },
   idx,
@@ -46,7 +48,7 @@ const PostCard = ({
           title={`${username}'s picture.`}></CardMedia>
         <CardContent>
           <Typography variant="body2" gutterBottom>
-            <Today /> {date}
+            <Today /> {moment(createdAt.toDate()).fromNow()}
           </Typography>
         </CardContent>
         <CardActions>
@@ -59,7 +61,7 @@ const PostCard = ({
 
         <Collapse in={expand} timeout={800} unmountOnExit>
           <CardContent>
-            <Typography>{description}</Typography>
+            <Typography>{caption}</Typography>
           </CardContent>
         </Collapse>
       </Card>

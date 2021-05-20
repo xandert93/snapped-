@@ -4,6 +4,7 @@ import authContext from '../../../../contexts/auth/authContext';
 import SlidingModal from '../../SlidingModal';
 import PostForm from '../../PostForm';
 import { Save } from '@material-ui/icons';
+import { Box } from '@material-ui/core';
 
 const CameraRoll = () => {
   const { currentUser } = useContext(authContext);
@@ -14,14 +15,14 @@ const CameraRoll = () => {
 
   useEffect(() => {
     setUsersImageDocs(
-      imageDocs.filter((imgDoc) => imgDoc.userId === currentUser.uid)
+      imageDocs.filter((doc) => doc.userId === currentUser.uid)
     );
   }, [imageDocs]);
 
   return (
     <>
       {usersImageDocs.length ? (
-        <div
+        <Box
           className="camera-roll"
           onClick={(e) => {
             if (e.target === e.currentTarget) return;
@@ -30,7 +31,7 @@ const CameraRoll = () => {
           {usersImageDocs.map(({ id, url }, idx) => (
             <img key={id} src={url} data-index={idx} alt="" />
           ))}
-        </div>
+        </Box>
       ) : (
         <h3>Your Camera Roll is currently empty.</h3>
       )}

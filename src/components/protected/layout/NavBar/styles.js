@@ -5,6 +5,9 @@ export default makeStyles((theme) => ({
   logoImg: {
     width: 80,
     marginRight: 12,
+    [theme.breakpoints.down('md')]: {
+      width: 70,
+    },
     [theme.breakpoints.down('sm')]: {
       marginRight: 0,
       width: 60,

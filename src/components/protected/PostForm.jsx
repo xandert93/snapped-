@@ -24,7 +24,7 @@ const PostForm = ({
   //update
   doc: {
     id,
-    description: { location, description: caption },
+    description: { location, caption },
   },
   closeModal,
 }) => {
@@ -43,7 +43,7 @@ const PostForm = ({
 
   const createPost = (e) => {
     const [location, caption] = getUserInput(e);
-    setDescription({ location, date: 'we on it', description: caption });
+    setDescription({ location, caption });
     setFile(fileData.file);
   };
 
@@ -67,8 +67,7 @@ const PostForm = ({
           {
             description: {
               location: newLocation,
-              date: 'we on it',
-              description: newCaption,
+              caption: newCaption,
             },
           },
           { merge: true }
@@ -160,7 +159,7 @@ PostForm.defaultProps = {
     id: null,
     description: {
       location: null,
-      desription: null,
+      caption: null,
     },
   },
 };

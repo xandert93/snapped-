@@ -1,19 +1,20 @@
 import React from 'react';
+import PostCard from './PostCard';
 import useStyles from './styles';
 import { Grid } from '@material-ui/core';
-import PostCard from './PostCard';
 
-const PostsGrid = ({ innerWidth, imgDocs, toggleModal }) => {
+const PostsGrid = ({ innerWidth, imageDocs, toggleModal }) => {
   const classes = useStyles();
+  const isMobile = innerWidth < 600;
 
   return (
     <Grid
       container
-      spacing={innerWidth > 600 ? 2 : 0}
+      spacing={isMobile ? 0 : 2}
       className={classes.postsContainer}
-      onClick={innerWidth > 600 ? toggleModal : null}>
-      {imgDocs.map((imgDoc, idx) => (
-        <PostCard key={imgDoc.id} {...{ imgDoc, idx }} />
+      onClick={isMobile ? null : toggleModal}>
+      {imageDocs.map((doc, idx) => (
+        <PostCard key={doc.id} {...{ doc, idx }} />
       ))}
     </Grid>
   );
