@@ -1,7 +1,7 @@
 import { createMuiTheme } from '@material-ui/core';
-import { red } from '@material-ui/core/colors';
+import { cyan, green, red } from '@material-ui/core/colors';
 
-export const theme = createMuiTheme({
+const baseProperties = {
   overrides: {
     MuiToolbar: {
       gutters: {
@@ -66,8 +66,25 @@ export const theme = createMuiTheme({
       fontWeight: 600,
     },
   },
+};
 
+export const themeLight = createMuiTheme({
+  ...baseProperties,
   palette: {
+    type: 'light',
     secondary: red,
+  },
+});
+
+export const themeDark = createMuiTheme({
+  ...baseProperties,
+  palette: {
+    type: 'dark',
+    primary: {
+      main: cyan['A200'],
+    },
+    secondary: red,
+    background: { default: '#2f2f36', paper: '#000' },
+    //any paper-based components e.g. AppBar <header>, Cards will use the paper backgrounds
   },
 });

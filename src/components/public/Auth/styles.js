@@ -15,6 +15,12 @@ export default makeStyles((theme) => ({
     // },
   },
 
+  themeSwitchBox: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+  },
+
   formPaper: {
     margin: 'auto',
     width: '100%',
@@ -34,6 +40,7 @@ export default makeStyles((theme) => ({
     //   marginBottom: theme.spacing(6),
     //   padding: theme.spacing(3),
     // },
+    position: 'relative',
   },
 
   form: {

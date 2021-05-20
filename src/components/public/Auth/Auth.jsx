@@ -8,9 +8,10 @@ import useForm from '../../../custom-hooks/useForm';
 import RegistrationStepper from './RegistrationStepper';
 import LoginControls from './LoginControls';
 import RedirectLinks from './RedirectLinks';
+import ThemeSwitch from '../../protected/layout/ThemeSwitch';
 // import RedirectLinks from './RedirectLinks/RedirectLinks';
 
-const Auth = () => {
+const Auth = ({ darkMode, setDarkMode }) => {
   const classes = useStyles();
   const { userAction } = useParams();
 
@@ -119,6 +120,9 @@ const Auth = () => {
               {...{ userAction, refs, submitBtnText, isSubmitting, msgData }}
             />
           )}
+          <Box className={classes.themeSwitchBox}>
+            <ThemeSwitch {...{ darkMode, setDarkMode }} />
+          </Box>
         </form>
         <RedirectLinks {...{ userAction }} />
       </Paper>

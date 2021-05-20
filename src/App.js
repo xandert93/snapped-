@@ -16,9 +16,12 @@ import SlidingModal from './components/protected/SlidingModal';
 import PostForm from './components/protected/PostForm';
 import Progress from './components/protected/layout/Progress/Progress';
 import useGetDeviceWidth from './custom-hooks/useGetDeviceWidth';
+import { themeLight, themeDark } from './theme/theme';
+import { CssBaseline, ThemeProvider } from '@material-ui/core';
 
 const App = () => {
   const { currentUser } = useContext(authContext);
+  const [darkMode, setDarkMode] = useState(false);
 
   const innerWidth = useGetDeviceWidth();
 
@@ -62,10 +65,21 @@ const App = () => {
   };
 
   return (
-    <>
-      {currentUser && <NavBar {...{ validateFile, fileData, innerWidth }} />}
+    <ThemeProvider theme={!darkMode ? themeLight : themeDark}>
+      <CssBaseline />
+      {currentUser && (
+        <NavBar
+          {...{ validateFile, fileData, innerWidth, darkMode, setDarkMode }}
+        />
+      )}
       <Main {...{ validateFile }}>
         <Switch>
+          <PublicRoute
+            path="/auth/:userAction"
+            {...{ darkMode, setDarkMode }}
+            component={Auth}
+          />
+
           <ProtectedRoute
             exact
             path="/"
@@ -75,7 +89,6 @@ const App = () => {
           <ProtectedRoute path="/camera-roll" component={CameraRoll} />
           <ProtectedRoute path="/my-account" component={MyAccount} />
 
-          <PublicRoute path="/auth/:userAction" component={Auth} />
           {/* <Route render={() => <h5>Not Found 404</h5>} /> */}
         </Switch>
       </Main>
@@ -101,7 +114,7 @@ const App = () => {
           <Progress {...{ file, description, resetForm }} />
         )}
       </SlidingModal>
-    </>
+    </ThemeProvider>
   );
 };
 

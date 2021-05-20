@@ -6,6 +6,7 @@ import NavButtons from './NavButtons';
 import useStyles from './styles';
 import {
   AppBar,
+  Box,
   Button,
   IconButton,
   Toolbar,
@@ -13,8 +14,15 @@ import {
 } from '@material-ui/core';
 import logo from '../../../../assets/snapped.ico';
 import { Menu } from '@material-ui/icons';
+import ThemeSwitch from '../ThemeSwitch';
 
-const NavBar = ({ validateFile, fileData, innerWidth }) => {
+const NavBar = ({
+  validateFile,
+  fileData,
+  innerWidth,
+  darkMode,
+  setDarkMode,
+}) => {
   const classes = useStyles();
   const { currentUser } = useContext(authContext);
   const isMobile = innerWidth < 960;
@@ -24,15 +32,15 @@ const NavBar = ({ validateFile, fileData, innerWidth }) => {
       <AppBar className={classes.appBar} color="inherit">
         <Toolbar style={{ justifyContent: 'space-between' }}>
           {isMobile && (
-            <IconButton style={{ order: '2' }}>
-              <Menu fontSize="large" style={{ color: 'white' }} />
-            </IconButton>
+            <Box style={{ order: '2' }}>
+              <ThemeSwitch {...{ darkMode, setDarkMode }} />
+            </Box>
           )}
 
           <Button
             component={RouterLink}
             to="/"
-            style={{ order: isMobile ? 1 : 0 }}
+            style={{ order: isMobile ? '1' : '0' }}
             disableRipple>
             <img src={logo} alt="snapped!" className={classes.logoImg} />
             {!isMobile && (
@@ -44,6 +52,13 @@ const NavBar = ({ validateFile, fileData, innerWidth }) => {
               </Typography>
             )}
           </Button>
+
+          {/*duplicate switch cos me lazy*/}
+          {!isMobile && (
+            <Box>
+              <ThemeSwitch {...{ darkMode, setDarkMode }} />
+            </Box>
+          )}
 
           {!isMobile && <div className={classes.grow} />}
 
