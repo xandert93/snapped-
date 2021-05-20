@@ -1,24 +1,20 @@
 import { Box, CircularProgress, Typography } from '@material-ui/core';
 import React from 'react';
+import useStyles from './styles';
 
 const ProgressCircle = ({ uploadProgress }) => {
+  const classes = useStyles();
+
   return (
-    <Box position="relative" display="inline-flex">
+    <Box className={classes.progressBox}>
       <CircularProgress
+        className={classes.progressCircle}
         variant="determinate"
         value={uploadProgress}
         color={uploadProgress !== 100 ? 'secondary' : 'primary'}
         size="10rem"
       />
-      <Box
-        top={0}
-        left={0}
-        bottom={0}
-        right={0}
-        position="absolute"
-        display="flex"
-        alignItems="center"
-        justifyContent="center">
+      <Box className={classes.captionBox}>
         <Typography
           variant="caption"
           component="div"

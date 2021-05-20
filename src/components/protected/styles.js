@@ -10,5 +10,5 @@ export default makeStyles((theme) => ({
     },
   },
   imageBox: { textAlign: 'center' },
-  image: { maxWidth: '80vw', maxHeight: '60vh', borderRadius: '3px' },
+  image: { maxWidth: '80vw', maxHeight: '60vh', borderRadius: '5px' },
 }));

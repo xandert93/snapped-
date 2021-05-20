@@ -6,9 +6,11 @@ import {
   Box,
   Button,
   IconButton,
+  Slide,
+  Snackbar,
   TextField,
-  Typography,
 } from '@material-ui/core';
+import Alert from '@material-ui/lab/Alert';
 import { DeleteForever } from '@material-ui/icons';
 
 const PostForm = ({
@@ -20,7 +22,10 @@ const PostForm = ({
   setFile,
   setDescription,
   //update
-  doc: { id, location, caption },
+  doc: {
+    id,
+    description: { location, description: caption },
+  },
   closeModal,
 }) => {
   const classes = useStyles();
@@ -29,10 +34,10 @@ const PostForm = ({
   const captionRef = useRef();
 
   const [msgData, setMsgData] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const getUserInput = (e) => {
     e.preventDefault();
-    setMsgData(null);
     return [locationRef.current.value, captionRef.current.value];
   };
 
@@ -43,13 +48,15 @@ const PostForm = ({
   };
 
   const updatePost = async (e) => {
+    setIsSubmitting(true);
     const [newLocation, newCaption] = getUserInput(e);
 
     if (newLocation === location && newCaption === caption) {
-      return setMsgData({
+      setMsgData({
         success: false,
         msg: 'Please make a change before submitting.',
       });
+      return setIsSubmitting(false);
     }
 
     try {
@@ -67,20 +74,25 @@ const PostForm = ({
           { merge: true }
         );
       setMsgData({ success: true, msg: 'Post updated.' });
-      closeModal();
-    } catch (err) {}
+      setTimeout(closeModal, 1800);
+    } catch (err) {
+      // setMsgData({ success: false, msg: err.message });
+      // setIsSubmitting(false);
+    }
   };
 
   const submitHandler = type === 'create' ? createPost : updatePost;
 
   const deletePost = async () => {
-    setMsgData(null);
+    setIsSubmitting(true);
 
     try {
       await db.collection('Image URL Data').doc(id).delete();
       setMsgData({ success: true, msg: 'Post deleted.' });
-      closeModal();
-    } catch (err) {}
+      setTimeout(closeModal, 2000);
+    } catch (err) {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -96,6 +108,7 @@ const PostForm = ({
         {type === 'update' && (
           <IconButton
             onClick={deletePost}
+            disabled={isSubmitting}
             style={{ position: 'absolute', right: 5, top: 5 }}>
             <DeleteForever color="secondary" />
           </IconButton>
@@ -109,12 +122,33 @@ const PostForm = ({
         multiline
         rows={3}
       />
-      {msgData && (
-        <Typography color={`${msgData.success ? 'primary' : 'error'}`}>
-          {msgData.msg}
-        </Typography>
-      )}
-      <Button type="submit" variant="contained" fullWidth>
+
+      <Snackbar
+        open={!!msgData}
+        autoHideDuration={5000}
+        onClose={() => setMsgData(null)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+        TransitionComponent={Slide}>
+        {msgData && (
+          //Violent unmount makes animation crap.
+          //setting default state to {success: null, msg: ""} made it better
+          //but fact msg becomes "" onClose, meant that snackbar became really small
+          //might need to use setTimeout to wait for exit animation to finish and then set back to default state
+          <Alert
+            onClose={() => setMsgData(null)}
+            elevation={6}
+            variant="filled"
+            severity={`${msgData.success ? 'success' : 'error'}`}>
+            {msgData.msg}
+          </Alert>
+        )}
+      </Snackbar>
+
+      <Button
+        type="submit"
+        disabled={isSubmitting}
+        variant="contained"
+        fullWidth>
         {submitIcon}
       </Button>
     </form>
@@ -122,8 +156,13 @@ const PostForm = ({
 };
 
 PostForm.defaultProps = {
-  location: '',
-  caption: '',
+  doc: {
+    id: null,
+    description: {
+      location: null,
+      desription: null,
+    },
+  },
 };
 
 export default PostForm;

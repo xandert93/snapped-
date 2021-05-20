@@ -24,7 +24,7 @@ const CameraRoll = () => {
         <div
           className="camera-roll"
           onClick={(e) => {
-            if (e.target == e.currentTarget) return;
+            if (e.target === e.currentTarget) return;
             setModalImageDoc(usersImageDocs[e.target.dataset.index]);
           }}>
           {usersImageDocs.map(({ id, url }, idx) => (
