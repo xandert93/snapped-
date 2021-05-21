@@ -8,7 +8,7 @@ const useDb = (collectionName, numOfRequestedDocs) => {
   useEffect(() => {
     const unsub = collectionRef.current
       .orderBy('createdAt', 'desc')
-      .onSnapshot(({ docs }) => {
+      .onSnapshot(({ docs: docRefs }) => {
         //array of docRefs called "docs" destructured from querySnapshot obj
         //ideally, i'd just like to add/remove the new/deletd doc to/from the existing docs
         //rather than set the docs completely again whenever the database senses a change
@@ -17,12 +17,12 @@ const useDb = (collectionName, numOfRequestedDocs) => {
         if (numOfRequestedDocs) {
           let retrievedDocs = [];
           for (let i = 0; i < numOfRequestedDocs; i++) {
-            retrievedDocs.push({ ...docs[i].data(), id: docs[i].id });
+            retrievedDocs.push({ ...docRefs[i].data(), id: docRefs[i].id });
           }
           setDocs(retrievedDocs);
         } else {
           setDocs(
-            docs.map((docRef) => ({
+            docRefs.map((docRef) => ({
               ...docRef.data(),
               id: docRef.id,
             }))

@@ -18,6 +18,7 @@ import Progress from './components/protected/layout/Progress/Progress';
 import useGetDeviceWidth from './custom-hooks/useGetDeviceWidth';
 import { themeLight, themeDark } from './theme/theme';
 import { CssBaseline, ThemeProvider } from '@material-ui/core';
+import OtherUser from './components/protected/pages/OtherUser/OtherUser';
 
 const App = () => {
   const { currentUser } = useContext(authContext);
@@ -88,6 +89,7 @@ const App = () => {
           />
           <ProtectedRoute path="/camera-roll" component={CameraRoll} />
           <ProtectedRoute path="/my-account" component={MyAccount} />
+          <ProtectedRoute path="/user/:userId" component={OtherUser} />
 
           {/* <Route render={() => <h5>Not Found 404</h5>} /> */}
         </Switch>

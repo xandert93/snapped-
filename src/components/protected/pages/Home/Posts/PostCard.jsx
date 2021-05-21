@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import {
   Avatar,
   Card,
+  CardActionArea,
   CardActions,
   CardContent,
   CardHeader,
@@ -14,11 +15,13 @@ import {
 import { ExpandMore, MyLocation, Today } from '@material-ui/icons';
 import useStyles from './styles';
 import moment from 'moment';
+import { Link } from 'react-router-dom';
 
 const PostCard = ({
   doc: {
     createdAt,
     username,
+    userId,
     description: { location, caption },
     url,
   },
@@ -31,16 +34,18 @@ const PostCard = ({
   return (
     <Grid item xs={12} sm={6} md={4} lg={3}>
       <Card raised>
-        <CardHeader
-          avatar={<Avatar>{username[0]}</Avatar>}
-          title={username}
-          subheader={
-            <>
-              <MyLocation />
-              {`${location}`}
-            </>
-          }></CardHeader>
-
+        <CardActionArea component={Link} to={`/user/${userId}`}>
+          <CardHeader
+            className={classes.cardHeader}
+            avatar={<Avatar>{username[0]}</Avatar>}
+            title={username}
+            subheader={
+              <>
+                <MyLocation />
+                {location}
+              </>
+            }></CardHeader>
+        </CardActionArea>
         <CardMedia
           className={classes.cardMedia}
           data-index={idx}

@@ -21,6 +21,14 @@ export default makeStyles((theme) => ({
     },
   },
 
+  cardHeader: {
+    transition: 'background-color 0.2s, color 0.2s',
+    '&:hover': {
+      backgroundColor: theme.palette.secondary.light,
+      color: theme.palette.secondary.contrastText,
+    },
+  },
+
   cardMedia: {
     height: 0,
     paddingBottom: '120%', //1.2x card width

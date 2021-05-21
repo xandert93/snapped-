@@ -84,7 +84,7 @@ export const themeDark = createMuiTheme({
       main: cyan['A200'],
     },
     secondary: red,
-    background: { default: '#2f2f36', paper: '#000' },
+    background: { default: '#262729', paper: '#000' },
     //any paper-based components e.g. AppBar <header>, Cards will use the paper backgrounds
   },
 });

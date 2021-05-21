@@ -7,8 +7,8 @@ import useStyles from './Posts/styles';
 
 const Home = ({ innerWidth }) => {
   const classes = useStyles();
-  const [numOfImgsShown, setNumofImgsShown] = useState(4);
-  const imageDocs = useDb('Image URL Data', numOfImgsShown);
+  const [numOfRequestedDocs, setNumOfRequestedDocs] = useState(4);
+  const imageDocs = useDb('Image URL Data', numOfRequestedDocs);
 
   const [showModal, setShowModal] = useState(false);
   const [modalImgURL, setModalImgURL] = useState('');
@@ -29,7 +29,7 @@ const Home = ({ innerWidth }) => {
           <Button
             variant="contained"
             color="secondary"
-            onClick={() => setNumofImgsShown((x) => x + 4)}>
+            onClick={() => setNumOfRequestedDocs((x) => x + 4)}>
             Fetch more
           </Button>
         </div>
