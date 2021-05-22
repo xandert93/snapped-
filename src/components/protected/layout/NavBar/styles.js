@@ -1,7 +1,28 @@
 import { makeStyles } from '@material-ui/core';
 
 export default makeStyles((theme) => ({
-  toolbar: theme.mixins.toolbar,
+  appBar: {
+    [theme.breakpoints.up('md')]: {
+      minHeight: 100,
+    },
+    [theme.breakpoints.down('md')]: {
+      minHeight: 86,
+    },
+    [theme.breakpoints.down('sm')]: {
+      minHeight: 72,
+    },
+  },
+  toolbar: {
+    [theme.breakpoints.up('md')]: {
+      minHeight: 100,
+    },
+    [theme.breakpoints.down('md')]: {
+      minHeight: 86,
+    },
+    [theme.breakpoints.down('sm')]: {
+      minHeight: 72,
+    },
+  },
   logoImg: {
     width: 80,
     marginRight: 12,

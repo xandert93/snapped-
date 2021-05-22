@@ -19,6 +19,7 @@ import useGetDeviceWidth from './custom-hooks/useGetDeviceWidth';
 import { themeLight, themeDark } from './theme/theme';
 import { CssBaseline, ThemeProvider } from '@material-ui/core';
 import OtherUser from './components/protected/pages/OtherUser/OtherUser';
+import CreatePost from './components/protected/pages/Home/Posts/CreatePost';
 
 const App = () => {
   const { currentUser } = useContext(authContext);
@@ -102,7 +103,7 @@ const App = () => {
           modalHeading: 'Create Your Post!',
         }}>
         {!file ? (
-          <PostForm
+          <CreatePost
             {...{
               type: 'create',
               imageURL: dataURL,

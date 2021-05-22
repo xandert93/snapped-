@@ -12,7 +12,6 @@ const ProgressCircle = ({ uploadProgress }) => {
         variant="determinate"
         value={uploadProgress}
         color={uploadProgress !== 100 ? 'secondary' : 'primary'}
-        disableShrink
         size="10rem"
       />
       <Box className={classes.captionBox}>

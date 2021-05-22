@@ -2,8 +2,9 @@ import { makeStyles } from '@material-ui/core';
 
 export default makeStyles((theme) => ({
   postsContainer: {
-    // margin: 0,
-    // width: '100%',
+    //without these two properties, MUI causes horizontal scroll: https://stackoverflow.com/questions/45519275/grid-in-material-ui-causes-horizontal-scroll-react
+    margin: '0 auto',
+    width: '100%',
     [theme.breakpoints.down('sm')]: {
       // '& > :not(:last-child)': {
       '& > *': {
@@ -29,6 +30,10 @@ export default makeStyles((theme) => ({
     },
   },
 
+  cardTitle: {
+    fontWeight: 600,
+  },
+
   cardMedia: {
     height: 0,
     paddingBottom: '120%', //1.2x card width
@@ -44,13 +49,29 @@ export default makeStyles((theme) => ({
       },
     },
   },
-  collapsed: {
+
+  cardContentPrimary: {
+    display: 'flex',
+  },
+
+  clockIcon: {
+    verticalAlign: -theme.spacing(1),
+    marginRight: '12px',
+  },
+
+  clockText: {
+    fontStyle: 'italic',
+    flexGrow: 1,
+  },
+
+  expandMoreCollapsed: {
+    padding: 0,
     marginLeft: 'auto', //pushes ExpandMore to far right
     transitionProperty: 'transform',
     transitionDuration: theme.transitions.duration.shortest,
     //transition: transitions.create("transform", {duration: transitions.duration.shortest})
   },
-  expand: {
+  expanded: {
     transform: 'rotate(180deg)', //rotate ExpandMore 180deg
   },
 

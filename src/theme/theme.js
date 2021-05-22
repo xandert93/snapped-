@@ -27,6 +27,25 @@ const baseProperties = {
       },
     },
 
+    MuiCardHeader: {
+      root: {
+        padding: '10px 14px',
+      },
+
+      avatar: {
+        marginRight: '14px',
+      },
+    },
+
+    MuiCardContent: {
+      root: {
+        padding: '10px 14px',
+        '&:last-child': {
+          paddingBottom: '10px',
+        },
+      },
+    },
+
     MuiStepper: {
       root: {
         padding: '0 24px',

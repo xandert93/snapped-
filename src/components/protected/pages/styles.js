@@ -1,8 +1,10 @@
 import { makeStyles } from '@material-ui/core';
 
 export default makeStyles((theme) => ({
+  //main needs a temp height for now for the drag and drop
+  //or the way i've set it up...look at mp3 cutter which overlays main content
   main: {
-    height: '90vh',
+    minHeight: '5vh',
   },
 
   containerHidden: {

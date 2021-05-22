@@ -5,6 +5,7 @@ import SlidingModal from '../../SlidingModal';
 import PostForm from '../../PostForm';
 import { Save } from '@material-ui/icons';
 import { Box } from '@material-ui/core';
+import UpdatePost from './UpdatePost';
 
 const CameraRoll = () => {
   const { currentUser } = useContext(authContext);
@@ -43,7 +44,7 @@ const CameraRoll = () => {
           modalHeading: 'Edit Your Post!',
         }}>
         {modalImageDoc && (
-          <PostForm
+          <UpdatePost
             {...{
               type: 'update',
               imageURL: modalImageDoc.url,

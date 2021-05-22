@@ -36,8 +36,10 @@ const OtherUser = () => {
   const noMoreImageDocs = numOfRequestedDocs === numOfAvailableDocs;
 
   return (
-    <Container className="camera-roll">
-      <Typography variant="h4">{userId}'s posts</Typography>
+    <Box className="camera-roll">
+      <Typography variant="h4" noWrap>
+        {userId}'s posts
+      </Typography>
       {otherUsersImageDocs.map(({ id, url }, idx) => (
         <img key={id} src={url} data-index={idx} alt="" />
       ))}
@@ -59,7 +61,7 @@ const OtherUser = () => {
           </Button>
         </Box>
       )}
-    </Container>
+    </Box>
   );
 };
 

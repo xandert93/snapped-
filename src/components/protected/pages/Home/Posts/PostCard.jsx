@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import {
   Avatar,
+  Box,
   Card,
   CardActionArea,
   CardActions,
@@ -12,7 +13,7 @@ import {
   IconButton,
   Typography,
 } from '@material-ui/core';
-import { ExpandMore, MyLocation, Today } from '@material-ui/icons';
+import { ExpandMore, MyLocation, Schedule, Today } from '@material-ui/icons';
 import useStyles from './styles';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
@@ -37,32 +38,40 @@ const PostCard = ({
         <CardActionArea component={Link} to={`/user/${userId}`}>
           <CardHeader
             className={classes.cardHeader}
-            avatar={<Avatar>{username[0]}</Avatar>}
+            avatar={<Avatar>{username[0].toUpperCase()}</Avatar>}
             title={username}
-            subheader={
-              <>
-                <MyLocation />
-                {location}
-              </>
-            }></CardHeader>
+            titleTypographyProps={{
+              variant: 'body1',
+              className: classes.cardTitle,
+            }}
+            subheader={location}
+            subheaderTypographyProps={{ variant: 'body2' }}
+          />
         </CardActionArea>
         <CardMedia
           className={classes.cardMedia}
           data-index={idx}
           image={url}
-          title={`${username}'s picture.`}></CardMedia>
-        <CardContent>
-          <Typography variant="body2" gutterBottom>
-            <Today /> {moment(createdAt.toDate()).fromNow()}
-          </Typography>
-        </CardContent>
-        <CardActions>
+          title={`${username}'s picture`}
+        />
+        <CardContent className={classes.cardContentPrimary}>
+          <Box>
+            <Schedule className={classes.clockIcon} />
+            <Typography
+              variant="body2"
+              component="span"
+              className={classes.clockText}>
+              {moment(createdAt.toDate()).fromNow()}
+            </Typography>
+          </Box>
           <IconButton
-            className={`${classes.collapsed} ${expand ? classes.expand : ''}`}
+            className={`${classes.expandMoreCollapsed} ${
+              expand ? classes.expanded : ''
+            }`}
             onClick={() => setExpand(!expand)}>
             <ExpandMore />
           </IconButton>
-        </CardActions>
+        </CardContent>
 
         <Collapse in={expand} timeout={800} unmountOnExit>
           <CardContent>
