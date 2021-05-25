@@ -1,43 +1,86 @@
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
+import authContext from '../contexts/auth/authContext';
 import { db } from '../firebase/config';
 
-const useDb = (collectionName, numOfRequestedDocs) => {
+const useDb = (collectionName, numOfRequestedDocs, userId = '') => {
+  const { currentUser } = useContext(authContext);
+
+  const [allDocRefs, setAllDocRefs] = useState([]);
+  const [numOfAvailableDocs, setNumOfAvailableDocs] = useState(0);
   const [docs, setDocs] = useState([]);
-  const collectionRef = useRef(db.collection(collectionName));
 
+  const collectionRef = useRef(
+    db.collection(collectionName).orderBy('createdAt', 'desc')
+  );
+
+  const isPublicCollectionRef = useRef(
+    collectionRef.current.where('description.isPrivate', '==', false)
+  );
+
+  const userEntireCollectionRef = useRef(
+    collectionRef.current.where('userId', '==', userId)
+  );
+
+  const userPublicCollectionRef = useRef(
+    userEntireCollectionRef.current.where('description.isPrivate', '==', false)
+  );
+
+  function extractDocs(docRefs) {
+    setNumOfAvailableDocs(docRefs.length);
+
+    let retrievedDocs = [];
+    for (let i = 0; i < numOfRequestedDocs; i++) {
+      retrievedDocs.push({ ...docRefs[i].data(), id: docRefs[i].id });
+    }
+    setDocs(retrievedDocs);
+  }
+
+  // set up a single onSnapshot listener that fires with qS of entire collection
   useEffect(() => {
-    const unsub = collectionRef.current
-      .orderBy('createdAt', 'desc')
-      .onSnapshot(({ docs: docRefs }) => {
-        //when a image uploaded, doc is added, but when onSnapshot initially fires
-        //timestamp has not been inserted on "createdAt"
-        //our UI expects to use "createdAt" as soon as docs returned
-        //thus, cancel first snapshot call if the added document doesn't have "createdAt":
-        if (!docRefs[0].data().createdAt) return;
-        //array of docRefs called "docs" destructured from querySnapshot obj
-        //ideally, i'd just like to add/remove the new/deletd doc to/from the existing docs
-        //rather than set the docs completely again whenever the database senses a change
-        //also, when img uploaded and document added to database, onsnapshot here runs
-        //snapshot returns with new imgdoc - old last (5th) img doc removed from DOM
-        if (numOfRequestedDocs) {
-          let retrievedDocs = [];
-          for (let i = 0; i < numOfRequestedDocs; i++) {
-            retrievedDocs.push({ ...docRefs[i].data(), id: docRefs[i].id });
-          }
-          setDocs(retrievedDocs);
-        } else {
-          setDocs(
-            docRefs.map((docRef) => ({
-              ...docRef.data(),
-              id: docRef.id,
-            }))
-          );
-        }
-      });
+    const unsub = collectionRef.current.onSnapshot(({ docs: docRefs }) =>
+      setAllDocRefs(docRefs)
+    );
     return unsub;
-  }, [collectionRef, numOfRequestedDocs]);
+  }, [collectionRef]);
 
-  return docs;
+  // to be run when onSnapshot handler updates allDocRefs or user has requested more docs
+  useEffect(() => {
+    if (!allDocRefs.length) return;
+    if (!allDocRefs[0].data().createdAt) return;
+
+    //"Home"
+    if (!userId) {
+      isPublicCollectionRef.current
+        .get()
+        .then(({ docs: publicDocRefs }) => extractDocs(publicDocRefs));
+      return;
+    }
+
+    //"OtherUser" and authenticated user's "CameraRoll"
+    if (userId) {
+      let collectionToQuery =
+        userId !== currentUser.uid
+          ? userPublicCollectionRef
+          : userEntireCollectionRef;
+
+      collectionToQuery.current
+        .get()
+        .then(({ docs: usersDocRefs }) => extractDocs(usersDocRefs));
+      return;
+    }
+
+    //but this will never get run ASS, as the first if statement runs instead
+    else {
+      setDocs(
+        allDocRefs.map((docRef) => ({
+          ...docRef.data(),
+          id: docRef.id,
+        }))
+      );
+    }
+  }, [allDocRefs, numOfRequestedDocs]);
+
+  return [docs, numOfAvailableDocs];
 };
 
 export default useDb;

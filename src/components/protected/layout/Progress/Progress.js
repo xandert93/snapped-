@@ -19,7 +19,7 @@ const Progress = ({ file, description, resetForm }) => {
   useEffect(() => {
     if (!uploadURL) return;
     resetForm();
-    if (pathname !== '/') return push('/');
+    if (pathname !== '/' && !description.isPrivate) return push('/');
   }, [uploadURL]);
 
   return (

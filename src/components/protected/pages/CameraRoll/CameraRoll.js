@@ -1,25 +1,25 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import useDb from '../../../../custom-hooks/useDb';
 import authContext from '../../../../contexts/auth/authContext';
 import SlidingModal from '../../SlidingModal';
-import PostForm from '../../PostForm';
 import { Save } from '@material-ui/icons';
-import { Box } from '@material-ui/core';
+import { Box, Button } from '@material-ui/core';
 import UpdatePost from './UpdatePost';
 
 const CameraRoll = () => {
   const { currentUser } = useContext(authContext);
-  const imageDocs = useDb('Image URL Data');
-  const [usersImageDocs, setUsersImageDocs] = useState([]);
+
+  const [numOfRequestedDocs, setNumOfRequestedDocs] = useState(1);
+
+  const [usersImageDocs, numOfAvailableDocs] = useDb(
+    'Image URL Data',
+    numOfRequestedDocs,
+    currentUser.uid
+  );
 
   const [modalImageDoc, setModalImageDoc] = useState(null);
 
-  useEffect(() => {
-    setUsersImageDocs(
-      imageDocs.filter((doc) => doc.userId === currentUser.uid)
-    );
-  }, [imageDocs]);
-
+  const noMoreImageDocs = numOfRequestedDocs === numOfAvailableDocs;
   return (
     <>
       {usersImageDocs.length ? (
@@ -35,6 +35,25 @@ const CameraRoll = () => {
         </Box>
       ) : (
         <h3>Your Camera Roll is currently empty.</h3>
+      )}
+
+      {usersImageDocs.length > 0 && (
+        <Box style={{ textAlign: 'center' }}>
+          <Button
+            disabled={noMoreImageDocs}
+            variant="contained"
+            color="secondary"
+            onClick={() => setNumOfRequestedDocs((x) => x + 1)}>
+            Fetch One More
+          </Button>
+          <Button
+            disabled={noMoreImageDocs}
+            variant="contained"
+            color="secondary"
+            onClick={() => setNumOfRequestedDocs(numOfAvailableDocs)}>
+            Fetch All (~{numOfAvailableDocs * 3.5}MB?)
+          </Button>
+        </Box>
       )}
 
       <SlidingModal

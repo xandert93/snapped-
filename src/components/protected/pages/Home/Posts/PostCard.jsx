@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   Avatar,
   Box,
@@ -17,6 +17,7 @@ import { ExpandMore, MyLocation, Schedule, Today } from '@material-ui/icons';
 import useStyles from './styles';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
+import authContext from '../../../../../contexts/auth/authContext';
 
 const PostCard = ({
   doc: {
@@ -28,6 +29,7 @@ const PostCard = ({
   },
   idx,
 }) => {
+  const { currentUser } = useContext(authContext);
   const classes = useStyles();
   const [expand, setExpand] = useState(false);
   //all cards now hold state. Better to have something that ensures only one card expanded at a time?
@@ -35,7 +37,9 @@ const PostCard = ({
   return (
     <Grid item xs={12} sm={6} md={4} lg={3}>
       <Card raised>
-        <CardActionArea component={Link} to={`/user/${userId}`}>
+        <CardActionArea
+          component={Link}
+          to={userId !== currentUser.uid ? `/user/${userId}` : '/camera-roll'}>
           <CardHeader
             className={classes.cardHeader}
             avatar={<Avatar>{username[0].toUpperCase()}</Avatar>}

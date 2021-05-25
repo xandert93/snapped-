@@ -8,7 +8,10 @@ import useStyles from './Posts/styles';
 const Home = ({ innerWidth }) => {
   const classes = useStyles();
   const [numOfRequestedDocs, setNumOfRequestedDocs] = useState(4);
-  const imageDocs = useDb('Image URL Data', numOfRequestedDocs);
+  const [imageDocs, numOfAvailableDocs] = useDb(
+    'Image URL Data',
+    numOfRequestedDocs
+  );
 
   const [showModal, setShowModal] = useState(false);
   const [modalImgURL, setModalImgURL] = useState('');
@@ -29,6 +32,8 @@ const Home = ({ innerWidth }) => {
           <Button
             variant="contained"
             color="secondary"
+            //ASS, if availDocs !% 4, error will be thrown at end. Need to fix
+            disabled={numOfRequestedDocs === numOfAvailableDocs}
             onClick={() => setNumOfRequestedDocs((x) => x + 4)}>
             Fetch more
           </Button>

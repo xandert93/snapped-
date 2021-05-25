@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { db } from '../../firebase/config';
 import useStyles from './styles';
 
@@ -6,12 +6,35 @@ import {
   Box,
   Button,
   IconButton,
+  MenuItem,
   Slide,
   Snackbar,
   TextField,
 } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
-import { DeleteForever } from '@material-ui/icons';
+import { DeleteForever, Lock, LockOpen } from '@material-ui/icons';
+
+const lockIconStyles = { fontSize: 20, marginLeft: 8, verticalAlign: -4 };
+const visibilities = [
+  {
+    label: (
+      <>
+        Public
+        <LockOpen style={lockIconStyles} />
+      </>
+    ),
+    value: false,
+  },
+  {
+    label: (
+      <em>
+        Private
+        <Lock style={lockIconStyles} />
+      </em>
+    ),
+    value: true,
+  },
+];
 
 const PostForm = ({
   type,
@@ -24,7 +47,7 @@ const PostForm = ({
   //update
   doc: {
     id,
-    description: { location, caption },
+    description: { location, caption, isPrivate },
   },
   closeModal,
 }) => {
@@ -32,26 +55,34 @@ const PostForm = ({
 
   const locationRef = useRef();
   const captionRef = useRef();
+  const privacyRef = useRef();
 
   const [msgData, setMsgData] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const getUserInput = (e) => {
     e.preventDefault();
-    return [locationRef.current.value, captionRef.current.value];
+    return [locationRef, captionRef, privacyRef].map(
+      ({ current: { value } }) => value
+    );
   };
 
   const createPost = (e) => {
-    const [location, caption] = getUserInput(e);
-    setDescription({ location, caption });
+    const [location, caption, isPrivate] = getUserInput(e);
+    setDescription({ location, caption, isPrivate });
     setFile(fileData.file);
+    //!file ? <PostForm/> (now unmounts) : <Progress/> (now mounts)
   };
 
   const updatePost = async (e) => {
     setIsSubmitting(true);
-    const [newLocation, newCaption] = getUserInput(e);
+    const [newLocation, newCaption, newIsPrivate] = getUserInput(e);
 
-    if (newLocation === location && newCaption === caption) {
+    if (
+      newLocation === location &&
+      newCaption === caption &&
+      newIsPrivate === isPrivate
+    ) {
       setMsgData({
         success: false,
         msg: 'Please make a change before submitting.',
@@ -68,6 +99,7 @@ const PostForm = ({
             description: {
               location: newLocation,
               caption: newCaption,
+              isPrivate: newIsPrivate,
             },
           },
           { merge: true }
@@ -122,6 +154,20 @@ const PostForm = ({
         rows={3}
       />
 
+      <TextField
+        select
+        defaultValue={isPrivate}
+        inputRef={privacyRef}
+        label="Do you want your post to be public?"
+        required
+        helperText="Public posts are visible to all snapped! users!">
+        {visibilities.map((option) => (
+          <MenuItem key={option.value} value={option.value}>
+            {option.label}
+          </MenuItem>
+        ))}
+      </TextField>
+
       <Snackbar
         open={!!msgData}
         autoHideDuration={5000}
@@ -160,6 +206,7 @@ PostForm.defaultProps = {
     description: {
       location: null,
       caption: null,
+      isPrivate: false,
     },
   },
 };
