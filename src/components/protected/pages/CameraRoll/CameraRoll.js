@@ -13,7 +13,6 @@ const CameraRoll = () => {
 
   const [usersImageDocs, numOfAvailableDocs] = useDb(
     'Image URL Data',
-    numOfRequestedDocs,
     currentUser.uid
   );
 
@@ -29,9 +28,12 @@ const CameraRoll = () => {
             if (e.target === e.currentTarget) return;
             setModalImageDoc(usersImageDocs[e.target.dataset.index]);
           }}>
-          {usersImageDocs.map(({ id, url }, idx) => (
-            <img key={id} src={url} data-index={idx} alt="" />
-          ))}
+          {usersImageDocs.map(
+            ({ id, url }, idx) =>
+              idx < numOfRequestedDocs && (
+                <img key={id} src={url} data-index={idx} alt="" />
+              )
+          )}
         </Box>
       ) : (
         <h3>Your Camera Roll is currently empty.</h3>
@@ -44,14 +46,14 @@ const CameraRoll = () => {
             variant="contained"
             color="secondary"
             onClick={() => setNumOfRequestedDocs((x) => x + 1)}>
-            Fetch One More
+            Fetch 1
           </Button>
           <Button
             disabled={noMoreImageDocs}
             variant="contained"
             color="secondary"
             onClick={() => setNumOfRequestedDocs(numOfAvailableDocs)}>
-            Fetch All (~{numOfAvailableDocs * 3.5}MB?)
+            Fetch {numOfAvailableDocs}
           </Button>
         </Box>
       )}

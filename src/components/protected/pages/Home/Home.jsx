@@ -7,11 +7,8 @@ import useStyles from './Posts/styles';
 
 const Home = ({ innerWidth }) => {
   const classes = useStyles();
-  const [numOfRequestedDocs, setNumOfRequestedDocs] = useState(4);
-  const [imageDocs, numOfAvailableDocs] = useDb(
-    'Image URL Data',
-    numOfRequestedDocs
-  );
+  const [numOfDocsShown, setNumOfDocsShown] = useState(4);
+  const [imageDocs, numOfAvailableDocs] = useDb('Image URL Data');
 
   const [showModal, setShowModal] = useState(false);
   const [modalImgURL, setModalImgURL] = useState('');
@@ -25,7 +22,7 @@ const Home = ({ innerWidth }) => {
 
   return (
     <>
-      <PostsGrid {...{ innerWidth, imageDocs, toggleModal }} />
+      <PostsGrid {...{ innerWidth, imageDocs, numOfDocsShown, toggleModal }} />
 
       {imageDocs.length > 0 && (
         <div style={{ textAlign: 'center' }}>
@@ -33,8 +30,8 @@ const Home = ({ innerWidth }) => {
             variant="contained"
             color="secondary"
             //ASS, if availDocs !% 4, error will be thrown at end. Need to fix
-            disabled={numOfRequestedDocs === numOfAvailableDocs}
-            onClick={() => setNumOfRequestedDocs((x) => x + 4)}>
+            disabled={numOfDocsShown === numOfAvailableDocs}
+            onClick={() => setNumOfDocsShown((x) => x + 4)}>
             Fetch more
           </Button>
         </div>

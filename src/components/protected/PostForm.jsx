@@ -158,9 +158,9 @@ const PostForm = ({
         select
         defaultValue={isPrivate}
         inputRef={privacyRef}
-        label="Do you want your post to be public?"
+        label="Choose post visibility:"
         required
-        helperText="Public posts are visible to all snapped! users!">
+        helperText="Public posts are visible to all users!">
         {visibilities.map((option) => (
           <MenuItem key={option.value} value={option.value}>
             {option.label}

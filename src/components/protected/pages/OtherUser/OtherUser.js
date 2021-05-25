@@ -9,11 +9,7 @@ const OtherUser = () => {
 
   const [numOfRequestedDocs, setNumOfRequestedDocs] = useState(1);
 
-  const [userImageDocs, numOfAvailableDocs] = useDb(
-    'Image URL Data',
-    numOfRequestedDocs,
-    userId
-  );
+  const [usersImageDocs, numOfAvailableDocs] = useDb('Image URL Data', userId);
 
   const noMoreImageDocs = numOfRequestedDocs === numOfAvailableDocs;
 
@@ -22,24 +18,28 @@ const OtherUser = () => {
       <Typography variant="h4" noWrap>
         {userId}'s posts
       </Typography>
-      {userImageDocs.map(({ id, url }, idx) => (
-        <img key={id} src={url} data-index={idx} alt="" />
-      ))}
-      {userImageDocs.length > 0 && (
+
+      {usersImageDocs.map(
+        ({ id, url }, idx) =>
+          idx < numOfRequestedDocs && (
+            <img key={id} src={url} data-index={idx} alt="" />
+          )
+      )}
+      {usersImageDocs.length > 0 && (
         <Box style={{ textAlign: 'center' }}>
           <Button
             disabled={noMoreImageDocs}
             variant="contained"
             color="secondary"
             onClick={() => setNumOfRequestedDocs((x) => x + 1)}>
-            Fetch One More
+            Fetch 1
           </Button>
           <Button
             disabled={noMoreImageDocs}
             variant="contained"
             color="secondary"
             onClick={() => setNumOfRequestedDocs(numOfAvailableDocs)}>
-            Fetch All (~{numOfAvailableDocs * 3.5}MB?)
+            Fetch {numOfAvailableDocs}
           </Button>
         </Box>
       )}
