@@ -1,9 +1,9 @@
-import { Switch } from 'react-router-dom';
+import { Redirect, Switch } from 'react-router-dom';
 import './App.scss';
 import Auth from './components/public/Auth/Auth';
 import ProtectedRoute from './components/public/ProtectedRoute';
 import PublicRoute from './components/public/PublicRoute';
-import CameraRoll from './components/protected/pages/CameraRoll/CameraRoll';
+import CameraRoll2 from './components/protected/pages/CameraRoll/CameraRoll2';
 import Home from './components/protected/pages/Home/Home';
 import MyAccount from './components/protected/pages/MyAccount/MyAccount';
 import NavBar from './components/protected/layout/NavBar/NavBar';
@@ -81,17 +81,22 @@ const App = () => {
             {...{ darkMode, setDarkMode }}
             component={Auth}
           />
-
           <ProtectedRoute
             exact
             path="/"
             innerWidth={innerWidth}
             component={Home}
           />
-          <ProtectedRoute path="/camera-roll" component={CameraRoll} />
-          <ProtectedRoute path="/my-account" component={MyAccount} />
-          <ProtectedRoute path="/user/:userId" component={OtherUser} />
+          <ProtectedRoute
+            path="/camera-roll/:tabName"
+            component={CameraRoll2}
+          />
+          <Redirect exact from="/camera-roll" to="/camera-roll/public" />
+          {/*considered good practice in case someone navigates to
+          "/camera-roll". Now redirected to Protected Route above*/}
 
+          <ProtectedRoute path="/account" component={MyAccount} />
+          <ProtectedRoute path="/user/:userId" component={OtherUser} />
           {/* <Route render={() => <h5>Not Found 404</h5>} /> */}
         </Switch>
       </Main>

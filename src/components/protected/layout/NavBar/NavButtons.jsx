@@ -59,7 +59,7 @@ const NavButtons = ({ isMobile, toggleDrawer, validateFile, fileData }) => {
       {isMobile && <Divider />}
       <Button
         component={RouterLink}
-        to="/my-account"
+        to="/account"
         startIcon={<AccountCircle />}>
         My Account
       </Button>

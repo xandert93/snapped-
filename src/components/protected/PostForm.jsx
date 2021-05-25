@@ -12,15 +12,15 @@ import {
   TextField,
 } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
-import { DeleteForever, Lock, LockOpen } from '@material-ui/icons';
+import { DeleteForever, Lock, LockOpen, Public } from '@material-ui/icons';
 
-const lockIconStyles = { fontSize: 20, marginLeft: 8, verticalAlign: -4 };
+const iconStyles = { fontSize: 20, marginLeft: 8, verticalAlign: -4 };
 const visibilities = [
   {
     label: (
       <>
         Public
-        <LockOpen style={lockIconStyles} />
+        <Public style={iconStyles} />
       </>
     ),
     value: false,
@@ -29,7 +29,7 @@ const visibilities = [
     label: (
       <em>
         Private
-        <Lock style={lockIconStyles} />
+        <Lock style={iconStyles} />
       </em>
     ),
     value: true,
