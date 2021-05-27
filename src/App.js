@@ -13,13 +13,14 @@ import Main from './components/protected/pages/Main';
 
 import { Publish } from '@material-ui/icons';
 import SlidingModal from './components/protected/SlidingModal';
-import PostForm from './components/protected/PostForm';
 import Progress from './components/protected/layout/Progress/Progress';
-import useGetDeviceWidth from './custom-hooks/useGetDeviceWidth';
+import useGetDeviceWidth from './hooks/useGetDeviceWidth';
 import { themeLight, themeDark } from './theme/theme';
 import { CssBaseline, ThemeProvider } from '@material-ui/core';
 import OtherUser from './components/protected/pages/OtherUser/OtherUser';
 import CreatePost from './components/protected/pages/Home/Posts/CreatePost';
+
+import * as ROUTES from './constants/routes';
 
 const App = () => {
   const { currentUser } = useContext(authContext);
@@ -77,13 +78,13 @@ const App = () => {
       <Main {...{ validateFile }}>
         <Switch>
           <PublicRoute
-            path="/auth/:userAction"
+            path={ROUTES.AUTH}
             {...{ darkMode, setDarkMode }}
             component={Auth}
           />
           <ProtectedRoute
             exact
-            path="/"
+            path={ROUTES.HOME}
             innerWidth={innerWidth}
             component={Home}
           />
@@ -95,7 +96,7 @@ const App = () => {
           {/*considered good practice in case someone navigates to
           "/camera-roll". Now redirected to Protected Route above*/}
 
-          <ProtectedRoute path="/account" component={MyAccount} />
+          <ProtectedRoute path={ROUTES.USER_ACCOUNT} component={MyAccount} />
           <ProtectedRoute path="/user/:userId" component={OtherUser} />
           {/* <Route render={() => <h5>Not Found 404</h5>} /> */}
         </Switch>

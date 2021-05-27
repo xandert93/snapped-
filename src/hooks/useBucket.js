@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { bucket, db, timestamp } from '../firebase/config';
+import { bucket, db, FieldValue } from '../lib/firebase/config';
 
 const useBucket = ({ uid, email }, file, description, collectionName) => {
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -18,13 +18,12 @@ const useBucket = ({ uid, email }, file, description, collectionName) => {
       (err) => setUploadErrMsg(err.message),
       async () => {
         const url = await storedItemRef.getDownloadURL();
-        const createdAt = timestamp();
         await collectionRef.add({
           userId: uid,
           username: email.slice(0, email.indexOf('@')),
           description,
           url,
-          createdAt,
+          createdAt: FieldValue.serverTimestamp(),
         });
         setUploadURL(url);
       }

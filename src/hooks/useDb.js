@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef, useState } from 'react';
 import authContext from '../contexts/auth/authContext';
-import { db } from '../firebase/config';
+import { db } from '../lib/firebase/config';
 
 const useDb = (collectionName, userId = '') => {
   const { currentUser } = useContext(authContext);

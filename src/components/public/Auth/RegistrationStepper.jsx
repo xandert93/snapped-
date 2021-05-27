@@ -14,6 +14,7 @@ import React, { useState } from 'react';
 import useStyles from './styles';
 
 const steps = [
+  'Provide your full name',
   'Provide a unique username',
   'Provide a unique email',
   'Provide a secure password',
@@ -24,6 +25,7 @@ const RegisterForm = ({ refs, submitBtnText, msgData, isSubmitting }) => {
   const [activeStep, setActiveStep] = useState(0);
 
   const stepContent = [
+    { inputRef: refs.fullNameRef, type: 'text', label: 'Full Name' },
     { inputRef: refs.usernameRef, type: 'text', label: 'Username' },
     { inputRef: refs.emailRef, type: 'email', label: 'Email address' },
     [
@@ -47,7 +49,7 @@ const RegisterForm = ({ refs, submitBtnText, msgData, isSubmitting }) => {
           <Step key={stepName}>
             <StepLabel>{stepName}</StepLabel>
             <StepContent TransitionProps={{ unmountOnExit: false }}>
-              {idx < 2 ? (
+              {idx < stepContent.length - 1 ? (
                 <TextField {...stepContent[idx]} required />
               ) : (
                 <Box className={classes.stepperFields}>

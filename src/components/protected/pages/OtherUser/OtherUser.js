@@ -2,7 +2,7 @@ import { Box, Button, Typography } from '@material-ui/core';
 import React from 'react';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import useDb from '../../../../custom-hooks/useDb';
+import useDb from '../../../../hooks/useDb';
 
 const OtherUser = () => {
   const { userId } = useParams();

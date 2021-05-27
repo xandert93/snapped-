@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { db } from '../../firebase/config';
+import { db } from '../../lib/firebase/config';
 import useStyles from './styles';
 
 import {
@@ -12,7 +12,7 @@ import {
   TextField,
 } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
-import { DeleteForever, Lock, LockOpen, Public } from '@material-ui/icons';
+import { DeleteForever, Lock, Public } from '@material-ui/icons';
 
 const iconStyles = { fontSize: 20, marginLeft: 8, verticalAlign: -4 };
 const visibilities = [

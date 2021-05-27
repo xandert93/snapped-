@@ -12,7 +12,7 @@ const app = firebase.initializeApp({
   appId: process.env.REACT_APP_FIREBASE_APP_ID,
 });
 
-export const timestamp = firebase.firestore.FieldValue.serverTimestamp;
+export const { FieldValue } = firebase.firestore;
 
 export const db = app.firestore();
 export const bucket = app.storage();

@@ -1,7 +1,7 @@
 import { CircularProgress } from '@material-ui/core';
 import { useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
-import { auth } from '../../firebase/config';
+import { auth } from '../../lib/firebase/config';
 import authContext from './authContext';
 
 const AuthProvider = ({ children }) => {

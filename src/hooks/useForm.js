@@ -5,6 +5,7 @@ const useForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const usernameRef = useRef();
+  const fullNameRef = useRef();
   const emailRef = useRef();
   const passwordRef = useRef();
   const passwordConfirmRef = useRef();
@@ -16,6 +17,7 @@ const useForm = () => {
     setIsSubmitting,
     refs: {
       usernameRef,
+      fullNameRef,
       emailRef,
       passwordRef,
       passwordConfirmRef,

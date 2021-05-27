@@ -4,11 +4,12 @@ import { useHistory, useParams } from 'react-router-dom';
 import authContext from '../../../contexts/auth/authContext';
 import useStyles from './styles';
 import logo from '../../../assets/snapped.ico';
-import useForm from '../../../custom-hooks/useForm';
+import useForm from '../../../hooks/useForm';
 import RegistrationStepper from './RegistrationStepper';
 import LoginControls from './LoginControls';
 import RedirectLinks from './RedirectLinks';
 import ThemeSwitch from '../../protected/layout/ThemeSwitch';
+import { checkUsernameTaken, addUserToDb } from '../../../services/firebase';
 // import RedirectLinks from './RedirectLinks/RedirectLinks';
 
 const Auth = ({ darkMode, setDarkMode }) => {
@@ -55,17 +56,40 @@ const Auth = ({ darkMode, setDarkMode }) => {
 
   const attemptRegister = useCallback(async (email) => {
     const username = refs.usernameRef.current.value;
+    const fullName = refs.fullNameRef.current.value;
     const password = refs.passwordRef.current.value;
     const passwordConfirm = refs.passwordConfirmRef.current.value;
 
+    if (username.length < 5) {
+      setIsSubmitting(false);
+      return setMsgData({
+        success: false,
+        msg: 'Username must be at least 6 characters.',
+      });
+    }
+
     if (password !== passwordConfirm) {
       setIsSubmitting(false);
-      return setMsgData({ success: false, msg: 'Passwords do not match' });
+      return setMsgData({ success: false, msg: 'Passwords do not match.' });
+    }
+
+    if (!/^[a-zA-Z]+ [a-zA-Z]+$/.test(fullName)) {
+      setIsSubmitting(false);
+      return setMsgData({ success: false, msg: 'Please enter a valid name.' });
+    }
+
+    if (await checkUsernameTaken(username)) {
+      setIsSubmitting(false);
+      return setMsgData({
+        success: false,
+        msg: 'That username is already taken.',
+      });
     }
 
     try {
       const credToken = await register(email, password);
       await credToken.user.updateProfile({ displayName: username });
+      await addUserToDb(credToken, username, fullName);
       push('/');
     } catch (err) {
       setIsSubmitting(false);

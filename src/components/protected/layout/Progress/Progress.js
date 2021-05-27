@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import useBucket from '../../../../custom-hooks/useBucket';
+import useBucket from '../../../../hooks/useBucket';
 import authContext from '../../../../contexts/auth/authContext';
 import ProgressCircle from './ProgressCircle';
 import { useHistory, useLocation } from 'react-router';

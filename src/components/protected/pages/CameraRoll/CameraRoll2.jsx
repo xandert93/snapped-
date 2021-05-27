@@ -1,11 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react';
-import useDb from '../../../../custom-hooks/useDb';
+import useDb from '../../../../hooks/useDb';
 import authContext from '../../../../contexts/auth/authContext';
 import SlidingModal from '../../SlidingModal';
 import { Lock, PhotoLibrary, Public, Save } from '@material-ui/icons';
-import { AppBar, Box, Button, Tab, Tabs } from '@material-ui/core';
+import { AppBar, Box, Tab, Tabs } from '@material-ui/core';
 import UpdatePost from './UpdatePost';
 import { useParams, useHistory } from 'react-router-dom';
+import useSetDocumentTitle from '../../../../hooks/useSetDocumentTitle';
 
 const idxToTabName = {
   public: 0,
@@ -19,6 +20,7 @@ const tabNameToIdx = {
 };
 
 const CameraRoll = () => {
+  useSetDocumentTitle();
   const { currentUser } = useContext(authContext);
   const { tabName } = useParams();
   const { push } = useHistory();
@@ -29,10 +31,6 @@ const CameraRoll = () => {
     'Image URL Data',
     currentUser.uid
   );
-
-  useEffect(() => {
-    console.log(usersImageDocs);
-  }, [usersImageDocs]);
 
   const tabChangeHandler = (e, tabIdx) => {
     push(`/camera-roll/${tabNameToIdx[tabIdx]}`);
