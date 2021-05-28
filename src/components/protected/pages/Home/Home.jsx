@@ -1,7 +1,6 @@
 import { Button } from '@material-ui/core';
 import React, { useState } from 'react';
-import useSetDocumentTitle from '../../../../hooks/useSetDocumentTitle';
-import useDb from '../../../../hooks/useDb';
+import { useSetDocumentTitle, useDb } from '../../../../custom-hooks';
 import ImageModal from './Posts/ImageModal.jsx';
 import PostsGrid from './Posts/PostsGrid';
 import useStyles from './Posts/styles';

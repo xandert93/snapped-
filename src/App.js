@@ -1,6 +1,6 @@
 import { Redirect, Switch } from 'react-router-dom';
 import './App.scss';
-import Auth from './components/public/Auth/Auth';
+import Auth from './components/public/Auth';
 import ProtectedRoute from './components/public/ProtectedRoute';
 import PublicRoute from './components/public/PublicRoute';
 import CameraRoll2 from './components/protected/pages/CameraRoll/CameraRoll2';
@@ -14,7 +14,7 @@ import Main from './components/protected/pages/Main';
 import { Publish } from '@material-ui/icons';
 import SlidingModal from './components/protected/SlidingModal';
 import Progress from './components/protected/layout/Progress/Progress';
-import useGetDeviceWidth from './hooks/useGetDeviceWidth';
+import { useGetDeviceWidth, useFileReader } from './custom-hooks';
 import { themeLight, themeDark } from './theme/theme';
 import { CssBaseline, ThemeProvider } from '@material-ui/core';
 import OtherUser from './components/protected/pages/OtherUser/OtherUser';
@@ -23,16 +23,12 @@ import CreatePost from './components/protected/pages/Home/Posts/CreatePost';
 import * as ROUTES from './constants/routes';
 
 const App = () => {
-  const { currentUser } = useContext(authContext);
+  const { currentUserDoc } = useContext(authContext);
   const [darkMode, setDarkMode] = useState(false);
 
   const innerWidth = useGetDeviceWidth();
 
-  const readerRef = useRef(new FileReader());
-  const [dataURL, setDataURL] = useState('');
-  useEffect(() => {
-    readerRef.current.onload = (e) => setDataURL(e.target.result);
-  }, []);
+  const [readerRef, dataURL, setDataURL] = useFileReader();
 
   const [msgData, setMsgData] = useState(null);
   const [fileData, setFileData] = useState({ file: null, path: '' });
@@ -70,7 +66,7 @@ const App = () => {
   return (
     <ThemeProvider theme={!darkMode ? themeLight : themeDark}>
       <CssBaseline />
-      {currentUser && (
+      {currentUserDoc && (
         <NavBar
           {...{ validateFile, fileData, innerWidth, darkMode, setDarkMode }}
         />

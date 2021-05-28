@@ -1,30 +1,29 @@
 import { CircularProgress } from '@material-ui/core';
-import { useCallback, useEffect, useState } from 'react';
-import { useHistory } from 'react-router';
+import { useCallback } from 'react';
+import { useHistory } from 'react-router-dom';
 import { auth } from '../../lib/firebase/config';
+import { addUserToDb } from '../../services/firebase';
+import { useAuthListener, useGetCurrentUserDoc } from '../../custom-hooks';
 import authContext from './authContext';
 
 const AuthProvider = ({ children }) => {
-  const [isCheckingUser, setIsCheckingUser] = useState(true);
-  const [currentUser, setCurrentUser] = useState(null);
+  const [isCheckingUser, currentUser] = useAuthListener(null);
+  const currentUserDoc = useGetCurrentUserDoc(currentUser);
+  //^initially called with null. Once currentUser state updates, its useEffect reruns
 
-  const { push } = useHistory();
+  // const history = useHistory();
 
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      setCurrentUser(user);
-      setTimeout(setIsCheckingUser, 1200, false);
-    });
-    return unsubscribe;
+  const register = async (email, password, username, fullName) => {
+    const credTok = await auth.createUserWithEmailAndPassword(email, password);
+    await addUserToDb(credTok, username, fullName);
+    // history.push('/');
+  };
+
+  const login = useCallback(async (email, password) => {
+    await auth.signInWithEmailAndPassword(email, password);
+    // history.push('/');
   }, []);
 
-  const register = (email, password) =>
-    auth.createUserWithEmailAndPassword(email, password);
-
-  const login = useCallback(
-    (email, password) => auth.signInWithEmailAndPassword(email, password),
-    []
-  );
   const resetPassword = useCallback(
     (email) => auth.sendPasswordResetEmail(email),
     []
@@ -34,18 +33,9 @@ const AuthProvider = ({ children }) => {
   const updatePassword = (password) => currentUser.updatePassword(password);
   const updateProfileData = (obj) => currentUser.updateProfile(obj);
 
-  // const login = useCallback(async (email, password) => {
-  //   try {
-  //     await auth.signInWithEmailAndPassword(email, password);
-  //     push('/');
-  //   } catch (err) {}
-  // });
-
   const logout = useCallback(async () => {
-    try {
-      await auth.signOut();
-      push('/auth/login');
-    } catch (err) {}
+    await auth.signOut();
+    // history.push('/auth/login');
   });
 
   if (isCheckingUser)
@@ -64,7 +54,7 @@ const AuthProvider = ({ children }) => {
   return (
     <authContext.Provider
       value={{
-        currentUser,
+        currentUserDoc,
         register,
         login,
         resetPassword,
@@ -79,3 +69,5 @@ const AuthProvider = ({ children }) => {
 };
 
 export default AuthProvider;
+
+//everything works without history.push!

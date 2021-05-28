@@ -3,13 +3,13 @@ import { Redirect, Route } from 'react-router-dom';
 import authContext from '../../contexts/auth/authContext';
 
 const ProtectedRoute = ({ component: Component, ...rest }) => {
-  const { currentUser } = useContext(authContext);
+  const { currentUserDoc } = useContext(authContext);
 
   return (
     <Route
       {...rest}
       render={() =>
-        currentUser ? <Component {...rest} /> : <Redirect to="/auth/login" />
+        currentUserDoc ? <Component {...rest} /> : <Redirect to="/auth/login" />
       }
     />
   );

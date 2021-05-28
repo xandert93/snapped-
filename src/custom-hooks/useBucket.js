@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { bucket, db, FieldValue } from '../lib/firebase/config';
 
-const useBucket = ({ uid, email }, file, description, collectionName) => {
+const useBucket = (currentUserDoc, file, description, collectionName) => {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadURL, setUploadURL] = useState('');
   const [uploadErrMsg, setUploadErrMsg] = useState('');
@@ -19,8 +19,8 @@ const useBucket = ({ uid, email }, file, description, collectionName) => {
       async () => {
         const url = await storedItemRef.getDownloadURL();
         await collectionRef.add({
-          userId: uid,
-          username: email.slice(0, email.indexOf('@')),
+          userId: currentUserDoc.userId,
+          username: currentUserDoc.username,
           description,
           url,
           createdAt: FieldValue.serverTimestamp(),
@@ -33,4 +33,4 @@ const useBucket = ({ uid, email }, file, description, collectionName) => {
   return { uploadProgress, uploadURL, uploadErrMsg };
 };
 
-export default useBucket;
+export { useBucket };

@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { AddToPhotos } from '@material-ui/icons';
 import useStyles from './styles';
+import authContext from '../../../contexts/auth/authContext';
 
 const Main = ({ validateFile, children }) => {
   const classes = useStyles();
+  const { currentUserDoc } = useContext(authContext);
 
   const [isDragged, setIsDragged] = useState(false);
 
@@ -23,7 +25,9 @@ const Main = ({ validateFile, children }) => {
     validateFile(e.dataTransfer.files[0]);
   };
 
-  return (
+  return !currentUserDoc ? (
+    <main>{children}</main>
+  ) : (
     <>
       <main
         className={`${classes.main} ${isDragged ? classes.dragged : ''}`}
@@ -35,6 +39,7 @@ const Main = ({ validateFile, children }) => {
           {children}
         </div>
       </main>
+
       {isDragged && (
         <AddToPhotos className={classes.uploadIcon} color="secondary" />
       )}

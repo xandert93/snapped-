@@ -1,7 +1,8 @@
 import { Button, makeStyles, TextField, Typography } from '@material-ui/core';
 import React, { useContext, useRef, useState } from 'react';
 import authContext from '../../../../contexts/auth/authContext';
-import useSetDocumentTitle from '../../../../hooks/useSetDocumentTitle';
+import { useSetDocumentTitle } from '../../../../custom-hooks';
+import { db } from '../../../../lib/firebase/config';
 
 const useStyles = makeStyles({
   form: {
@@ -18,8 +19,8 @@ const useStyles = makeStyles({
 
 const MyAccount = () => {
   const classes = useStyles();
-  useSetDocumentTitle();
-  const { currentUser, updateEmail, updatePassword, updateProfileData } =
+  useSetDocumentTitle('My Account');
+  const { currentUserDoc, updateEmail, updatePassword, updateProfileData } =
     useContext(authContext);
 
   const [errMsg, setErrMsg] = useState('');
@@ -27,6 +28,7 @@ const MyAccount = () => {
   const [successMsg, setSuccessMsg] = useState('');
   const [isUpdating, setIsUpdating] = useState(false);
 
+  const fullNameRef = useRef();
   const usernameRef = useRef();
   const emailRef = useRef();
   const passwordRef = useRef();
@@ -36,6 +38,7 @@ const MyAccount = () => {
     e.preventDefault();
     setErrMsg('');
     setSuccessMsg('');
+    const fullName = fullNameRef.current.value;
     const username = usernameRef.current.value;
     const email = emailRef.current.value;
     const password = passwordRef.current.value;
@@ -45,10 +48,20 @@ const MyAccount = () => {
     }
 
     const promises = [];
-    if (username !== currentUser.displayName)
-      promises.push(updateProfileData({ displayName: username }));
-    if (email !== currentUser.email) promises.push(updateEmail(email));
-    if (password && password !== currentUser.password)
+    if (
+      fullName !== currentUserDoc.fullName ||
+      username !== currentUserDoc.username
+    )
+      //REFACTOR THIS BIT:
+      promises.push(
+        db
+          .collection('Users')
+          .doc(currentUserDoc.id)
+          .update({ fullName, username })
+      );
+    ///////////////////
+    if (email !== currentUserDoc.email) promises.push(updateEmail(email));
+    if (password && password !== currentUserDoc.password)
       promises.push(updatePassword(password));
 
     if (!promises.length)
@@ -69,10 +82,18 @@ const MyAccount = () => {
 
       <TextField
         className={classes.textField}
+        inputRef={fullNameRef}
+        variant="outlined"
+        label="Full Name"
+        defaultValue={currentUserDoc.fullName}
+        required
+      />
+      <TextField
+        className={classes.textField}
         inputRef={usernameRef}
         variant="outlined"
         label="Username"
-        defaultValue={currentUser.displayName}
+        defaultValue={currentUserDoc.username}
         required
       />
       <TextField
@@ -80,7 +101,7 @@ const MyAccount = () => {
         inputRef={emailRef}
         variant="outlined"
         label="Email address"
-        defaultValue={currentUser.email}
+        defaultValue={currentUserDoc.email}
         type="email"
         required
       />
@@ -108,6 +129,11 @@ const MyAccount = () => {
         disabled={isUpdating}>
         Update Details
       </Button>
+
+      <Button
+        onClick={() => {
+          const coll = db.collection('Image URL Data').where('userId', '==');
+        }}></Button>
     </form>
   );
 };

@@ -4,16 +4,8 @@ import { Link as RouterLink } from 'react-router-dom';
 import ConditionalWrapper from './ConditionalWrapper';
 import NavButtons from './NavButtons';
 import useStyles from './styles';
-import {
-  AppBar,
-  Box,
-  Button,
-  IconButton,
-  Toolbar,
-  Typography,
-} from '@material-ui/core';
+import { AppBar, Box, Button, Toolbar, Typography } from '@material-ui/core';
 import logo from '../../../../assets/snapped.ico';
-import { Menu } from '@material-ui/icons';
 import ThemeSwitch from '../ThemeSwitch';
 import { HOME } from '../../../../constants/routes';
 
@@ -25,7 +17,7 @@ const NavBar = ({
   setDarkMode,
 }) => {
   const classes = useStyles();
-  const { currentUser } = useContext(authContext);
+  const { currentUserDoc } = useContext(authContext);
   const isMobile = innerWidth < 960;
 
   return (
@@ -63,7 +55,7 @@ const NavBar = ({
 
           {!isMobile && <div className={classes.grow} />}
 
-          {currentUser && (
+          {currentUserDoc && (
             <ConditionalWrapper isMobile={isMobile}>
               <NavButtons {...{ validateFile, fileData }} />
             </ConditionalWrapper>

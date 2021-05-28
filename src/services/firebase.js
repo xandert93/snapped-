@@ -1,8 +1,9 @@
 import { db, FieldValue } from '../lib/firebase/config';
 
+const usersCollectionRef = db.collection('Users');
+
 export const checkUsernameTaken = async (username) => {
-  const { docs: leanDocRefs } = await db
-    .collection('users')
+  const { docs: leanDocRefs } = await usersCollectionRef
     .where('username', '==', username)
     .get();
 
@@ -12,7 +13,7 @@ export const checkUsernameTaken = async (username) => {
 };
 
 export const addUserToDb = (credToken, username, fullName) =>
-  db.collection('Users').add({
+  usersCollectionRef.add({
     userId: credToken.user.uid,
     username: username.toLowerCase(),
     fullName: fullName.toLowerCase().replace(/\b./g, (a) => a.toUpperCase()),
@@ -21,3 +22,10 @@ export const addUserToDb = (credToken, username, fullName) =>
     followers: [],
     createdAt: FieldValue.serverTimestamp(),
   });
+
+export const getUserDocFromDb = async (uid) => {
+  const {
+    docs: [docRef],
+  } = await usersCollectionRef.where('userId', '==', uid).get();
+  return { ...docRef.data(), id: docRef.id };
+};

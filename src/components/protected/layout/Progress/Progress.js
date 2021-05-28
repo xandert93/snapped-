@@ -1,16 +1,16 @@
 import React, { useContext, useEffect } from 'react';
-import useBucket from '../../../../hooks/useBucket';
+import { useBucket } from '../../../../custom-hooks';
 import authContext from '../../../../contexts/auth/authContext';
 import ProgressCircle from './ProgressCircle';
 import { useHistory, useLocation } from 'react-router';
 
 const Progress = ({ file, description, resetForm }) => {
-  const { currentUser } = useContext(authContext);
+  const { currentUserDoc } = useContext(authContext);
   const { pathname } = useLocation();
   const { push } = useHistory();
 
   const { uploadProgress, uploadURL, uploadErrMsg } = useBucket(
-    currentUser,
+    currentUserDoc,
     file,
     description,
     'Image URL Data'

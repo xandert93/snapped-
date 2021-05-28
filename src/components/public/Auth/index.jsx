@@ -1,23 +1,22 @@
 import { Box, Paper, Typography } from '@material-ui/core';
 import React, { useCallback, useContext, useEffect } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import authContext from '../../../contexts/auth/authContext';
 import useStyles from './styles';
 import logo from '../../../assets/snapped.ico';
-import useForm from '../../../hooks/useForm';
+import { useForm } from '../../../custom-hooks';
 import RegistrationStepper from './RegistrationStepper';
 import LoginControls from './LoginControls';
 import RedirectLinks from './RedirectLinks';
 import ThemeSwitch from '../../protected/layout/ThemeSwitch';
-import { checkUsernameTaken, addUserToDb } from '../../../services/firebase';
+import { checkUsernameTaken } from '../../../services/firebase';
 // import RedirectLinks from './RedirectLinks/RedirectLinks';
 
-const Auth = ({ darkMode, setDarkMode }) => {
+export default ({ darkMode, setDarkMode }) => {
   const classes = useStyles();
   const { userAction } = useParams();
 
   const { register, login, resetPassword } = useContext(authContext);
-  const { push } = useHistory();
   const { msgData, setMsgData, isSubmitting, setIsSubmitting, refs } =
     useForm();
 
@@ -25,9 +24,7 @@ const Auth = ({ darkMode, setDarkMode }) => {
     setMsgData(null);
     setIsSubmitting(false);
     [refs.emailRef, refs.passwordRef].forEach((ref) => {
-      if (ref.current) {
-        ref.current.value = '';
-      }
+      if (ref.current) ref.current.value = '';
     });
   }, []);
 
@@ -60,11 +57,11 @@ const Auth = ({ darkMode, setDarkMode }) => {
     const password = refs.passwordRef.current.value;
     const passwordConfirm = refs.passwordConfirmRef.current.value;
 
-    if (username.length < 5) {
+    if (username.length < 4) {
       setIsSubmitting(false);
       return setMsgData({
         success: false,
-        msg: 'Username must be at least 6 characters.',
+        msg: 'Username must be at least 5 characters.',
       });
     }
 
@@ -73,10 +70,11 @@ const Auth = ({ darkMode, setDarkMode }) => {
       return setMsgData({ success: false, msg: 'Passwords do not match.' });
     }
 
-    if (!/^[a-zA-Z]+ [a-zA-Z]+$/.test(fullName)) {
-      setIsSubmitting(false);
-      return setMsgData({ success: false, msg: 'Please enter a valid name.' });
-    }
+    //Wouldn't allow 3 word names
+    // if (!/^[a-zA-Z]+ [a-zA-Z]+$/.test(fullName)) {
+    //   setIsSubmitting(false);
+    //   return setMsgData({ success: false, msg: 'Please enter a valid name.' });
+    // }
 
     if (await checkUsernameTaken(username)) {
       setIsSubmitting(false);
@@ -87,13 +85,10 @@ const Auth = ({ darkMode, setDarkMode }) => {
     }
 
     try {
-      const credToken = await register(email, password);
-      await credToken.user.updateProfile({ displayName: username });
-      await addUserToDb(credToken, username, fullName);
-      push('/');
+      await register(email, password, username, fullName);
     } catch (err) {
       setIsSubmitting(false);
-      setMsgData({ success: false, msg: err.message });
+      return setMsgData({ success: false, msg: err.message });
     }
   }, []);
 
@@ -101,7 +96,6 @@ const Auth = ({ darkMode, setDarkMode }) => {
     const password = refs.passwordRef.current.value;
     try {
       await login(email, password);
-      push('/');
     } catch (err) {
       setIsSubmitting(false);
       setMsgData({ success: false, msg: err.message });
@@ -117,7 +111,7 @@ const Auth = ({ darkMode, setDarkMode }) => {
       });
     } catch (err) {
       setIsSubmitting(false);
-      setMsgData({
+      return setMsgData({
         success: false,
         msg: 'This email address is not on our database.',
       });
@@ -125,7 +119,7 @@ const Auth = ({ darkMode, setDarkMode }) => {
   }, []);
 
   return (
-    <main className={classes.layout}>
+    <div className={classes.layout}>
       <Paper className={classes.formPaper} elevation={10}>
         <form className={classes.form} onSubmit={submitHandler}>
           <Box>
@@ -150,8 +144,6 @@ const Auth = ({ darkMode, setDarkMode }) => {
         </form>
         <RedirectLinks {...{ userAction }} />
       </Paper>
-    </main>
+    </div>
   );
 };
-
-export default Auth;

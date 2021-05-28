@@ -3,7 +3,7 @@ import authContext from '../contexts/auth/authContext';
 import { db } from '../lib/firebase/config';
 
 const useDb = (collectionName, userId = '') => {
-  const { currentUser } = useContext(authContext);
+  const { currentUserDoc } = useContext(authContext);
 
   const [allDocRefs, setAllDocRefs] = useState([]);
   const [numOfAvailableDocs, setNumOfAvailableDocs] = useState(0);
@@ -54,7 +54,7 @@ const useDb = (collectionName, userId = '') => {
     //authenticated user's "CameraRoll" or "OtherUser"
     if (userId) {
       let collectionToQuery =
-        userId === currentUser.uid ? userAllDocsRef : userPublicDocsRef;
+        userId === currentUserDoc.userId ? userAllDocsRef : userPublicDocsRef;
 
       collectionToQuery.current.get().then(extractDocs);
       return;
@@ -64,7 +64,7 @@ const useDb = (collectionName, userId = '') => {
   return [docs, numOfAvailableDocs];
 };
 
-export default useDb;
+export { useDb };
 
 //when a image uploaded, doc is added, but when onSnapshot initially fires
 //timestamp has not been inserted on "createdAt"

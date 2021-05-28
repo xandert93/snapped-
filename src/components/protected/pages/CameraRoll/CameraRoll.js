@@ -7,13 +7,13 @@ import { Box, Button } from '@material-ui/core';
 import UpdatePost from './UpdatePost';
 
 const CameraRoll = () => {
-  const { currentUser } = useContext(authContext);
+  const { currentUserDoc } = useContext(authContext);
 
   const [numOfRequestedDocs, setNumOfRequestedDocs] = useState(1);
 
   const [usersImageDocs, numOfAvailableDocs] = useDb(
     'Image URL Data',
-    currentUser.uid
+    currentUserDoc.userId
   );
 
   const [modalImageDoc, setModalImageDoc] = useState(null);
