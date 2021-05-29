@@ -7,7 +7,7 @@ import { useHistory, useLocation } from 'react-router';
 const Progress = ({ file, description, resetForm }) => {
   const { currentUserDoc } = useContext(authContext);
   const { pathname } = useLocation();
-  const { push } = useHistory();
+  const history = useHistory();
 
   const { uploadProgress, uploadURL, uploadErrMsg } = useBucket(
     currentUserDoc,
@@ -19,7 +19,9 @@ const Progress = ({ file, description, resetForm }) => {
   useEffect(() => {
     if (!uploadURL) return;
     resetForm();
-    if (pathname !== '/' && !description.isPrivate) return push('/');
+    if (pathname !== '/' && !description.isPrivate) return history.push('/');
+    if (pathname !== '/camera-roll/private' && description.isPrivate)
+      return history.push('/camera-roll/private');
   }, [uploadURL]);
 
   return (

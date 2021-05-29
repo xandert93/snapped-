@@ -11,7 +11,7 @@ const useGetCurrentUserDoc = (currentUser) => {
     );
   }, [currentUser]);
 
-  return currentUserDoc;
+  return [currentUserDoc, setCurrentUserDoc];
 };
 
 export { useGetCurrentUserDoc };

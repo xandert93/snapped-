@@ -1,8 +1,10 @@
 import { Box, Button, Typography } from '@material-ui/core';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDb } from '../../../../custom-hooks';
+import { db } from '../../../../lib/firebase/config';
+import { getUserDocFromDb } from '../../../../services/firebase';
 
 const OtherUser = () => {
   const { userId } = useParams();
@@ -13,11 +15,33 @@ const OtherUser = () => {
 
   const noMoreImageDocs = numOfRequestedDocs === numOfAvailableDocs;
 
+  const [otherUserDoc, setOtherUserDoc] = useState(null);
+
+  useEffect(() => {
+    getUserDocFromDb(userId).then(setOtherUserDoc);
+  }, []);
+
   return (
     <Box className="camera-roll">
-      <Typography variant="h4" noWrap>
-        {userId}'s posts
-      </Typography>
+      {otherUserDoc && (
+        <Box>
+          <Typography variant="h4" noWrap>
+            {otherUserDoc.fullName} posts
+          </Typography>
+          <div>
+            I am following:
+            {otherUserDoc.following.map((followedId) => (
+              <p>{followedId}</p>
+            ))}
+          </div>
+          <div>
+            My followers:
+            {otherUserDoc.followers.map((followerId) => (
+              <p>{followerId}</p>
+            ))}
+          </div>
+        </Box>
+      )}
 
       {usersImageDocs.map(
         ({ id, url }, idx) =>

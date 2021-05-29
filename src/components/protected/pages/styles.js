@@ -7,6 +7,8 @@ export default makeStyles((theme) => ({
     minHeight: '5vh',
   },
 
+  container: { display: 'initial' },
+
   containerHidden: {
     display: 'none',
   },

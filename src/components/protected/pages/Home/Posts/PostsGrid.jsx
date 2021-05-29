@@ -9,6 +9,9 @@ const PostsGrid = ({ innerWidth, imageDocs, numOfDocsShown, toggleModal }) => {
 
   return (
     <Grid
+      item
+      sm={9}
+      lg={10}
       container
       spacing={isMobile ? 0 : 2}
       className={classes.postsContainer}

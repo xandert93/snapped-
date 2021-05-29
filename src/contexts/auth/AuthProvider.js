@@ -1,6 +1,6 @@
 import { CircularProgress } from '@material-ui/core';
 import { useCallback } from 'react';
-import { useHistory } from 'react-router-dom';
+// import { useHistory } from 'react-router-dom';
 import { auth } from '../../lib/firebase/config';
 import { addUserToDb } from '../../services/firebase';
 import { useAuthListener, useGetCurrentUserDoc } from '../../custom-hooks';
@@ -8,8 +8,9 @@ import authContext from './authContext';
 
 const AuthProvider = ({ children }) => {
   const [isCheckingUser, currentUser] = useAuthListener(null);
-  const currentUserDoc = useGetCurrentUserDoc(currentUser);
+  const [currentUserDoc, setCurrentUserDoc] = useGetCurrentUserDoc(currentUser);
   //^initially called with null. Once currentUser state updates, its useEffect reruns
+  //setCurrentUserDoc needed for update profile page
 
   // const history = useHistory();
 
@@ -31,7 +32,7 @@ const AuthProvider = ({ children }) => {
 
   const updateEmail = (email) => currentUser.updateEmail(email);
   const updatePassword = (password) => currentUser.updatePassword(password);
-  const updateProfileData = (obj) => currentUser.updateProfile(obj);
+  // const updateProfileData = (obj) => currentUser.updateProfile(obj);
 
   const logout = useCallback(async () => {
     await auth.signOut();
@@ -55,12 +56,13 @@ const AuthProvider = ({ children }) => {
     <authContext.Provider
       value={{
         currentUserDoc,
+        setCurrentUserDoc,
         register,
         login,
         resetPassword,
         updateEmail,
         updatePassword,
-        updateProfileData,
+        // updateProfileData,
         logout,
       }}>
       {children}

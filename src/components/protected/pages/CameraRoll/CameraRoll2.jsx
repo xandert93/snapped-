@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useDb } from '../../../../custom-hooks';
 import authContext from '../../../../contexts/auth/authContext';
 import SlidingModal from '../../SlidingModal';
@@ -41,6 +41,16 @@ const CameraRoll = () => {
 
   return (
     <>
+      <Box>
+        I am following:
+        {currentUserDoc.following.map((otherUserId) => (
+          <p>{otherUserId}</p>
+        ))}
+        My followers:
+        {currentUserDoc.followers.map((otherUserId) => (
+          <p>{otherUserId}</p>
+        ))}
+      </Box>
       <AppBar position="static" color="inherit">
         <Tabs
           textColor="secondary"

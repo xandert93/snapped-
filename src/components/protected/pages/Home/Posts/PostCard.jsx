@@ -4,7 +4,6 @@ import {
   Box,
   Card,
   CardActionArea,
-  CardActions,
   CardContent,
   CardHeader,
   CardMedia,
@@ -35,7 +34,7 @@ const PostCard = ({
   //all cards now hold state. Better to have something that ensures only one card expanded at a time?
 
   return (
-    <Grid item xs={12} sm={6} md={4} lg={3}>
+    <Grid item xs={12} sm={12} md={6} lg={4}>
       <Card raised>
         <CardActionArea
           component={Link}

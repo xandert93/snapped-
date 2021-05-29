@@ -20,7 +20,7 @@ const useStyles = makeStyles({
 const MyAccount = () => {
   const classes = useStyles();
   useSetDocumentTitle('My Account');
-  const { currentUserDoc, updateEmail, updatePassword, updateProfileData } =
+  const { currentUserDoc, setCurrentUserDoc, updateEmail, updatePassword } =
     useContext(authContext);
 
   const [errMsg, setErrMsg] = useState('');
@@ -47,18 +47,19 @@ const MyAccount = () => {
       return setErrMsg('The two entered password do not match.');
     }
 
+    //REFACTOR THIS BIT:
     const promises = [];
     if (
       fullName !== currentUserDoc.fullName ||
       username !== currentUserDoc.username
-    )
-      //REFACTOR THIS BIT:
+    ) {
       promises.push(
         db
           .collection('Users')
           .doc(currentUserDoc.id)
           .update({ fullName, username })
       );
+    }
     ///////////////////
     if (email !== currentUserDoc.email) promises.push(updateEmail(email));
     if (password && password !== currentUserDoc.password)
@@ -69,7 +70,12 @@ const MyAccount = () => {
 
     try {
       setIsUpdating(true);
-      await Promise.all(promises).finally(() => setIsUpdating(false));
+      //first need to update Auth user, DB user and current propagated user
+      await Promise.all(promises)
+        .then(() =>
+          setCurrentUserDoc((x) => ({ ...x, fullName, username, email }))
+        )
+        .finally(() => setIsUpdating(false));
       setSuccessMsg('Your account details have been updated.');
     } catch (err) {
       setErrMsg(err.message);
