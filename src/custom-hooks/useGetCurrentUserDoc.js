@@ -6,7 +6,7 @@ const useGetCurrentUserDoc = (currentUser) => {
 
   useEffect(() => {
     if (!currentUser) return setCurrentUserDoc(null);
-    getUserDocFromDb(currentUser.uid).then((userDoc) =>
+    getUserDocFromDb(currentUser.displayName).then((userDoc) =>
       setCurrentUserDoc(userDoc)
     );
   }, [currentUser]);

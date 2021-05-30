@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { useDb } from '../../../../custom-hooks';
+import { usePostsColl } from '../../../../custom-hooks';
 import authContext from '../../../../contexts/auth/authContext';
 import SlidingModal from '../../SlidingModal';
 import { Lock, PhotoLibrary, Public, Save } from '@material-ui/icons';
@@ -27,9 +27,8 @@ const CameraRoll = () => {
 
   const [selectedTab, setSelectedTab] = useState(idxToTabName[tabName]);
 
-  const [usersImageDocs, numOfAvailableDocs] = useDb(
-    'Image URL Data',
-    currentUserDoc.userId
+  const [usersImageDocs, numOfAvailableDocs] = usePostsColl(
+    currentUserDoc.username
   );
 
   const tabChangeHandler = (e, tabIdx) => {

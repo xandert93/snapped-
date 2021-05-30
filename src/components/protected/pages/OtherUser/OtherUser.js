@@ -2,23 +2,22 @@ import { Box, Button, Typography } from '@material-ui/core';
 import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useDb } from '../../../../custom-hooks';
-import { db } from '../../../../lib/firebase/config';
+import { usePostsColl } from '../../../../custom-hooks';
 import { getUserDocFromDb } from '../../../../services/firebase';
 
 const OtherUser = () => {
-  const { userId } = useParams();
+  const { username } = useParams();
 
   const [numOfRequestedDocs, setNumOfRequestedDocs] = useState(1);
 
-  const [usersImageDocs, numOfAvailableDocs] = useDb('Image URL Data', userId);
+  const [usersImageDocs, numOfAvailableDocs] = usePostsColl(username);
 
   const noMoreImageDocs = numOfRequestedDocs === numOfAvailableDocs;
 
   const [otherUserDoc, setOtherUserDoc] = useState(null);
 
   useEffect(() => {
-    getUserDocFromDb(userId).then(setOtherUserDoc);
+    getUserDocFromDb(username).then(setOtherUserDoc);
   }, []);
 
   return (

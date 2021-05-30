@@ -1,6 +1,6 @@
 import { Button, Grid } from '@material-ui/core';
 import React, { useState } from 'react';
-import { useSetDocumentTitle, useDb } from '../../../../custom-hooks';
+import { useSetDocumentTitle, usePostsColl } from '../../../../custom-hooks';
 import SuggestedProfiles from '../../layout/SuggestedProfiles';
 import ImageModal from './Posts/ImageModal.jsx';
 import PostsGrid from './Posts/PostsGrid';
@@ -10,7 +10,7 @@ const Home = ({ innerWidth }) => {
   const classes = useStyles();
   useSetDocumentTitle('Home');
   const [numOfDocsShown, setNumOfDocsShown] = useState(4);
-  const [imageDocs, numOfAvailableDocs] = useDb('Image URL Data');
+  const [imageDocs, numOfAvailableDocs] = usePostsColl();
 
   const [showModal, setShowModal] = useState(false);
   const [modalImgURL, setModalImgURL] = useState('');

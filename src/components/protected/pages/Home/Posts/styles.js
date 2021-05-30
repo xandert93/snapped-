@@ -26,7 +26,7 @@ export default makeStyles(
     cardHeader: {
       transition: 'background-color 0.2s, color 0.2s',
       '&:hover': {
-        backgroundColor: theme.palette.secondary.light,
+        backgroundColor: theme.palette.secondary.main,
         color: theme.palette.secondary.contrastText,
       },
     },

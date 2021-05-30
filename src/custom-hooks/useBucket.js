@@ -1,7 +1,10 @@
-import { useEffect, useState } from 'react';
-import { bucket, db, FieldValue } from '../lib/firebase/config';
+import { useContext, useEffect, useState } from 'react';
+import authContext from '../contexts/auth/authContext';
+import { bucket, FieldValue } from '../lib/firebase/config';
+import { createPost } from '../services/firebase';
 
-const useBucket = (currentUserDoc, file, description, collectionName) => {
+const useBucket = (file, description) => {
+  const { currentUserDoc } = useContext(authContext);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadURL, setUploadURL] = useState('');
   const [uploadErrMsg, setUploadErrMsg] = useState('');
@@ -9,7 +12,6 @@ const useBucket = (currentUserDoc, file, description, collectionName) => {
   useEffect(() => {
     if (!file) return;
     const storedItemRef = bucket.ref(file.name);
-    const collectionRef = db.collection(collectionName);
 
     storedItemRef.put(file).on(
       'state_changed',
@@ -18,13 +20,18 @@ const useBucket = (currentUserDoc, file, description, collectionName) => {
       (err) => setUploadErrMsg(err.message),
       async () => {
         const url = await storedItemRef.getDownloadURL();
-        await collectionRef.add({
+
+        const newPost = {
           userId: currentUserDoc.userId,
           username: currentUserDoc.username,
           description,
+          likes: [],
+          comments: [],
           url,
           createdAt: FieldValue.serverTimestamp(),
-        });
+        };
+
+        await createPost(newPost);
         setUploadURL(url);
       }
     );

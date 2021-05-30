@@ -1,25 +1,30 @@
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import authContext from '../contexts/auth/authContext';
 import { db } from '../lib/firebase/config';
 
-const useDb = (collectionName, userId = '') => {
+export const usePostsColl = (username = '') => {
   const { currentUserDoc } = useContext(authContext);
 
   const [allDocRefs, setAllDocRefs] = useState([]);
   const [numOfAvailableDocs, setNumOfAvailableDocs] = useState(0);
   const [docs, setDocs] = useState([]);
 
-  const collectionRef = useRef(
-    db.collection(collectionName).orderBy('createdAt', 'desc')
+  //Could have used refs here to prevent recreation on re-render, but felt like overkill
+  const posts = db.collection('Image URL Data').orderBy('createdAt', 'desc');
+
+  const allPublicPosts = posts.where('description.isPrivate', '==', false);
+  const allUserPosts = posts.where('username', '==', username);
+
+  const allUserPublicPosts = allUserPosts.where(
+    'description.isPrivate',
+    '==',
+    false
   );
-  const allPublicDocsRef = useRef(
-    collectionRef.current.where('description.isPrivate', '==', false)
-  );
-  const userAllDocsRef = useRef(
-    collectionRef.current.where('userId', '==', userId)
-  );
-  const userPublicDocsRef = useRef(
-    userAllDocsRef.current.where('description.isPrivate', '==', false)
+
+  const userFollowedDocsRef = allPublicPosts.where(
+    'userId',
+    'in',
+    currentUserDoc.following.concat(currentUserDoc.userId) //so user can see their own posts on timeline
   );
 
   function extractDocs({ docs: docRefs }) {
@@ -27,18 +32,26 @@ const useDb = (collectionName, userId = '') => {
 
     let retrievedDocs = [];
     for (let i = 0; i < docRefs.length; i++) {
-      retrievedDocs.push({ ...docRefs[i].data(), id: docRefs[i].id });
+      retrievedDocs.push({
+        ...docRefs[i].data(),
+        isLikedByUser: docRefs[i].data().likes.includes(currentUserDoc.userId),
+        id: docRefs[i].id,
+      });
     }
     setDocs(retrievedDocs);
   }
 
   // set up a single onSnapshot listener that fires with qS of entire collection
   useEffect(() => {
-    const unsub = collectionRef.current.onSnapshot(({ docs: docRefs }) =>
-      setAllDocRefs(docRefs)
-    );
+    const unsub = posts.onSnapshot(({ docs: docRefs }) => {
+      if (docRefs.length === allDocRefs.length) return;
+      /*^ensures new docs only set following CD (create || delete)
+      oSS will also fire when any document is updated e.g. a single liked added to "likes" []
+      setting new docs & re-rendering whole page for this would be overkill*/
+      setAllDocRefs(docRefs);
+    });
     return unsub;
-  }, [collectionRef]);
+  }, []);
 
   // to be run when onSnapshot handler updates allDocRefs
   useEffect(() => {
@@ -46,25 +59,25 @@ const useDb = (collectionName, userId = '') => {
     if (!allDocRefs[0].data().createdAt) return;
 
     //"Home"
-    if (!userId) {
-      allPublicDocsRef.current.get().then(extractDocs);
+    if (!username) {
+      userFollowedDocsRef.get().then(extractDocs);
       return;
     }
 
     //authenticated user's "CameraRoll" or "OtherUser"
-    if (userId) {
+    if (username) {
       let collectionToQuery =
-        userId === currentUserDoc.userId ? userAllDocsRef : userPublicDocsRef;
+        username === currentUserDoc.username
+          ? allUserPosts
+          : allUserPublicPosts;
 
-      collectionToQuery.current.get().then(extractDocs);
+      collectionToQuery.get().then(extractDocs);
       return;
     }
   }, [allDocRefs]);
 
   return [docs, numOfAvailableDocs];
 };
-
-export { useDb };
 
 //when a image uploaded, doc is added, but when onSnapshot initially fires
 //timestamp has not been inserted on "createdAt"

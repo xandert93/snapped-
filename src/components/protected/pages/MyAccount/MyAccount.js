@@ -20,8 +20,13 @@ const useStyles = makeStyles({
 const MyAccount = () => {
   const classes = useStyles();
   useSetDocumentTitle('My Account');
-  const { currentUserDoc, setCurrentUserDoc, updateEmail, updatePassword } =
-    useContext(authContext);
+  const {
+    currentUserDoc,
+    setCurrentUserDoc,
+    updateEmail,
+    updatePassword,
+    updateProfileData,
+  } = useContext(authContext);
 
   const [errMsg, setErrMsg] = useState('');
   //inefficient - make into a single message
@@ -47,7 +52,7 @@ const MyAccount = () => {
       return setErrMsg('The two entered password do not match.');
     }
 
-    //REFACTOR THIS BIT:
+    //REFACTOR:
     const promises = [];
     if (
       fullName !== currentUserDoc.fullName ||
@@ -60,7 +65,27 @@ const MyAccount = () => {
           .update({ fullName, username })
       );
     }
-    ///////////////////
+
+    if (username !== currentUserDoc.username) {
+      promises.push(updateProfileData({ displayName: username }));
+
+      //update the user's image document usernames - seems highly inefficient, but works for now
+      promises.push(
+        db
+          .collection('Image URL Data')
+          .where('username', '==', currentUserDoc.username)
+          .get()
+          .then(({ docs: docRefs }) => {
+            docRefs.forEach((docRef) =>
+              db
+                .collection('Image URL Data')
+                .doc(docRef.id)
+                .update({ username })
+            );
+          })
+      );
+    }
+
     if (email !== currentUserDoc.email) promises.push(updateEmail(email));
     if (password && password !== currentUserDoc.password)
       promises.push(updatePassword(password));
@@ -135,11 +160,6 @@ const MyAccount = () => {
         disabled={isUpdating}>
         Update Details
       </Button>
-
-      <Button
-        onClick={() => {
-          const coll = db.collection('Image URL Data').where('userId', '==');
-        }}></Button>
     </form>
   );
 };

@@ -93,7 +93,7 @@ const App = () => {
           "/camera-roll". Now redirected to Protected Route above*/}
 
           <ProtectedRoute path={ROUTES.USER_ACCOUNT} component={MyAccount} />
-          <ProtectedRoute path="/user/:userId" component={OtherUser} />
+          <ProtectedRoute path="/p/:username" component={OtherUser} />
           {/* <Route render={() => <h5>Not Found 404</h5>} /> */}
         </Switch>
       </Main>

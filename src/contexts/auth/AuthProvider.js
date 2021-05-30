@@ -16,6 +16,9 @@ const AuthProvider = ({ children }) => {
 
   const register = async (email, password, username, fullName) => {
     const credTok = await auth.createUserWithEmailAndPassword(email, password);
+    await credTok.user.updateProfile({ displayName: username });
+    //^uid usually used to getCurrentUserDoc, but to make things easier, we will use this unique displayName instead
+    //it is unique because on signup, the users collection is checked to see if the username is taken or not
     await addUserToDb(credTok, username, fullName);
     // history.push('/');
   };
@@ -32,7 +35,7 @@ const AuthProvider = ({ children }) => {
 
   const updateEmail = (email) => currentUser.updateEmail(email);
   const updatePassword = (password) => currentUser.updatePassword(password);
-  // const updateProfileData = (obj) => currentUser.updateProfile(obj);
+  const updateProfileData = (obj) => currentUser.updateProfile(obj);
 
   const logout = useCallback(async () => {
     await auth.signOut();
@@ -62,7 +65,7 @@ const AuthProvider = ({ children }) => {
         resetPassword,
         updateEmail,
         updatePassword,
-        // updateProfileData,
+        updateProfileData,
         logout,
       }}>
       {children}

@@ -27,6 +27,12 @@ const baseProperties = {
       },
     },
 
+    MuiIconButton: {
+      root: {
+        padding: 0,
+      },
+    },
+
     MuiCardHeader: {
       root: {
         padding: '10px 14px',
