@@ -52,6 +52,7 @@ const PostCard = ({
   const [liked, setLiked] = useState(isLikedByUser);
   const [currentNumOfLikes, setCurrentNumOfLikes] = useState(likes.length);
   const [currentComments, setCurrentComments] = useState(comments);
+  const [sliceNum, setSliceNum] = useState(3);
   const [commentText, setCommentText] = useState('');
 
   const [expand, setExpand] = useState(false);
@@ -82,13 +83,7 @@ const PostCard = ({
   return (
     <Grid item xs={12} sm={9} md={6} lg={4}>
       <Card raised>
-        <CardActionArea
-          component={Link}
-          to={
-            username === currentUserDoc.username
-              ? '/camera-roll'
-              : `/p/${username}`
-          }>
+        <CardActionArea component={Link} to={`/p/${username}`}>
           <CardHeader
             className={classes.cardHeader}
             avatar={<Avatar>{username[0].toUpperCase()}</Avatar>}
@@ -154,11 +149,24 @@ const PostCard = ({
 
           {!currentComments.length
             ? null
-            : currentComments.map(({ username, text }) => (
+            : currentComments.slice(0, sliceNum).map(({ username, text }) => (
                 <Typography gutterBottom key={`${username}-${text}`}>
-                  <strong>{username}</strong> {text}
+                  <Link to={`/p/${username}`}>
+                    <strong>{username}</strong>
+                  </Link>{' '}
+                  {text}
                 </Typography>
               ))}
+
+          {currentComments.length > 3 && sliceNum < currentComments.length ? (
+            <Button
+              size="small"
+              color="primary"
+              variant="contained"
+              onClick={() => setSliceNum((x) => x + 3)}>
+              Show more comments
+            </Button>
+          ) : null}
 
           <TextField
             label={
@@ -170,6 +178,9 @@ const PostCard = ({
             inputRef={commentRef}
             value={commentText}
             onChange={(e) => setCommentText(e.target.value)}
+            onKeyUp={(e) =>
+              e.key === 'Enter' && commentText && commentHandler()
+            }
             InputProps={{
               endAdornment: (
                 <InputAdornment>

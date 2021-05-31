@@ -92,8 +92,14 @@ const App = () => {
           {/*considered good practice in case someone navigates to
           "/camera-roll". Now redirected to Protected Route above*/}
 
-          <ProtectedRoute path={ROUTES.USER_ACCOUNT} component={MyAccount} />
+          <Redirect
+            from={`/p/${currentUserDoc.username}`}
+            to={'/camera-roll/public'}
+          />
           <ProtectedRoute path="/p/:username" component={OtherUser} />
+
+          <ProtectedRoute path={ROUTES.USER_ACCOUNT} component={MyAccount} />
+
           {/* <Route render={() => <h5>Not Found 404</h5>} /> */}
         </Switch>
       </Main>
