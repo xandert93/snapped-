@@ -14,24 +14,26 @@ export const checkUsernameTaken = async (username) => {
   //must thus be called via "await checkUsernameTake(username)"
 };
 
-//FBA user created. Use returned credential token to create user doc on FBFS
-export const addUserToDb = (credToken, username, fullName) =>
+//FBA user created. Use it to create userDoc on FBFS
+export const addUserToDb = (user, username, fullName) =>
   users.add({
-    userId: credToken.user.uid,
+    userId: user.uid,
     username: username.toLowerCase(),
     fullName: fullName.toLowerCase().replace(/\b./g, (a) => a.toUpperCase()),
-    email: credToken.user.email,
+    email: user.email,
     following: [],
     followers: [],
     createdAt: FieldValue.serverTimestamp(),
   });
 
-//a) FBA user loaded. Now use its "displayName" to get currentUserDoc from FBFS. Populate UI with it
+//a) FBA user loaded. Now use its "uid" to get currentUserDoc from FBFS. Populate UI with it
 //b) used <Link to "/p/:username"> to another user's page. Take the param to get their doc
-export const getUserDocFromDb = async (username) => {
+export const getUserDocFromDb = async (uid, username) => {
+  const args = uid ? ['userId', '==', uid] : ['username', '==', username];
+
   const {
     docs: [docRef],
-  } = await users.where('username', '==', username).get();
+  } = await users.where(...args).get();
   return { ...docRef.data(), id: docRef.id };
 };
 

@@ -17,7 +17,7 @@ const OtherUser = () => {
   const [otherUserDoc, setOtherUserDoc] = useState(null);
 
   useEffect(() => {
-    getUserDocFromDb(username).then(setOtherUserDoc);
+    getUserDocFromDb(null, username).then(setOtherUserDoc);
   }, []);
 
   return (

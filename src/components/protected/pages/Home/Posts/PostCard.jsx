@@ -59,6 +59,8 @@ const PostCard = ({
   const [expand, setExpand] = useState(false);
   //all cards now hold state. Better to have something that ensures only one card expanded at a time?
 
+  const commentRef = useRef();
+
   const likeHandler = async () => {
     setLiked((liked) => !liked); //immediately reflected in UI
 
@@ -79,8 +81,6 @@ const PostCard = ({
     setCurrentComments([...currentComments, commentObj]);
     pageChangeHandler(null, Math.ceil((currentComments.length + 1) / 3));
   };
-
-  const commentRef = useRef();
 
   const [pageNum, setPageNum] = useState(1);
 

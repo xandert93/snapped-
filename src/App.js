@@ -93,7 +93,7 @@ const App = () => {
           "/camera-roll". Now redirected to Protected Route above*/}
 
           <Redirect
-            from={`/p/${currentUserDoc.username}`}
+            from={`/p/${currentUserDoc?.username}`}
             to={'/camera-roll/public'}
           />
           <ProtectedRoute path="/p/:username" component={OtherUser} />
