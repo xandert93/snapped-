@@ -31,6 +31,7 @@ import {
   updatePostComments,
   updatePostLikes,
 } from '../../../../../services/firebase';
+import { Pagination } from '@material-ui/lab';
 
 const PostCard = ({
   doc: {
@@ -68,7 +69,7 @@ const PostCard = ({
     setCurrentNumOfLikes((x) => (!liked ? x + 1 : x - 1)); //updates "x likes" afterwards
   };
 
-  const commentHandler = async () => {
+  const newCommentHandler = async () => {
     let commentObj = {
       username: currentUserDoc.username,
       text: commentText,
@@ -76,9 +77,17 @@ const PostCard = ({
     await updatePostComments(id, commentObj);
     setCommentText('');
     setCurrentComments([...currentComments, commentObj]);
+    pageChangeHandler(null, Math.ceil((currentComments.length + 1) / 3));
   };
 
   const commentRef = useRef();
+
+  const [pageNum, setPageNum] = useState(1);
+
+  const pageChangeHandler = (e, newPageNum) => {
+    setPageNum(newPageNum);
+    setSliceNum(3 * newPageNum);
+  };
 
   return (
     <Grid item xs={12} sm={9} md={6} lg={4}>
@@ -149,23 +158,26 @@ const PostCard = ({
 
           {!currentComments.length
             ? null
-            : currentComments.slice(0, sliceNum).map(({ username, text }) => (
-                <Typography gutterBottom key={`${username}-${text}`}>
-                  <Link to={`/p/${username}`}>
-                    <strong>{username}</strong>
-                  </Link>{' '}
-                  {text}
-                </Typography>
-              ))}
+            : currentComments
+                .slice(sliceNum - 3, sliceNum)
+                .map(({ username, text }) => (
+                  <Typography gutterBottom key={`${username}-${text}`}>
+                    <Link to={`/p/${username}`}>
+                      <strong>{username}</strong>
+                    </Link>{' '}
+                    {text}
+                  </Typography>
+                ))}
 
-          {currentComments.length > 3 && sliceNum < currentComments.length ? (
-            <Button
+          {currentComments.length > 3 ? (
+            <Pagination
+              count={Math.ceil(currentComments.length / 3)}
+              onChange={pageChangeHandler}
+              page={pageNum}
+              variant="outlined"
+              shape="rounded"
               size="small"
-              color="primary"
-              variant="contained"
-              onClick={() => setSliceNum((x) => x + 3)}>
-              Show more comments
-            </Button>
+            />
           ) : null}
 
           <TextField
@@ -179,14 +191,14 @@ const PostCard = ({
             value={commentText}
             onChange={(e) => setCommentText(e.target.value)}
             onKeyUp={(e) =>
-              e.key === 'Enter' && commentText && commentHandler()
+              e.key === 'Enter' && commentText && newCommentHandler()
             }
             InputProps={{
               endAdornment: (
                 <InputAdornment>
                   <IconButton
                     color="secondary"
-                    onClick={commentHandler}
+                    onClick={newCommentHandler}
                     disabled={!commentText}>
                     <Create />
                   </IconButton>
