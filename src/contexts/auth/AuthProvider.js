@@ -7,9 +7,9 @@ import authContext from './authContext';
 const AuthProvider = ({ children }) => {
   const [isCheckingUser, setIsCheckingUser] = useState(true);
   const [currentUser, setCurrentUser] = useState(null); //FB Auth user
-  const [currentUserDoc, setCurrentUserDoc] = useState(null); //FB FS user doc
+  const [currentUserDoc, setCurrentUserDoc] = useState(null); //FB FS userDoc
 
-  const signUpDeets = useRef();
+  const signUpNames = useRef();
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
@@ -17,7 +17,7 @@ const AuthProvider = ({ children }) => {
 
       if (user) {
         if (!user.displayName) {
-          const [username, fullName] = signUpDeets.current;
+          const [username, fullName] = signUpNames.current;
           await user.updateProfile({ displayName: username }); //*see notes
           await addUserToDb(user, username, fullName);
         }
@@ -33,8 +33,8 @@ const AuthProvider = ({ children }) => {
   }, []);
 
   const register = async (email, password, username, fullName) => {
-    signUpDeets.current = [username, fullName]; //must happen first!
-    const credTok = await auth.createUserWithEmailAndPassword(email, password);
+    signUpNames.current = [username, fullName]; //must happen first!
+    await auth.createUserWithEmailAndPassword(email, password);
     // history.push('/');
   };
 

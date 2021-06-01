@@ -1,11 +1,12 @@
-import { Box, Button, Typography } from '@material-ui/core';
+import { Box, Button, Container, Typography } from '@material-ui/core';
 import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { usePostsColl } from '../../../../custom-hooks';
 import { getUserDocFromDb } from '../../../../services/firebase';
+import FollowButton from '../../layout/FollowButton';
 
-const OtherUser = () => {
+const AltUser = () => {
   const { username } = useParams();
 
   const [numOfRequestedDocs, setNumOfRequestedDocs] = useState(1);
@@ -14,29 +15,33 @@ const OtherUser = () => {
 
   const noMoreImageDocs = numOfRequestedDocs === numOfAvailableDocs;
 
-  const [otherUserDoc, setOtherUserDoc] = useState(null);
+  const [altUserDoc, setAltUserDoc] = useState(null);
 
   useEffect(() => {
-    getUserDocFromDb(null, username).then(setOtherUserDoc);
+    getUserDocFromDb(null, username).then(setAltUserDoc);
   }, []);
 
   return (
-    <Box className="camera-roll">
-      {otherUserDoc && (
+    <Container className="camera-roll">
+      {altUserDoc && (
         <Box>
           <Typography variant="h4" noWrap>
-            {otherUserDoc.fullName} posts
+            {altUserDoc.fullName}'s posts
           </Typography>
+
+          <FollowButton altUserDoc={altUserDoc} setAltUserDoc={setAltUserDoc} />
+
           <div>
-            I am following:
-            {otherUserDoc.following.map((followedId) => (
-              <p>{followedId}</p>
+            {altUserDoc.username} is following:
+            {altUserDoc.following.map((followedId) => (
+              <span>{followedId}, </span>
             ))}
           </div>
+
           <div>
-            My followers:
-            {otherUserDoc.followers.map((followerId) => (
-              <p>{followerId}</p>
+            {altUserDoc.username} is followed by:
+            {altUserDoc.followers.map((followerId) => (
+              <span>{followerId}, </span>
             ))}
           </div>
         </Box>
@@ -66,8 +71,8 @@ const OtherUser = () => {
           </Button>
         </Box>
       )}
-    </Box>
+    </Container>
   );
 };
 
-export default OtherUser;
+export default AltUser;

@@ -3,6 +3,7 @@ import React, { useContext, useRef, useState } from 'react';
 import authContext from '../../../../contexts/auth/authContext';
 import { useSetDocumentTitle } from '../../../../custom-hooks';
 import { db } from '../../../../lib/firebase/config';
+import { updatePostsUsername } from '../../../../services/firebase';
 
 const useStyles = makeStyles({
   form: {
@@ -68,22 +69,7 @@ const MyAccount = () => {
 
     if (username !== currentUserDoc.username) {
       promises.push(updateProfileData({ displayName: username }));
-
-      //update the user's image document usernames - seems highly inefficient, but works for now
-      promises.push(
-        db
-          .collection('Image URL Data')
-          .where('username', '==', currentUserDoc.username)
-          .get()
-          .then(({ docs: docRefs }) => {
-            docRefs.forEach((docRef) =>
-              db
-                .collection('Image URL Data')
-                .doc(docRef.id)
-                .update({ username })
-            );
-          })
-      );
+      promises.push(updatePostsUsername(currentUserDoc.username, username));
     }
 
     if (email !== currentUserDoc.email) promises.push(updateEmail(email));

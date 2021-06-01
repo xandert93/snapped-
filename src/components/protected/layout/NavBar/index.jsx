@@ -7,7 +7,7 @@ import useStyles from './styles';
 import { AppBar, Box, Button, Toolbar, Typography } from '@material-ui/core';
 import logo from '../../../../assets/snapped.ico';
 import ThemeSwitch from '../ThemeSwitch';
-import { HOME } from '../../../../constants/routes';
+import { ROUTES } from '../../../../constants/routes';
 
 const NavBar = ({
   validateFile,
@@ -32,7 +32,7 @@ const NavBar = ({
 
           <Button
             component={RouterLink}
-            to={HOME}
+            to={ROUTES.HOME}
             style={{ order: isMobile ? '1' : '0' }}
             disableRipple>
             <img src={logo} alt="snapped!" className={classes.logoImg} />

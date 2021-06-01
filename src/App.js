@@ -1,13 +1,16 @@
+import { useContext, useState } from 'react';
 import { Redirect, Switch } from 'react-router-dom';
+import { PublicRoute, ProtectedRoute } from './helpers';
+import { ROUTES } from './constants/routes';
+
 import './App.scss';
 import Auth from './components/public/Auth';
-import ProtectedRoute from './components/public/ProtectedRoute';
-import PublicRoute from './components/public/PublicRoute';
-import CameraRoll2 from './components/protected/pages/CameraRoll/CameraRoll2';
+
+import CameraRoll from './components/protected/pages/CameraRoll/CameraRoll';
 import Home from './components/protected/pages/Home/Home';
 import MyAccount from './components/protected/pages/MyAccount/MyAccount';
-import NavBar from './components/protected/layout/NavBar/NavBar';
-import { useContext, useEffect, useState, useRef } from 'react';
+import NavBar from './components/protected/layout/NavBar';
+
 import authContext from './contexts/auth/authContext';
 import Main from './components/protected/pages/Main';
 
@@ -15,12 +18,10 @@ import { Publish } from '@material-ui/icons';
 import SlidingModal from './components/protected/SlidingModal';
 import Progress from './components/protected/layout/Progress/Progress';
 import { useGetDeviceWidth, useFileReader } from './custom-hooks';
-import { themeLight, themeDark } from './theme/theme';
+import { themeLight, themeDark } from './styles/themes/theme';
 import { CssBaseline, ThemeProvider } from '@material-ui/core';
-import OtherUser from './components/protected/pages/OtherUser/OtherUser';
+import AltUser from './components/protected/pages/AlternateUser/AltUser';
 import CreatePost from './components/protected/pages/Home/Posts/CreatePost';
-
-import * as ROUTES from './constants/routes';
 
 const App = () => {
   const { currentUserDoc } = useContext(authContext);
@@ -84,10 +85,7 @@ const App = () => {
             innerWidth={innerWidth}
             component={Home}
           />
-          <ProtectedRoute
-            path="/camera-roll/:tabName"
-            component={CameraRoll2}
-          />
+          <ProtectedRoute path="/camera-roll/:tabName" component={CameraRoll} />
           <Redirect exact from="/camera-roll" to="/camera-roll/public" />
           {/*considered good practice in case someone navigates to
           "/camera-roll". Now redirected to Protected Route above*/}
@@ -96,7 +94,7 @@ const App = () => {
             from={`/p/${currentUserDoc?.username}`}
             to={'/camera-roll/public'}
           />
-          <ProtectedRoute path="/p/:username" component={OtherUser} />
+          <ProtectedRoute path="/p/:username" component={AltUser} />
 
           <ProtectedRoute path={ROUTES.USER_ACCOUNT} component={MyAccount} />
 

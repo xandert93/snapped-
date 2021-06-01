@@ -37,7 +37,7 @@ export const getUserDocFromDb = async (uid, username) => {
   return { ...docRef.data(), id: docRef.id };
 };
 
-export const getSuggestedProfiles = async (userId, following) => {
+export const getSuggestedUserDocs = async (userId, following) => {
   const { docs: docRefs } = await users
     .where('userId', '!=', userId)
     .limit(10)
@@ -54,6 +54,11 @@ const posts = db.collection('Image URL Data');
 export const createPost = async (newPost) => {
   await posts.add(newPost);
   return;
+};
+
+export const getNumOfUserPosts = async (username) => {
+  const { docs: docRefs } = await posts.where('username', '==', username).get();
+  return docRefs.length;
 };
 
 export const updateFollow = async (
@@ -88,4 +93,16 @@ export const updatePostComments = async (docId, commentObj) => {
   await posts.doc(docId).update({
     comments: FieldValue.arrayUnion(commentObj),
   });
+};
+
+export const updatePostsUsername = async (username, newUsername) => {
+  const { docs: docRefs } = await posts.where('username', '==', username).get();
+
+  const updatePromisesArr = docRefs.map(async (docRef) => {
+    await posts.doc(docRef.id).update({ username: newUsername });
+  });
+
+  await Promise.all(updatePromisesArr);
+
+  return;
 };

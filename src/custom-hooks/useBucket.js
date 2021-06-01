@@ -1,7 +1,9 @@
 import { useContext, useEffect, useState } from 'react';
 import authContext from '../contexts/auth/authContext';
 import { bucket, FieldValue } from '../lib/firebase/config';
-import { createPost } from '../services/firebase';
+import { createPost, getNumOfUserPosts } from '../services/firebase';
+import exifr from 'exifr';
+import imageCompression from 'browser-image-compression';
 
 const useBucket = (file, description) => {
   const { currentUserDoc } = useContext(authContext);
@@ -11,33 +13,58 @@ const useBucket = (file, description) => {
 
   useEffect(() => {
     if (!file) return;
-    const storedItemRef = bucket.ref(file.name);
 
-    storedItemRef.put(file).on(
-      'state_changed',
-      ({ bytesTransferred, totalBytes }) =>
-        setUploadProgress((bytesTransferred / totalBytes) * 100),
-      (err) => setUploadErrMsg(err.message),
-      async () => {
-        const url = await storedItemRef.getDownloadURL();
+    getNumOfUserPosts(currentUserDoc.username).then(async (num) => {
+      const storedItemRef = bucket.ref(currentUserDoc.username + '--' + num);
 
-        const newPost = {
-          userId: currentUserDoc.userId,
-          username: currentUserDoc.username,
-          description,
-          likes: [],
-          comments: [],
-          url,
-          createdAt: FieldValue.serverTimestamp(),
-        };
+      const exifOrientation = await exifr.orientation(file);
 
-        await createPost(newPost);
-        setUploadURL(url);
-      }
-    );
+      const compressedFile = await imageCompression(file, {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 1500,
+        exifOrientation,
+      });
+
+      storedItemRef.put(compressedFile).on(
+        'state_changed',
+        ({ bytesTransferred, totalBytes }) =>
+          setUploadProgress((bytesTransferred / totalBytes) * 100),
+        (err) => setUploadErrMsg(err.message),
+        async () => {
+          const url = await storedItemRef.getDownloadURL();
+
+          const newPost = {
+            userId: currentUserDoc.userId,
+            username: currentUserDoc.username,
+            description,
+            likes: [],
+            comments: [],
+            url,
+            createdAt: FieldValue.serverTimestamp(),
+          };
+
+          await createPost(newPost);
+          setUploadURL(url);
+        }
+      );
+    });
   }, [file]);
 
   return { uploadProgress, uploadURL, uploadErrMsg };
 };
 
 export { useBucket };
+
+/*When image is compressed, it is stripped of its EXIF data. This is problematic because the EXIF
+data contains an "orientation" property that determines the image's orientation when the image
+is displayed on any device. As a result, the compressed image would permanently be in landscape*.
+
+Thus, we use the exifr package to extract the actual image's "orientation" (has values between
+1 and 8, representing descriptions e.g. 1 = "top, left", 6 = "right, top" etc.). Given the intricacy
+and difficulty of extracting this bit of data in plain JS, I've used an external library instead.
+
+Once we get it, we can apply it in the "imageCompression"'s options to ensure that it is maintained 
+in the compressed image. Again, given the intricacy of compressing an image in plain JS, I've 
+used an external library instead. Whilst the compression is inevitably performed client-side,
+it is not intensive at all, and it is extremely fast.
+*/
