@@ -6,29 +6,22 @@ import SuggestedProfile from './SuggestedProfile';
 
 export default () => {
   const {
-    currentUserDoc: { userId, following },
+    currentUserDoc: { username, following },
   } = useContext(authContext);
   const [altUsersDocs, setAltUsersDocs] = useState([]);
 
   useEffect(() => {
     //used .then because using async/await would require creation of another function here
-
-    getSuggestedUserDocs(userId, following).then(setAltUsersDocs);
-
-    //because currentUserDoc does not dynamically update, stale [] followers passed to getSP.
-    //so return to homepage will always show the initial suggested profiles, unless refresh...
-    //#FIX
+    getSuggestedUserDocs(username, following).then(setAltUsersDocs);
   }, []);
 
   return (
     <Grid item sm={3} lg={2}>
-      {!altUsersDocs.length ? (
-        <p>Nothing to show...</p>
-      ) : (
-        altUsersDocs.map((altUserDoc) => (
-          <SuggestedProfile key={altUserDoc.id} altUserDoc={altUserDoc} />
-        ))
-      )}
+      {altUsersDocs.length
+        ? altUsersDocs.map((altUserDoc) => (
+            <SuggestedProfile key={altUserDoc.id} altUserDoc={altUserDoc} />
+          ))
+        : null}
     </Grid>
   );
 };

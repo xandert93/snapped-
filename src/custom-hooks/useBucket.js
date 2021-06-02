@@ -15,7 +15,9 @@ const useBucket = (file, description) => {
     if (!file) return;
 
     getNumOfUserPosts(currentUserDoc.username).then(async (num) => {
-      const storedItemRef = bucket.ref(currentUserDoc.username + '--' + num);
+      const storedItemRef = bucket.ref(
+        currentUserDoc.username + '--' + file.name.slice(0, 10)
+      );
 
       const exifOrientation = await exifr.orientation(file);
 

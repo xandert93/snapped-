@@ -10,25 +10,25 @@ const Home = ({ innerWidth }) => {
   const classes = useStyles();
   useSetDocumentTitle('Home');
   const [numOfDocsShown, setNumOfDocsShown] = useState(4);
-  const [imageDocs, numOfAvailableDocs] = usePostsColl();
+  const [posts, numOfAvailableDocs] = usePostsColl();
 
   const [showModal, setShowModal] = useState(false);
   const [modalImgURL, setModalImgURL] = useState('');
 
   const toggleModal = (e) => {
     if (e.target.classList.contains('MuiCardMedia-root')) {
-      setModalImgURL(imageDocs[e.target.dataset.index].url);
+      setModalImgURL(posts[e.target.dataset.index].url);
       setShowModal(true);
     }
   };
 
   return (
     <Grid container>
-      <PostsGrid {...{ innerWidth, imageDocs, numOfDocsShown, toggleModal }} />
+      <PostsGrid {...{ innerWidth, posts, numOfDocsShown, toggleModal }} />
 
       <SuggestedProfiles />
 
-      {imageDocs.length > 0 && (
+      {posts.length > 0 && (
         <div style={{ textAlign: 'center' }}>
           <Button
             variant="contained"

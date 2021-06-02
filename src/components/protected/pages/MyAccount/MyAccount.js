@@ -3,7 +3,7 @@ import React, { useContext, useRef, useState } from 'react';
 import authContext from '../../../../contexts/auth/authContext';
 import { useSetDocumentTitle } from '../../../../custom-hooks';
 import { db } from '../../../../lib/firebase/config';
-import { updatePostsUsername } from '../../../../services/firebase';
+// import { updatePostsUsername } from '../../../../services/firebase';
 
 const useStyles = makeStyles({
   form: {
@@ -35,7 +35,7 @@ const MyAccount = () => {
   const [isUpdating, setIsUpdating] = useState(false);
 
   const fullNameRef = useRef();
-  const usernameRef = useRef();
+  // const usernameRef = useRef();
   const emailRef = useRef();
   const passwordRef = useRef();
   const passwordConfirmRef = useRef();
@@ -45,7 +45,7 @@ const MyAccount = () => {
     setErrMsg('');
     setSuccessMsg('');
     const fullName = fullNameRef.current.value;
-    const username = usernameRef.current.value;
+    // const username = usernameRef.current.value;
     const email = emailRef.current.value;
     const password = passwordRef.current.value;
     const passwordConfirm = passwordConfirmRef.current.value;
@@ -56,21 +56,20 @@ const MyAccount = () => {
     //REFACTOR:
     const promises = [];
     if (
-      fullName !== currentUserDoc.fullName ||
-      username !== currentUserDoc.username
+      fullName !== currentUserDoc.fullName
+      // || username !== currentUserDoc.username
     ) {
       promises.push(
-        db
-          .collection('Users')
-          .doc(currentUserDoc.id)
-          .update({ fullName, username })
+        db.collection('Users').doc(currentUserDoc.id).update({
+          fullName /*, username */,
+        })
       );
     }
 
-    if (username !== currentUserDoc.username) {
-      promises.push(updateProfileData({ displayName: username }));
-      promises.push(updatePostsUsername(currentUserDoc.username, username));
-    }
+    // if (username !== currentUserDoc.username) {
+    //   promises.push(updateProfileData({ displayName: username }));
+    //   promises.push(updatePostsUsername(currentUserDoc.username, username));
+    // }
 
     if (email !== currentUserDoc.email) promises.push(updateEmail(email));
     if (password && password !== currentUserDoc.password)
@@ -84,7 +83,7 @@ const MyAccount = () => {
       //first need to update Auth user, DB user and current propagated user
       await Promise.all(promises)
         .then(() =>
-          setCurrentUserDoc((x) => ({ ...x, fullName, username, email }))
+          setCurrentUserDoc((x) => ({ ...x, fullName, /*username,*/ email }))
         )
         .finally(() => setIsUpdating(false));
       setSuccessMsg('Your account details have been updated.');
@@ -105,14 +104,14 @@ const MyAccount = () => {
         defaultValue={currentUserDoc.fullName}
         required
       />
-      <TextField
+      {/* <TextField
         className={classes.textField}
         inputRef={usernameRef}
         variant="outlined"
         label="Username"
         defaultValue={currentUserDoc.username}
         required
-      />
+      /> */}
       <TextField
         className={classes.textField}
         inputRef={emailRef}

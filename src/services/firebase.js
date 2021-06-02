@@ -37,15 +37,15 @@ export const getUserDocFromDb = async (uid, username) => {
   return { ...docRef.data(), id: docRef.id };
 };
 
-export const getSuggestedUserDocs = async (userId, following) => {
+export const getSuggestedUserDocs = async (username, following) => {
   const { docs: docRefs } = await users
-    .where('userId', '!=', userId)
+    .where('username', '!=', username)
     .limit(10)
     .get();
 
   return docRefs
     .map((docRef) => ({ ...docRef.data(), id: docRef.id }))
-    .filter((otherUserDoc) => !following.includes(otherUserDoc.userId));
+    .filter((otherUserDoc) => !following.includes(otherUserDoc.username));
 };
 
 /*POSTS COLLECTION*/
@@ -68,23 +68,23 @@ export const updateFollow = async (
 ) => {
   await users.doc(currentUserDoc.id).update({
     following: !isAlreadyFollowing
-      ? FieldValue.arrayUnion(suggestedProfileDoc.userId)
-      : FieldValue.arrayRemove(suggestedProfileDoc.userId),
+      ? FieldValue.arrayUnion(suggestedProfileDoc.username)
+      : FieldValue.arrayRemove(suggestedProfileDoc.username),
   });
 
   await users.doc(suggestedProfileDoc.id).update({
     followers: !isAlreadyFollowing
-      ? FieldValue.arrayUnion(currentUserDoc.userId)
-      : FieldValue.arrayRemove(currentUserDoc.userId),
+      ? FieldValue.arrayUnion(currentUserDoc.username)
+      : FieldValue.arrayRemove(currentUserDoc.username),
   });
   return;
 };
 
-export const updatePostLikes = async (docId, userId, wasLiked) => {
+export const updatePostLikes = async (docId, username, wasLiked) => {
   await posts.doc(docId).update({
     likes: wasLiked
-      ? FieldValue.arrayUnion(userId)
-      : FieldValue.arrayRemove(userId),
+      ? FieldValue.arrayUnion(username)
+      : FieldValue.arrayRemove(username),
   });
   return;
 };

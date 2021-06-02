@@ -26,7 +26,12 @@ const RegisterForm = ({ refs, submitBtnText, msgData, isSubmitting }) => {
 
   const stepContent = [
     { inputRef: refs.fullNameRef, type: 'text', label: 'Full Name' },
-    { inputRef: refs.usernameRef, type: 'text', label: 'Username' },
+    {
+      inputRef: refs.usernameRef,
+      type: 'text',
+      label: 'Username',
+      helperText: 'This can never be changed.',
+    },
     { inputRef: refs.emailRef, type: 'email', label: 'Email address' },
     [
       { inputRef: refs.passwordRef, type: 'password', label: 'Password' },

@@ -3,7 +3,6 @@ import { Redirect, Switch } from 'react-router-dom';
 import { PublicRoute, ProtectedRoute } from './helpers';
 import { ROUTES } from './constants/routes';
 
-import './App.scss';
 import Auth from './components/public/Auth';
 
 import CameraRoll from './components/protected/pages/CameraRoll/CameraRoll';

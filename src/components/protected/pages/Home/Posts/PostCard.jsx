@@ -64,7 +64,7 @@ const PostCard = ({
   const likeHandler = async () => {
     setLiked((liked) => !liked); //immediately reflected in UI
 
-    await updatePostLikes(id, currentUserDoc.userId, !liked); //updates DB
+    await updatePostLikes(id, currentUserDoc.username, !liked); //updates DB
     //^should be in useEffect following "liked" state update, but, since toggling, easier way
     //is to pass fresh "liked" value via "!liked"
 

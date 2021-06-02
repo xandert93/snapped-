@@ -22,9 +22,9 @@ export const usePostsColl = (username = '') => {
   );
 
   const userFollowedDocsRef = allPublicPosts.where(
-    'userId',
+    'username',
     'in',
-    currentUserDoc.following.concat(currentUserDoc.userId) //so user can see their own posts on timeline
+    currentUserDoc.following.concat(currentUserDoc.username) //so user can see their own posts on timeline
   );
 
   function extractDocs({ docs: docRefs }) {
@@ -34,7 +34,9 @@ export const usePostsColl = (username = '') => {
     for (let i = 0; i < docRefs.length; i++) {
       retrievedDocs.push({
         ...docRefs[i].data(),
-        isLikedByUser: docRefs[i].data().likes.includes(currentUserDoc.userId),
+        isLikedByUser: docRefs[i]
+          .data()
+          .likes.includes(currentUserDoc.username),
         id: docRefs[i].id,
       });
     }

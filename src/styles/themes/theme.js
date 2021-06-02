@@ -20,6 +20,11 @@ const baseProperties = {
         width: 'auto',
       },
 
+      //by default, button label is always "uppercase"
+      label: {
+        textTransform: 'lowercase',
+      },
+
       iconSizeMedium: {
         '& > *:first-child': {
           fontSize: 30,

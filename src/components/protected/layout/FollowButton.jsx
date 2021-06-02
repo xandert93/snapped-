@@ -2,16 +2,19 @@ import { Button } from '@material-ui/core';
 import React, { useContext, useState } from 'react';
 import authContext from '../../../contexts/auth/authContext';
 import { updateFollow } from '../../../services/firebase';
+import useStyles from './styles';
 
 const followBtn = { text: 'follow', color: 'action' };
 const followingBtn = { text: 'following', color: 'primary' };
 const unfollowBtn = { text: 'unfollow', color: 'secondary' };
 
 const FollowButton = ({ altUserDoc, setAltUserDoc }) => {
+  const classes = useStyles();
+
   const { currentUserDoc, setCurrentUserDoc } = useContext(authContext);
 
   const initialIsFollowed = currentUserDoc.following.includes(
-    altUserDoc.userId
+    altUserDoc.username
   );
 
   const initialBtn = initialIsFollowed ? followingBtn : followBtn;
@@ -26,8 +29,8 @@ const FollowButton = ({ altUserDoc, setAltUserDoc }) => {
     setCurrentUserDoc((x) => ({
       ...x,
       following: !isFollowed //concat + filter return new arrays
-        ? x.following.concat(altUserDoc.userId)
-        : x.following.filter((id) => id !== altUserDoc.userId),
+        ? x.following.concat(altUserDoc.username)
+        : x.following.filter((username) => username !== altUserDoc.username),
     }));
 
     //only passed by AltUser page, because we need UI to reflect follower +/-
@@ -35,8 +38,10 @@ const FollowButton = ({ altUserDoc, setAltUserDoc }) => {
       setAltUserDoc((x) => ({
         ...x,
         followers: !isFollowed //concat + filter return new arrays
-          ? x.followers.concat(currentUserDoc.userId)
-          : x.followers.filter((id) => id !== currentUserDoc.userId),
+          ? x.followers.concat(currentUserDoc.username)
+          : x.followers.filter(
+              (username) => username !== currentUserDoc.username
+            ),
       }));
     }
 
@@ -45,6 +50,7 @@ const FollowButton = ({ altUserDoc, setAltUserDoc }) => {
 
   return (
     <Button
+      className={classes.followBtn}
       size="small"
       onClick={clickHandler}
       onMouseEnter={() => {

@@ -27,16 +27,14 @@ const CameraRoll = () => {
 
   const [selectedTab, setSelectedTab] = useState(idxToTabName[tabName]);
 
-  const [usersImageDocs, numOfAvailableDocs] = usePostsColl(
-    currentUserDoc.username
-  );
+  const [usersPosts, numOfPosts] = usePostsColl(currentUserDoc.username);
 
   const tabChangeHandler = (e, tabIdx) => {
     push(`/camera-roll/${tabNameToIdx[tabIdx]}`);
     setSelectedTab(tabIdx);
   };
 
-  const [modalImageDoc, setModalImageDoc] = useState(null);
+  const [modalPost, setModalPost] = useState(null);
 
   return (
     <>
@@ -67,9 +65,9 @@ const CameraRoll = () => {
           className="camera-roll"
           onClick={(e) => {
             if (e.target === e.currentTarget) return;
-            setModalImageDoc(usersImageDocs[e.target.dataset.index]);
+            setModalPost(usersPosts[e.target.dataset.index]);
           }}>
-          {usersImageDocs.map(({ description, id, url }, idx) => {
+          {usersPosts.map(({ description, id, url }, idx) => {
             if (!description.isPrivate)
               return <img key={id} src={url} data-index={idx} alt="" />;
           })}
@@ -80,9 +78,9 @@ const CameraRoll = () => {
           className="camera-roll"
           onClick={(e) => {
             if (e.target === e.currentTarget) return;
-            setModalImageDoc(usersImageDocs[e.target.dataset.index]);
+            setModalPost(usersPosts[e.target.dataset.index]);
           }}>
-          {usersImageDocs.map(({ description, id, url }, idx) => {
+          {usersPosts.map(({ description, id, url }, idx) => {
             if (description.isPrivate)
               return <img key={id} src={url} data-index={idx} alt="" />;
           })}
@@ -93,9 +91,9 @@ const CameraRoll = () => {
           className="camera-roll"
           onClick={(e) => {
             if (e.target === e.currentTarget) return;
-            setModalImageDoc(usersImageDocs[e.target.dataset.index]);
+            setModalPost(usersPosts[e.target.dataset.index]);
           }}>
-          {usersImageDocs.map(({ id, url }, idx) => (
+          {usersPosts.map(({ id, url }, idx) => (
             <img key={id} src={url} data-index={idx} alt="" />
           ))}
         </Box>
@@ -103,18 +101,18 @@ const CameraRoll = () => {
 
       <SlidingModal
         {...{
-          showModal: !!modalImageDoc,
-          closeModal: () => setModalImageDoc(null),
+          showModal: !!modalPost,
+          closeModal: () => setModalPost(null),
           modalHeading: 'Edit Your Post!',
         }}>
-        {modalImageDoc && (
+        {modalPost && (
           <UpdatePost
             {...{
               type: 'update',
-              imageURL: modalImageDoc.url,
-              doc: modalImageDoc,
+              imageURL: modalPost.url,
+              doc: modalPost,
               submitIcon: <Save color="primary" />,
-              closeModal: () => setModalImageDoc(null),
+              closeModal: () => setModalPost(null),
             }}
           />
         )}
