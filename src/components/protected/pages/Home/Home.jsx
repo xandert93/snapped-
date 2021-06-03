@@ -9,8 +9,8 @@ import useStyles from './Posts/styles';
 const Home = ({ innerWidth }) => {
   const classes = useStyles();
   useSetDocumentTitle('Home');
-  const [numOfDocsShown, setNumOfDocsShown] = useState(4);
-  const [posts, numOfAvailableDocs] = usePostsColl();
+  const [numOfPostsShown, setNumOfPostsShown] = useState(4);
+  const [posts, numOfPosts] = usePostsColl();
 
   const [showModal, setShowModal] = useState(false);
   const [modalImgURL, setModalImgURL] = useState('');
@@ -24,7 +24,7 @@ const Home = ({ innerWidth }) => {
 
   return (
     <Grid container>
-      <PostsGrid {...{ innerWidth, posts, numOfDocsShown, toggleModal }} />
+      <PostsGrid {...{ innerWidth, posts, numOfPostsShown, toggleModal }} />
 
       <SuggestedProfiles />
 
@@ -34,8 +34,8 @@ const Home = ({ innerWidth }) => {
             variant="contained"
             color="secondary"
             //ASS, if availDocs !% 4, error will be thrown at end. Need to fix
-            disabled={numOfDocsShown === numOfAvailableDocs}
-            onClick={() => setNumOfDocsShown((x) => x + 4)}>
+            disabled={numOfPostsShown === numOfPosts}
+            onClick={() => setNumOfPostsShown((x) => x + 4)}>
             Fetch more
           </Button>
         </div>

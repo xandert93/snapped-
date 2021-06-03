@@ -145,6 +145,18 @@ const MyAccount = () => {
         disabled={isUpdating}>
         Update Details
       </Button>
+      <Button
+        onClick={async () => {
+          const imageColl = db.collection('Posts');
+          const postsColl = db.collection('Posts');
+          const { docs: docRefs } = await imageColl.get();
+
+          docRefs.forEach((docRef) => {
+            postsColl.doc(docRef.id).set(docRef.data());
+          });
+        }}>
+        New Coll
+      </Button>
     </form>
   );
 };

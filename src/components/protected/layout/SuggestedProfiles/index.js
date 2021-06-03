@@ -4,7 +4,7 @@ import authContext from '../../../../contexts/auth/authContext';
 import { getSuggestedUserDocs } from '../../../../services/firebase';
 import SuggestedProfile from './SuggestedProfile';
 
-export default () => {
+export default function SuggestedProfiles() {
   const {
     currentUserDoc: { username, following },
   } = useContext(authContext);
@@ -24,7 +24,7 @@ export default () => {
         : null}
     </Grid>
   );
-};
+}
 
 //individual suggested profile must have its own component since each one will
 //require its own "isFollowed" state which we will toggle with + and - sign

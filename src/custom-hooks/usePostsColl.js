@@ -10,7 +10,7 @@ export const usePostsColl = (username = '') => {
   const [docs, setDocs] = useState([]);
 
   //Could have used refs here to prevent recreation on re-render, but felt like overkill
-  const posts = db.collection('Image URL Data').orderBy('createdAt', 'desc');
+  const posts = db.collection('Posts').orderBy('createdAt', 'desc');
 
   const allPublicPosts = posts.where('description.isPrivate', '==', false);
   const allUserPosts = posts.where('username', '==', username);

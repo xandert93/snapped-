@@ -48,8 +48,17 @@ export const getSuggestedUserDocs = async (username, following) => {
     .filter((otherUserDoc) => !following.includes(otherUserDoc.username));
 };
 
+//CRAP:
+// export const getUsersFollowDocs = async (userDoc) => {
+//   const { docs: docRefs } = await users
+//     .where('username', 'in', userDoc.following.concat(userDoc.followers))
+//     .get();
+
+//   return docRefs.map((docRef) => ({ ...docRef.data(), id: docRef.id }));
+// };
+
 /*POSTS COLLECTION*/
-const posts = db.collection('Image URL Data');
+const posts = db.collection('Posts');
 
 export const createPost = async (newPost) => {
   await posts.add(newPost);

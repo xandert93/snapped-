@@ -92,7 +92,7 @@ const PostForm = ({
 
     try {
       await db
-        .collection('Image URL Data')
+        .collection('Posts')
         .doc(id)
         .set(
           {
@@ -118,7 +118,7 @@ const PostForm = ({
     setIsSubmitting(true);
 
     try {
-      await db.collection('Image URL Data').doc(id).delete();
+      await db.collection('Posts').doc(id).delete();
       setMsgData({ success: true, msg: 'Post deleted.' });
       setTimeout(closeModal, 2000);
     } catch (err) {
