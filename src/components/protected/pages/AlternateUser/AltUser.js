@@ -14,7 +14,7 @@ import { FavoriteBorder, MessageOutlined } from '@material-ui/icons';
 import React, { forwardRef, useContext, useEffect } from 'react';
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import authContext from '../../../../contexts/auth/authContext';
+import authContext from '../../../../contexts/1.auth/authContext';
 import { usePostsColl } from '../../../../custom-hooks';
 import { getUserDocFromDb } from '../../../../services/firebase';
 import FollowButton from '../../layout/FollowButton';

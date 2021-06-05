@@ -32,11 +32,11 @@ const AuthProvider = ({ children }) => {
     return unsubscribe;
   }, []);
 
-  const register = async (email, password, username, fullName) => {
+  const register = useCallback(async (email, password, username, fullName) => {
     signUpNames.current = [username, fullName]; //must happen first!
     await auth.createUserWithEmailAndPassword(email, password);
     // history.push('/');
-  };
+  }, []);
 
   const login = useCallback(async (email, password) => {
     await auth.signInWithEmailAndPassword(email, password);
@@ -53,9 +53,18 @@ const AuthProvider = ({ children }) => {
     []
   );
 
-  const updateEmail = (email) => currentUser.updateEmail(email);
-  const updatePassword = (password) => currentUser.updatePassword(password);
-  const updateProfileData = (obj) => currentUser.updateProfile(obj);
+  const updateEmail = useCallback(
+    (email) => currentUser.updateEmail(email),
+    [currentUser]
+  );
+  const updatePassword = useCallback(
+    (password) => currentUser.updatePassword(password),
+    [currentUser]
+  );
+  const updateProfileData = useCallback(
+    (obj) => currentUser.updateProfile(obj),
+    [currentUser]
+  );
 
   if (isCheckingUser)
     return (

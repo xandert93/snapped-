@@ -1,7 +1,7 @@
 import { Box, Paper, Typography } from '@material-ui/core';
 import React, { useCallback, useContext, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import authContext from '../../../contexts/auth/authContext';
+import authContext from '../../../contexts/1.auth/authContext';
 import useStyles from './styles';
 import logo from '../../../assets/snapped.ico';
 import { useForm } from '../../../custom-hooks';
@@ -10,9 +10,10 @@ import LoginControls from './LoginControls';
 import RedirectLinks from './RedirectLinks';
 import ThemeSwitch from '../../protected/layout/ThemeSwitch';
 import { checkUsernameTaken } from '../../../services/firebase';
+import { appContext } from '../../../contexts/3.app/appContext';
 // import RedirectLinks from './RedirectLinks/RedirectLinks';
 
-export default ({ darkMode, setDarkMode }) => {
+export default function Auth() {
   const classes = useStyles();
   const { userAction } = useParams();
 
@@ -139,11 +140,11 @@ export default ({ darkMode, setDarkMode }) => {
             />
           )}
           <Box className={classes.themeSwitchBox}>
-            <ThemeSwitch {...{ darkMode, setDarkMode }} />
+            <ThemeSwitch />
           </Box>
         </form>
         <RedirectLinks {...{ userAction }} />
       </Paper>
     </div>
   );
-};
+}

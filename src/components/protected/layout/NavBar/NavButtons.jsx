@@ -1,5 +1,5 @@
 import React, { useContext, useRef } from 'react';
-import authContext from '../../../../contexts/auth/authContext';
+import authContext from '../../../../contexts/1.auth/authContext';
 import { Link as RouterLink } from 'react-router-dom';
 import useStyles from './styles';
 import { Button, Divider } from '@material-ui/core';
@@ -9,10 +9,12 @@ import {
   CameraRoll,
   ExitToApp,
 } from '@material-ui/icons';
+import { uploadContext } from '../../../../contexts/2.upload/uploadContext';
 
-const NavButtons = ({ isMobile, toggleDrawer, validateFile, fileData }) => {
+const NavButtons = ({ isMobile, toggleDrawer }) => {
   const classes = useStyles();
   const { logout } = useContext(authContext);
+  const { fileData, validateFile } = useContext(uploadContext);
 
   const fileInputRef = useRef();
 

@@ -65,6 +65,16 @@ export const createPost = async (newPost) => {
   return;
 };
 
+export const updatePostDescription = async (docId, description) => {
+  await posts.doc(docId).update({ description });
+  return;
+};
+
+export const deletePost = async (docId) => {
+  await posts.doc(docId).delete();
+  return;
+};
+
 export const getNumOfUserPosts = async (username) => {
   const { docs: docRefs } = await posts.where('username', '==', username).get();
   return docRefs.length;

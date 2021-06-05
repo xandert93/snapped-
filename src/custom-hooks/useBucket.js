@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import authContext from '../contexts/auth/authContext';
+import authContext from '../contexts/1.auth/authContext';
 import { bucket, FieldValue } from '../lib/firebase/config';
 import { createPost, getNumOfUserPosts } from '../services/firebase';
 import exifr from 'exifr';

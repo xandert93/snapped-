@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { db } from '../../lib/firebase/config';
+import React, { useRef, useState } from 'react';
+import { updatePostDescription, deletePost } from '../../services/firebase';
 import useStyles from './styles';
 
 import {
@@ -42,8 +42,8 @@ const PostForm = ({
   submitIcon,
   //create
   fileData,
-  setFile,
-  setDescription,
+  setConfirmedFile,
+  setPostDescription,
   //update
   doc: {
     id,
@@ -67,14 +67,14 @@ const PostForm = ({
     );
   };
 
-  const createPost = (e) => {
+  const createHandler = (e) => {
     const [location, caption, isPrivate] = getUserInput(e);
-    setDescription({ location, caption, isPrivate });
-    setFile(fileData.file);
+    setPostDescription({ location, caption, isPrivate });
+    setConfirmedFile(fileData.file);
     //!file ? <PostForm/> (now unmounts) : <Progress/> (now mounts)
   };
 
-  const updatePost = async (e) => {
+  const updateHandler = async (e) => {
     setIsSubmitting(true);
     const [newLocation, newCaption, newIsPrivate] = getUserInput(e);
 
@@ -90,20 +90,14 @@ const PostForm = ({
       return setIsSubmitting(false);
     }
 
+    const newDescription = {
+      location: newLocation,
+      caption: newCaption,
+      isPrivate: newIsPrivate,
+    };
+
     try {
-      await db
-        .collection('Posts')
-        .doc(id)
-        .set(
-          {
-            description: {
-              location: newLocation,
-              caption: newCaption,
-              isPrivate: newIsPrivate,
-            },
-          },
-          { merge: true }
-        );
+      await updatePostDescription(id, newDescription);
       setMsgData({ success: true, msg: 'Post updated.' });
       setTimeout(closeModal, 1800);
     } catch (err) {
@@ -112,13 +106,13 @@ const PostForm = ({
     }
   };
 
-  const submitHandler = type === 'create' ? createPost : updatePost;
+  const submitHandler = type === 'create' ? createHandler : updateHandler;
 
-  const deletePost = async () => {
+  const deleteHandler = async () => {
     setIsSubmitting(true);
 
     try {
-      await db.collection('Posts').doc(id).delete();
+      await deletePost(id);
       setMsgData({ success: true, msg: 'Post deleted.' });
       setTimeout(closeModal, 2000);
     } catch (err) {
@@ -138,7 +132,7 @@ const PostForm = ({
         <img className={classes.image} src={imageURL} alt="Image Preview" />
         {type === 'update' && (
           <IconButton
-            onClick={deletePost}
+            onClick={deleteHandler}
             disabled={isSubmitting}
             style={{ position: 'absolute', right: 5, top: 5 }}>
             <DeleteForever color="secondary" />

@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import authContext from '../../../../contexts/auth/authContext';
+import authContext from '../../../../contexts/1.auth/authContext';
 import { Link as RouterLink } from 'react-router-dom';
 import ConditionalWrapper from './ConditionalWrapper';
 import NavButtons from './NavButtons';
@@ -8,16 +8,13 @@ import { AppBar, Box, Button, Toolbar, Typography } from '@material-ui/core';
 import logo from '../../../../assets/snapped.ico';
 import ThemeSwitch from '../ThemeSwitch';
 import { ROUTES } from '../../../../constants/routes';
+import { appContext } from '../../../../contexts/3.app/appContext';
 
-const NavBar = ({
-  validateFile,
-  fileData,
-  innerWidth,
-  darkMode,
-  setDarkMode,
-}) => {
+const NavBar = () => {
   const classes = useStyles();
   const { currentUserDoc } = useContext(authContext);
+  const { innerWidth } = useContext(appContext);
+
   const isMobile = innerWidth < 960;
 
   return (
@@ -26,7 +23,7 @@ const NavBar = ({
         <Toolbar style={{ justifyContent: 'space-between' }}>
           {isMobile && (
             <Box style={{ order: '2' }}>
-              <ThemeSwitch {...{ darkMode, setDarkMode }} />
+              <ThemeSwitch />
             </Box>
           )}
 
@@ -49,7 +46,7 @@ const NavBar = ({
           {/*duplicate switch cos me lazy*/}
           {!isMobile && (
             <Box>
-              <ThemeSwitch {...{ darkMode, setDarkMode }} />
+              <ThemeSwitch />
             </Box>
           )}
 
@@ -57,7 +54,7 @@ const NavBar = ({
 
           {currentUserDoc && (
             <ConditionalWrapper isMobile={isMobile}>
-              <NavButtons {...{ validateFile, fileData }} />
+              <NavButtons />
             </ConditionalWrapper>
           )}
         </Toolbar>

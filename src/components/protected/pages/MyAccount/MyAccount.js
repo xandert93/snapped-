@@ -1,6 +1,6 @@
 import { Button, makeStyles, TextField, Typography } from '@material-ui/core';
 import React, { useContext, useRef, useState } from 'react';
-import authContext from '../../../../contexts/auth/authContext';
+import authContext from '../../../../contexts/1.auth/authContext';
 import { useSetDocumentTitle } from '../../../../custom-hooks';
 import { db } from '../../../../lib/firebase/config';
 // import { updatePostsUsername } from '../../../../services/firebase';

@@ -1,6 +1,6 @@
 import { Button } from '@material-ui/core';
 import React, { useContext, useState } from 'react';
-import authContext from '../../../contexts/auth/authContext';
+import authContext from '../../../contexts/1.auth/authContext';
 import { updateFollow } from '../../../services/firebase';
 import useStyles from './styles';
 

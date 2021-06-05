@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import { Redirect, Switch } from 'react-router-dom';
 import { PublicRoute, ProtectedRoute } from './helpers';
 import { ROUTES } from './constants/routes';
@@ -10,84 +10,29 @@ import Home from './components/protected/pages/Home/Home';
 import MyAccount from './components/protected/pages/MyAccount/MyAccount';
 import NavBar from './components/protected/layout/NavBar';
 
-import authContext from './contexts/auth/authContext';
+import authContext from './contexts/1.auth/authContext';
 import Main from './components/protected/pages/Main';
 
-import { Publish } from '@material-ui/icons';
 import SlidingModal from './components/protected/SlidingModal';
 import Progress from './components/protected/layout/Progress/Progress';
-import { useGetDeviceWidth, useFileReader } from './custom-hooks';
-import { themeLight, themeDark } from './styles/themes/theme';
-import { CssBaseline, ThemeProvider } from '@material-ui/core';
+
 import AltUser from './components/protected/pages/AlternateUser/AltUser';
 import CreatePost from './components/protected/pages/Home/Posts/CreatePost';
 
+import { uploadContext } from './contexts/2.upload/uploadContext';
+
 const App = () => {
   const { currentUserDoc } = useContext(authContext);
-  const [darkMode, setDarkMode] = useState(false);
-
-  const innerWidth = useGetDeviceWidth();
-
-  const [readerRef, dataURL, setDataURL] = useFileReader();
-
-  const [msgData, setMsgData] = useState(null);
-  const [fileData, setFileData] = useState({ file: null, path: '' });
-  const [file, setFile] = useState(null);
-
-  const [description, setDescription] = useState(null);
-
-  const validateFile = (selectedFile) => {
-    if (selectedFile) {
-      if (['image/png', 'image/jpeg'].includes(selectedFile.type)) {
-        setMsgData(null);
-        setFileData({ file: selectedFile });
-        readerRef.current.readAsDataURL(selectedFile);
-        return;
-      } else {
-        setMsgData({
-          success: false,
-          msg: 'Please choose an image file (.png or .jpeg)',
-        });
-        return;
-      }
-    } else {
-      setMsgData(null);
-      setFileData({ file: null, path: '' });
-      return;
-    }
-  };
-
-  const resetForm = () => {
-    setFileData({ file: null, path: '' });
-    setFile(null);
-    setDataURL('');
-  };
-
+  const { file, resetForm, dataURL } = useContext(uploadContext);
   return (
-    <ThemeProvider theme={!darkMode ? themeLight : themeDark}>
-      <CssBaseline />
-      {currentUserDoc && (
-        <NavBar
-          {...{ validateFile, fileData, innerWidth, darkMode, setDarkMode }}
-        />
-      )}
-      <Main {...{ validateFile }}>
+    <>
+      {currentUserDoc && <NavBar />}
+      <Main>
         <Switch>
-          <PublicRoute
-            path={ROUTES.AUTH}
-            {...{ darkMode, setDarkMode }}
-            component={Auth}
-          />
-          <ProtectedRoute
-            exact
-            path={ROUTES.HOME}
-            innerWidth={innerWidth}
-            component={Home}
-          />
+          <PublicRoute path={ROUTES.AUTH} component={Auth} />
+          <ProtectedRoute exact path={ROUTES.HOME} component={Home} />
           <ProtectedRoute path="/camera-roll/:tabName" component={CameraRoll} />
           <Redirect exact from="/camera-roll" to="/camera-roll/public" />
-          {/*considered good practice in case someone navigates to
-          "/camera-roll". Now redirected to Protected Route above*/}
 
           <Redirect
             from={`/p/${currentUserDoc?.username}`}
@@ -100,30 +45,23 @@ const App = () => {
           {/* <Route render={() => <h5>Not Found 404</h5>} /> */}
         </Switch>
       </Main>
-
+      {/*Want <SlidMod> to be reusable. Using context within it doesn't allow me to*/}
       <SlidingModal
-        {...{
-          showModal: !!dataURL,
-          closeModal: resetForm,
-          modalHeading: 'Create Your Post!',
-        }}>
-        {!file ? (
-          <CreatePost
-            {...{
-              type: 'create',
-              imageURL: dataURL,
-              fileData,
-              setFile,
-              setDescription,
-              submitIcon: <Publish color="primary" />,
-            }}
-          />
-        ) : (
-          <Progress {...{ file, description, resetForm }} />
-        )}
+        showModal={!!dataURL}
+        closeModal={resetForm}
+        modalHeading="Create Your Post!">
+        {!file ? <CreatePost /> : <Progress />}
       </SlidingModal>
-    </ThemeProvider>
+    </>
   );
 };
 
 export default App;
+
+//NOTES:
+/*
+- The <Redirect/> from "/camera-roll" to ".../public" is considered good 
+practice in the event someone manually navigates to "/camera-roll". 
+They are now redirected to the <ProtectedRoute/> above it.
+
+*/

@@ -1,6 +1,6 @@
 import { Grid } from '@material-ui/core';
 import React, { useContext, useEffect, useState } from 'react';
-import authContext from '../../../../contexts/auth/authContext';
+import authContext from '../../../../contexts/1.auth/authContext';
 import { getSuggestedUserDocs } from '../../../../services/firebase';
 import SuggestedProfile from './SuggestedProfile';
 

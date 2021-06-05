@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { usePostsColl } from '../../../../custom-hooks';
-import authContext from '../../../../contexts/auth/authContext';
+import authContext from '../../../../contexts/1.auth/authContext';
 import SlidingModal from '../../SlidingModal';
 import { Lock, PhotoLibrary, Public, Save } from '@material-ui/icons';
 import { AppBar, Box, Grid, Tab, Tabs, Typography } from '@material-ui/core';
@@ -95,20 +95,14 @@ const CameraRoll = () => {
       </Grid>
 
       <SlidingModal
-        {...{
-          showModal: !!modalPost,
-          closeModal: () => setModalPost(null),
-          modalHeading: 'Edit Your Post!',
-        }}>
+        showModal={!!modalPost}
+        closeModal={() => setModalPost(null)}
+        modalHeading="Edit Your Post!">
         {modalPost && (
           <UpdatePost
-            {...{
-              type: 'update',
-              imageURL: modalPost.url,
-              doc: modalPost,
-              submitIcon: <Save color="primary" />,
-              closeModal: () => setModalPost(null),
-            }}
+            imageURL={modalPost.url}
+            doc={modalPost}
+            closeModal={() => setModalPost(null)}
           />
         )}
       </SlidingModal>

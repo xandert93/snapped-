@@ -26,7 +26,7 @@ import {
 import useStyles from './styles';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
-import authContext from '../../../../../contexts/auth/authContext';
+import authContext from '../../../../../contexts/1.auth/authContext';
 import {
   updatePostComments,
   updatePostLikes,

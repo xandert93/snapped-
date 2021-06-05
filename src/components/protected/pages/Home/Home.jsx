@@ -1,14 +1,17 @@
 import { Button, Grid } from '@material-ui/core';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
+import { appContext } from '../../../../contexts/3.app/appContext';
 import { useSetDocumentTitle, usePostsColl } from '../../../../custom-hooks';
 import SuggestedProfiles from '../../layout/SuggestedProfiles';
 import ImageModal from './Posts/ImageModal.jsx';
 import PostsGrid from './Posts/PostsGrid';
 import useStyles from './Posts/styles';
 
-const Home = ({ innerWidth }) => {
+const Home = () => {
   const classes = useStyles();
   useSetDocumentTitle('Home');
+  const { innerWidth } = useContext(appContext);
+
   const [numOfPostsShown, setNumOfPostsShown] = useState(4);
   const [posts, numOfPosts] = usePostsColl();
 

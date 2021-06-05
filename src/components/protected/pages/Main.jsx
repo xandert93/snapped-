@@ -1,11 +1,13 @@
 import React, { useContext, useState } from 'react';
 import { AddToPhotos } from '@material-ui/icons';
 import useStyles from './styles';
-import authContext from '../../../contexts/auth/authContext';
+import authContext from '../../../contexts/1.auth/authContext';
+import { uploadContext } from '../../../contexts/2.upload/uploadContext';
 
-const Main = ({ validateFile, children }) => {
+const Main = ({ children }) => {
   const classes = useStyles();
   const { currentUserDoc } = useContext(authContext);
+  const { validateFile } = useContext(uploadContext);
 
   const [isDragged, setIsDragged] = useState(false);
 
