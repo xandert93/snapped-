@@ -3,7 +3,7 @@ import React, { useContext, useState } from 'react';
 import { appContext } from '../../../../contexts/3.app/appContext';
 import { useSetDocumentTitle, usePostsColl } from '../../../../custom-hooks';
 import SuggestedProfiles from '../../layout/SuggestedProfiles';
-import ImageModal from './Posts/ImageModal.jsx';
+import ImageModal from './Posts/ImageModal';
 import PostsGrid from './Posts/PostsGrid';
 import useStyles from './Posts/styles';
 
@@ -31,7 +31,7 @@ const Home = () => {
 
       <SuggestedProfiles />
 
-      {posts.length > 0 && (
+      {!!posts.length && (
         <div style={{ textAlign: 'center' }}>
           <Button
             variant="contained"

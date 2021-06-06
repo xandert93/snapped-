@@ -3,7 +3,7 @@ import React, { useContext } from 'react';
 import { uploadContext } from '../../../../../contexts/2.upload/uploadContext';
 import PostForm from '../../../PostForm';
 
-const CreatePost = () => {
+const CreatePostForm = () => {
   const {
     fileData,
     dataURL: imageURL,
@@ -20,4 +20,4 @@ const CreatePost = () => {
   );
 };
 
-export default CreatePost;
+export default CreatePostForm;

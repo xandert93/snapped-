@@ -15,7 +15,7 @@ export const usePostsColl = (username = '') => {
   const allPublicPosts = posts.where('description.isPrivate', '==', false);
   const allUserPosts = posts.where('username', '==', username);
 
-  const allUserPublicPosts = allUserPosts.where(
+  const onlyUserPublicPosts = allUserPosts.where(
     'description.isPrivate',
     '==',
     false
@@ -71,7 +71,7 @@ export const usePostsColl = (username = '') => {
       let collectionToQuery =
         username === currentUserDoc.username
           ? allUserPosts
-          : allUserPublicPosts;
+          : onlyUserPublicPosts;
 
       collectionToQuery.get().then(extractDocs);
       return;

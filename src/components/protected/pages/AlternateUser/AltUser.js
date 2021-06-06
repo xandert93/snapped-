@@ -15,7 +15,7 @@ import React, { forwardRef, useContext, useEffect } from 'react';
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import authContext from '../../../../contexts/1.auth/authContext';
-import { usePostsColl } from '../../../../custom-hooks';
+import { usePostsColl, useSetDocumentTitle } from '../../../../custom-hooks';
 import { getUserDocFromDb } from '../../../../services/firebase';
 import FollowButton from '../../layout/FollowButton';
 import useStyles from './styles';
@@ -29,6 +29,9 @@ const AltUser = () => {
   const { currentUserDoc } = useContext(authContext);
 
   const { username } = useParams();
+
+  useSetDocumentTitle(username);
+
   const [altUserDoc, setAltUserDoc] = useState(null);
   useEffect(() => {
     getUserDocFromDb(null, username).then(setAltUserDoc);

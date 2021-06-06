@@ -10,10 +10,11 @@ import {
   ExitToApp,
 } from '@material-ui/icons';
 import { uploadContext } from '../../../../contexts/2.upload/uploadContext';
+import { ROUTES } from '../../../../constants/routes';
 
 const NavButtons = ({ isMobile, toggleDrawer }) => {
   const classes = useStyles();
-  const { logout } = useContext(authContext);
+  const { logout, currentUserDoc } = useContext(authContext);
   const { fileData, validateFile } = useContext(uploadContext);
 
   const fileInputRef = useRef();
@@ -54,14 +55,14 @@ const NavButtons = ({ isMobile, toggleDrawer }) => {
       {isMobile && <Divider />}
       <Button
         component={RouterLink}
-        to="/camera-roll"
+        to={`/p/${currentUserDoc.username}`}
         startIcon={<CameraRoll />}>
-        Camera Roll
+        My Profile
       </Button>
       {isMobile && <Divider />}
       <Button
         component={RouterLink}
-        to="/account"
+        to={ROUTES.ACCOUNT}
         startIcon={<AccountCircle />}>
         My Account
       </Button>

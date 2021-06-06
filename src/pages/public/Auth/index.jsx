@@ -8,9 +8,8 @@ import { useForm } from '../../../custom-hooks';
 import RegistrationStepper from './RegistrationStepper';
 import LoginControls from './LoginControls';
 import RedirectLinks from './RedirectLinks';
-import ThemeSwitch from '../../protected/layout/ThemeSwitch';
 import { checkUsernameTaken } from '../../../services/firebase';
-import { appContext } from '../../../contexts/3.app/appContext';
+import ThemeSwitch from '../../../components/protected/layout/ThemeSwitch';
 // import RedirectLinks from './RedirectLinks/RedirectLinks';
 
 export default function Auth() {

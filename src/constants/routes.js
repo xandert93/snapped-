@@ -1,6 +1,7 @@
 export const ROUTES = {
   HOME: '/',
   AUTH: '/auth/:userAction',
-  USER_PROFILE: '/user/:userId',
-  USER_ACCOUNT: '/account',
+  PROFILE: '/p/:username/:tabName?',
+  ACCOUNT: '/account',
+  NOT_FOUND: '/404',
 };

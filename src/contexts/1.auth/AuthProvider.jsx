@@ -26,7 +26,7 @@ const AuthProvider = ({ children }) => {
 
       if (!user) setCurrentUserDoc(null);
 
-      setTimeout(setIsCheckingUser, 1200, false);
+      setIsCheckingUser(false);
     });
 
     return unsubscribe;
