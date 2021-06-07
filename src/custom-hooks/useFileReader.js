@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-const useFileReader = () => {
+export const useFileReader = () => {
   const readerRef = useRef(new FileReader());
   const [dataURL, setDataURL] = useState('');
 
@@ -10,5 +10,3 @@ const useFileReader = () => {
 
   return [readerRef.current, dataURL, setDataURL];
 };
-
-export { useFileReader };

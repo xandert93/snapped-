@@ -1,11 +1,11 @@
 import { useContext, useEffect, useState } from 'react';
-import authContext from '../contexts/1.auth/authContext';
+import { authContext } from '../contexts/1.auth/authContext';
 import { bucket, FieldValue } from '../lib/firebase/config';
 import { createPost, getNumOfUserPosts } from '../services/firebase';
 import exifr from 'exifr';
 import imageCompression from 'browser-image-compression';
 
-const useBucket = (file, description) => {
+export const useBucket = (file, description) => {
   const { currentUserDoc } = useContext(authContext);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadURL, setUploadURL] = useState('');
@@ -54,8 +54,6 @@ const useBucket = (file, description) => {
 
   return { uploadProgress, uploadURL, uploadErrMsg };
 };
-
-export { useBucket };
 
 /*When image is compressed, it is stripped of its EXIF data. This is problematic because the EXIF
 data contains an "orientation" property that determines the image's orientation when the image

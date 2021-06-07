@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 
-const useForm = () => {
+export const useForm = () => {
   const [msgData, setMsgData] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -24,5 +24,3 @@ const useForm = () => {
     },
   };
 };
-
-export { useForm };

@@ -2,7 +2,7 @@ import { CircularProgress } from '@material-ui/core';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { auth } from '../../lib/firebase/config';
 import { addUserToDb, getUserDocFromDb } from '../../services/firebase';
-import authContext from './authContext';
+import { authContext } from './authContext';
 
 const AuthProvider = ({ children }) => {
   const [isCheckingUser, setIsCheckingUser] = useState(true);

@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
-import { useHistory, useParams } from 'react-router';
-import { usePostsColl } from '../../custom-hooks';
+import { useHistory, useParams } from 'react-router-dom';
+import { usePostsCollection } from '../../custom-hooks';
 import { profileContext } from './profileContext';
 
 const idxToTabName = {
@@ -19,7 +19,7 @@ const ProfileProvider = ({ children }) => {
   const { username, tabName } = useParams();
 
   //For both user's and altUser's pages:
-  const [posts, noOfPosts] = usePostsColl(username);
+  const [posts, noOfPosts] = usePostsCollection(username);
   const [noOfReqdPosts, setNoOfReqdPosts] = useState(6);
 
   //For only user's page:
@@ -55,6 +55,7 @@ const ProfileProvider = ({ children }) => {
         posts,
         noOfPosts,
         noOfReqdPosts,
+        setNoOfReqdPosts,
         selectedTab,
         tabChangeHandler,
         tabbedPosts,

@@ -1,5 +1,5 @@
 export { useBucket } from './useBucket';
-export { usePostsColl } from './usePostsColl';
+export { usePostsCollection } from './usePostsCollection';
 export { useFileReader } from './useFileReader';
 export { useForm } from './useForm';
 export { useGetDeviceWidth } from './useGetDeviceWidth';

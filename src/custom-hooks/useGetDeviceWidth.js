@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-const useGetDeviceWidth = () => {
+export const useGetDeviceWidth = () => {
   const [innerWidth, setInnerWidth] = useState(0);
 
   useEffect(() => {
@@ -12,5 +12,3 @@ const useGetDeviceWidth = () => {
 
   return innerWidth;
 };
-
-export { useGetDeviceWidth };
