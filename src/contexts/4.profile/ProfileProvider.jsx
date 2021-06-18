@@ -19,7 +19,7 @@ const ProfileProvider = ({ children }) => {
   const { username, tabName } = useParams();
 
   //For both user's and altUser's pages:
-  const [posts, noOfPosts] = usePostsCollection(username);
+  const posts = usePostsCollection(username);
   const [noOfReqdPosts, setNoOfReqdPosts] = useState(6);
 
   //For only user's page:
@@ -53,7 +53,7 @@ const ProfileProvider = ({ children }) => {
     <profileContext.Provider
       value={{
         posts,
-        noOfPosts,
+        noOfPosts: posts.length,
         noOfReqdPosts,
         setNoOfReqdPosts,
         selectedTab,

@@ -6,10 +6,8 @@ export const usePostsCollection = (username = '') => {
   const { currentUserDoc } = useContext(authContext);
 
   const [allDocRefs, setAllDocRefs] = useState([]);
-  const [numOfAvailableDocs, setNumOfAvailableDocs] = useState(0);
   const [docs, setDocs] = useState([]);
 
-  //Could have used refs here to prevent recreation on re-render, but felt like overkill
   const posts = db.collection('Posts').orderBy('createdAt', 'desc');
 
   const allPublicPosts = posts.where('description.isPrivate', '==', false);
@@ -28,8 +26,6 @@ export const usePostsCollection = (username = '') => {
   );
 
   function extractDocs({ docs: docRefs }) {
-    setNumOfAvailableDocs(docRefs.length);
-
     let retrievedDocs = [];
     for (let i = 0; i < docRefs.length; i++) {
       retrievedDocs.push({
@@ -78,7 +74,7 @@ export const usePostsCollection = (username = '') => {
     }
   }, [allDocRefs]);
 
-  return [docs, numOfAvailableDocs];
+  return docs;
 };
 
 //when a image uploaded, doc is added, but when onSnapshot initially fires

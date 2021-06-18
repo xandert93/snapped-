@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import { authContext } from '../contexts/1.auth/authContext';
 import { bucket, FieldValue } from '../lib/firebase/config';
-import { createPost, getNumOfUserPosts } from '../services/firebase';
+import { createPost } from '../services/firebase';
 import exifr from 'exifr';
 import imageCompression from 'browser-image-compression';
 
@@ -14,9 +14,9 @@ export const useBucket = (file, description) => {
   useEffect(() => {
     if (!file) return;
 
-    getNumOfUserPosts(currentUserDoc.username).then(async (num) => {
+    const uploadAndCreatePost = async () => {
       const storedItemRef = bucket.ref(
-        currentUserDoc.username + '--' + file.name.slice(0, 10)
+        currentUserDoc.username + '--' + file.name
       );
 
       const exifOrientation = await exifr.orientation(file);
@@ -49,7 +49,9 @@ export const useBucket = (file, description) => {
           setUploadURL(url);
         }
       );
-    });
+    };
+
+    uploadAndCreatePost();
   }, [file]);
 
   return { uploadProgress, uploadURL, uploadErrMsg };

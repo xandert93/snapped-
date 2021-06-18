@@ -177,7 +177,7 @@ const PostForm = ({
             onClose={() => setMsgData(null)}
             elevation={6}
             variant="filled"
-            severity={`${msgData.success ? 'success' : 'error'}`}>
+            severity={msgData.success ? 'success' : 'error'}>
             {msgData.msg}
           </Alert>
         )}

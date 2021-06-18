@@ -11,7 +11,7 @@ const Home = () => {
   const { innerWidth } = useContext(appContext);
 
   const [numOfPostsShown, setNumOfPostsShown] = useState(4);
-  const [posts, numOfPosts] = usePostsCollection();
+  const posts = usePostsCollection();
 
   const [showModal, setShowModal] = useState(false);
   const [modalImgURL, setModalImgURL] = useState('');
@@ -25,22 +25,19 @@ const Home = () => {
 
   return (
     <Grid container>
-      <PostsGrid {...{ innerWidth, posts, numOfPostsShown, toggleModal }} />
+      {!!posts.length && (
+        <PostsGrid
+          {...{
+            innerWidth,
+            posts,
+            numOfPostsShown,
+            setNumOfPostsShown,
+            toggleModal,
+          }}
+        />
+      )}
 
       <SuggestedProfiles />
-
-      {!!posts.length && (
-        <div style={{ textAlign: 'center' }}>
-          <Button
-            variant="contained"
-            color="secondary"
-            //ASS, if availDocs !% 4, error will be thrown at end. Need to fix
-            disabled={numOfPostsShown === numOfPosts}
-            onClick={() => setNumOfPostsShown((x) => x + 4)}>
-            Fetch more
-          </Button>
-        </div>
-      )}
 
       {showModal && <ImageModal {...{ setShowModal, modalImgURL }} />}
     </Grid>
