@@ -20,7 +20,6 @@ const ProfileProvider = ({ children }) => {
 
   //For both user's and altUser's pages:
   const posts = usePostsCollection(username);
-  const [noOfReqdPosts, setNoOfReqdPosts] = useState(6);
 
   //For only user's page:
   const [selectedTab, setSelectedTab] = useState(idxToTabName[tabName]);
@@ -54,8 +53,6 @@ const ProfileProvider = ({ children }) => {
       value={{
         posts,
         noOfPosts: posts.length,
-        noOfReqdPosts,
-        setNoOfReqdPosts,
         selectedTab,
         tabChangeHandler,
         tabbedPosts,

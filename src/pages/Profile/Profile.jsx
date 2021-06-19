@@ -19,8 +19,6 @@ export default function Profile() {
   const { currentUserDoc } = useContext(authContext);
   const isCurrentUserPage = currentUserDoc.username === username;
 
-  //get rid <TempGetMoreButtons/> nested in the image grids once infinite scroll implemented
-
   return isCurrentUserPage ? (
     <ProfileProvider>
       <UserHeader />

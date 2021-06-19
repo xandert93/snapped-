@@ -1,24 +1,20 @@
+import { Box } from '@material-ui/core';
 import React from 'react';
 import useStyles from './styles';
 
-const ImageModal = ({ setShowModal, modalImgURL }) => {
+const ImageModal = ({ closeModal, modalImgURL }) => {
   const classes = useStyles();
 
-  const closeModal = (e) => {
-    if (e.target.className.includes('modalImg')) return;
-    setShowModal(false);
-  };
-
   return (
-    <div className={classes.modal} onClick={closeModal}>
-      <div className={classes.modalBody}>
+    <Box className={classes.modal} onClick={closeModal}>
+      <Box className={classes.modalBody}>
         <img
           className={classes.modalImg}
           src={modalImgURL}
           alt="clicked image..."
         />
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 

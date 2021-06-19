@@ -8,14 +8,16 @@ export default makeStyles((theme) => ({
     right: 0,
     bottom: 0,
     zIndex: 10,
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    backgroundColor: 'rgba(0, 0, 0, 0.9)',
     display: 'flex',
+    cursor: 'pointer',
   },
   modalBody: {
     margin: 'auto',
     background: 'white',
     textAlign: 'center',
     background: 'transparent',
+    cursor: 'initial',
     //factor in toolbar when i can
   },
 
