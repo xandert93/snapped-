@@ -11,6 +11,8 @@ import {
 } from '@material-ui/core';
 import { ArrowDownward, ArrowUpward } from '@material-ui/icons';
 import React, { useState } from 'react';
+import { useContext } from 'react';
+import { authFormsContext } from '../../../../contexts/4.authForms/authFormsContext';
 import useStyles from './styles';
 
 const steps = [
@@ -20,25 +22,44 @@ const steps = [
   'Provide a secure password',
 ];
 
-const RegisterForm = ({ refs, submitBtnText, msgData, isSubmitting }) => {
+const Register = () => {
   const classes = useStyles();
+
+  const {
+    username,
+    fullName,
+    email,
+    password,
+    passwordConfirm,
+    changeHandler,
+    msgData,
+    isSubmitting,
+  } = useContext(authFormsContext);
+
   const [activeStep, setActiveStep] = useState(0);
 
   const stepContent = [
-    { inputRef: refs.fullNameRef, type: 'text', label: 'Full Name' },
+    { type: 'text', name: 'fullName', label: 'Full Name', value: fullName },
     {
-      inputRef: refs.usernameRef,
       type: 'text',
+      name: 'username',
       label: 'Username',
+      value: username,
       helperText: 'This can never be changed.',
     },
-    { inputRef: refs.emailRef, type: 'email', label: 'Email address' },
+    { type: 'email', name: 'email', label: 'Email address', value: email },
     [
-      { inputRef: refs.passwordRef, type: 'password', label: 'Password' },
       {
-        inputRef: refs.passwordConfirmRef,
         type: 'password',
+        name: 'password',
         label: 'Password',
+        value: password,
+      },
+      {
+        type: 'password',
+        name: 'passwordConfirm',
+        label: 'Password',
+        value: passwordConfirm,
         helperText: 'Please confirm your password.',
       },
     ],
@@ -55,11 +76,23 @@ const RegisterForm = ({ refs, submitBtnText, msgData, isSubmitting }) => {
             <StepLabel>{stepName}</StepLabel>
             <StepContent TransitionProps={{ unmountOnExit: false }}>
               {idx < stepContent.length - 1 ? (
-                <TextField {...stepContent[idx]} required />
+                <TextField
+                  {...stepContent[idx]}
+                  onChange={changeHandler}
+                  required
+                />
               ) : (
                 <Box className={classes.stepperFields}>
-                  <TextField {...stepContent[idx][0]} required />
-                  <TextField {...stepContent[idx][1]} required />
+                  <TextField
+                    {...stepContent[idx][0]}
+                    onChange={changeHandler}
+                    required
+                  />
+                  <TextField
+                    {...stepContent[idx][1]}
+                    onChange={changeHandler}
+                    required
+                  />
                 </Box>
               )}
               <Box className={classes.actionBtns}>
@@ -90,10 +123,10 @@ const RegisterForm = ({ refs, submitBtnText, msgData, isSubmitting }) => {
         color="primary"
         fullWidth
         disabled={isSubmitting || activeStep !== steps.length - 1}>
-        {submitBtnText}
+        Create Account
       </Button>
     </>
   );
 };
 
-export default RegisterForm;
+export default Register;

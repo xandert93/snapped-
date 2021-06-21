@@ -25,7 +25,7 @@ import {
 } from '@material-ui/icons';
 import useStyles from './styles';
 import moment from 'moment';
-import { Link } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import { authContext } from '../../../../../contexts/1.auth/authContext';
 import {
   updatePostComments,
@@ -38,8 +38,7 @@ const PostCard = ({
     id,
     createdAt,
     username,
-    userId,
-    description: { location, caption },
+    description: { location, caption, tags },
     isLikedByUser,
     likes,
     comments,
@@ -82,17 +81,17 @@ const PostCard = ({
     pageChangeHandler(null, Math.ceil((currentComments.length + 1) / 3));
   };
 
-  const [pageNum, setPageNum] = useState(1);
+  const [pageNo, setPageNo] = useState(1);
 
-  const pageChangeHandler = (e, newPageNum) => {
-    setPageNum(newPageNum);
-    setSliceNum(3 * newPageNum);
+  const pageChangeHandler = (e, newPageNo) => {
+    setPageNo(newPageNo);
+    setSliceNum(3 * newPageNo);
   };
 
   return (
     <Grid item xs={12} sm={9} md={6} lg={4}>
       <Card raised>
-        <CardActionArea component={Link} to={`/p/${username}`}>
+        <CardActionArea component={RouterLink} to={`/p/${username}`}>
           <CardHeader
             className={classes.cardHeader}
             avatar={<Avatar>{username[0].toUpperCase()}</Avatar>}
@@ -107,7 +106,7 @@ const PostCard = ({
         </CardActionArea>
         <CardMedia
           className={classes.cardMedia}
-          data-index={idx}
+          data-posts-idx={idx}
           image={url}
           title={`${username}'s picture`}
         />
@@ -146,6 +145,11 @@ const PostCard = ({
             </Typography>
           ) : null}
           <Typography gutterBottom>{caption}</Typography>
+          <Typography variant="caption">
+            {tags.map((tag) => (
+              <RouterLink to={`/explore/tags/${tag}`}>#{tag} </RouterLink>
+            ))}
+          </Typography>
           <Box>
             <Schedule className={classes.clockIcon} />
             <Typography
@@ -162,9 +166,9 @@ const PostCard = ({
                 .slice(sliceNum - 3, sliceNum)
                 .map(({ username, text }) => (
                   <Typography gutterBottom key={`${username}-${text}`}>
-                    <Link to={`/p/${username}`}>
+                    <RouterLink to={`/p/${username}`}>
                       <strong>{username}</strong>
-                    </Link>{' '}
+                    </RouterLink>{' '}
                     {text}
                   </Typography>
                 ))}
@@ -173,7 +177,7 @@ const PostCard = ({
             <Pagination
               count={Math.ceil(currentComments.length / 3)}
               onChange={pageChangeHandler}
-              page={pageNum}
+              page={pageNo}
               variant="outlined"
               shape="rounded"
               size="small"

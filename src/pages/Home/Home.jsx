@@ -1,15 +1,10 @@
 import { Grid } from '@material-ui/core';
-import React, { useContext, useState } from 'react';
-
-import { appContext } from '../../contexts/3.app/appContext';
+import React, { useState } from 'react';
 import { usePostsCollection, useSetDocumentTitle } from '../../custom-hooks';
-
 import { SuggestedProfiles, PostsGrid, ImageModal } from './components';
 
 const Home = () => {
   useSetDocumentTitle('Home');
-  const { innerWidth } = useContext(appContext);
-
   const posts = usePostsCollection();
 
   const [showModal, setShowModal] = useState(false);
@@ -17,7 +12,7 @@ const Home = () => {
 
   const openModal = (e) => {
     if (e.target.classList.contains('MuiCardMedia-root')) {
-      setModalImgURL(posts[e.target.dataset.index].url);
+      setModalImgURL(posts[e.target.dataset.postsIdx].url);
       setShowModal(true);
     }
   };
@@ -29,19 +24,9 @@ const Home = () => {
 
   return (
     <Grid container>
-      {!!posts.length && (
-        <PostsGrid
-          {...{
-            innerWidth,
-            posts,
-            openModal,
-          }}
-        />
-      )}
-
+      {!!posts.length && <PostsGrid posts={posts} openModal={openModal} />}
       <SuggestedProfiles />
-
-      {showModal && <ImageModal {...{ closeModal, modalImgURL }} />}
+      {showModal && <ImageModal url={modalImgURL} closeModal={closeModal} />}
     </Grid>
   );
 };

@@ -9,13 +9,25 @@ const AppProvider = ({ children }) => {
   const [darkMode, setDarkMode] = useState(false);
   const innerWidth = useGetDeviceWidth();
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [msgData, setMsgData] = useState(null);
+
   const toggleDarkMode = useCallback(
     () => setDarkMode((x) => !x),
     [setDarkMode]
   );
 
   return (
-    <appContext.Provider value={{ darkMode, toggleDarkMode, innerWidth }}>
+    <appContext.Provider
+      value={{
+        darkMode,
+        toggleDarkMode,
+        innerWidth,
+        isSubmitting,
+        setIsSubmitting,
+        msgData,
+        setMsgData,
+      }}>
       <ThemeProvider theme={!darkMode ? themeLight : themeDark}>
         <CssBaseline />
         {children}

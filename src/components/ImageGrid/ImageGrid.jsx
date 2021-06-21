@@ -23,7 +23,7 @@ const ImageGrid = ({ posts, clickHandler }) => {
                 <Box className={classes.imageBox}>
                   <img
                     src={url}
-                    data-index={idx}
+                    data-post-idx={idx}
                     alt={`${username}'s post`}
                     className={classes.image}
                   />

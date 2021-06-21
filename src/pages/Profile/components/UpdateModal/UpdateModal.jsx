@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { profileContext } from '../../../../contexts/4.profile/profileContext';
+import { profileContext } from '../../../../contexts/5.profile/profileContext';
 
 import { SlidingModal } from '../../../../components/SlidingModal';
 import { UpdatePostForm } from '../UpdatePostForm';
@@ -15,7 +15,7 @@ const UpdateModal = () => {
       {modalPost && (
         <UpdatePostForm
           imageURL={modalPost.url}
-          doc={modalPost}
+          post={modalPost}
           closeModal={resetModalPost}
         />
       )}

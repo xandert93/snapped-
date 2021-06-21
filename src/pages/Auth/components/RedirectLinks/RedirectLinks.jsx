@@ -3,12 +3,12 @@ import { Box, Typography } from '@material-ui/core';
 import useStyles from './styles';
 import { Link } from 'react-router-dom';
 
-const RedirectLinks = ({ userAction }) => {
+const RedirectLinks = ({ pageName }) => {
   const classes = useStyles();
 
   return (
     <Box className={classes.redirectsBox}>
-      {userAction === 'login' && (
+      {pageName === 'login' && (
         <>
           <Typography>
             Forgotten Password?{' '}
@@ -24,7 +24,7 @@ const RedirectLinks = ({ userAction }) => {
           </Typography>
         </>
       )}
-      {userAction === 'password-reset' && (
+      {pageName === 'password-reset' && (
         <Typography>
           Remembered Password?{' '}
           <Link className={classes.redirectLink} to="/auth/login">
@@ -32,7 +32,7 @@ const RedirectLinks = ({ userAction }) => {
           </Link>
         </Typography>
       )}
-      {userAction === 'register' && (
+      {pageName === 'register' && (
         <Typography>
           Already registered?{' '}
           <Link className={classes.redirectLink} to="/auth/login">

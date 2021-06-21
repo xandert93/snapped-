@@ -3,9 +3,12 @@ import PostCard from './PostCard';
 import useStyles from './styles';
 import { Grid } from '@material-ui/core';
 import { useGridScroll } from '../../../../custom-hooks';
+import { useContext } from 'react';
+import { appContext } from '../../../../contexts/3.app/appContext';
 
-const PostsGrid = ({ innerWidth, posts, openModal }) => {
+const PostsGrid = ({ posts, openModal }) => {
   const classes = useStyles();
+  const { innerWidth } = useContext(appContext);
   const isMobile = innerWidth < 600;
 
   const noOfPostsShown = useGridScroll(4, posts.length, 2000);

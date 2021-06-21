@@ -7,7 +7,7 @@ const ImageBoxOverlay = ({ idx, noOfLikes, noOfComments }) => {
   const classes = useStyles();
 
   return (
-    <Box className={classes.overlay} data-index={idx}>
+    <Box className={classes.overlay} data-post-idx={idx}>
       <FavoriteBorder className={classes.overlayIcon} />
       <Typography variant="h5" component="span">
         {noOfLikes}

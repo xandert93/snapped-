@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { AppBar, Tab, Tabs } from '@material-ui/core';
 import { Lock, PhotoLibrary, Public } from '@material-ui/icons';
 import useStyles from './styles';
-import { profileContext } from '../../../../contexts/4.profile/profileContext';
+import { profileContext } from '../../../../contexts/5.profile/profileContext';
 
 const ImageTabs = () => {
   const classes = useStyles();

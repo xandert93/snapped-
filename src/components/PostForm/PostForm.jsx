@@ -1,5 +1,5 @@
-import React, { useRef, useState } from 'react';
-import { updatePostDescription, deletePost } from '../../services/firebase';
+import React, { useContext, useState } from 'react';
+import { appContext } from '../../contexts/3.app/appContext';
 import useStyles from './styles';
 
 import {
@@ -13,6 +13,8 @@ import {
 } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 import { DeleteForever, Lock, Public } from '@material-ui/icons';
+
+import { formatTagsToArr } from '../../utils/helpers';
 
 const iconStyles = { fontSize: 20, marginLeft: 8, verticalAlign: -4 };
 const visibilities = [
@@ -36,101 +38,59 @@ const visibilities = [
   },
 ];
 
+const defaultDescription = {
+  location: '',
+  caption: '',
+  tags: '',
+  isPrivate: false,
+};
+
 const PostForm = ({
-  type,
   imageURL,
+  post,
   submitIcon,
-  //create
-  fileData,
-  setConfirmedFile,
-  setPostDescription,
-  //update
-  doc: {
-    id,
-    description: { location, caption, isPrivate },
-  },
-  closeModal,
+  submitHandler,
+  deleteHandler,
 }) => {
   const classes = useStyles();
+  const { isSubmitting, setIsSubmitting, msgData, setMsgData } =
+    useContext(appContext);
 
-  const locationRef = useRef();
-  const captionRef = useRef();
-  const privacyRef = useRef();
-
-  const [msgData, setMsgData] = useState(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const getUserInput = (e) => {
-    e.preventDefault();
-    return [locationRef, captionRef, privacyRef].map(
-      ({ current: { value } }) => value
-    );
+  const currentDescription = post?.description && {
+    ...post.description,
+    tags: post.description.tags.join(', '),
   };
 
-  const createHandler = (e) => {
-    const [location, caption, isPrivate] = getUserInput(e);
-    setPostDescription({ location, caption, isPrivate });
-    setConfirmedFile(fileData.file);
-    //!file ? <PostForm/> (now unmounts) : <Progress/> (now mounts)
-  };
+  const [description, setDescription] = useState(
+    currentDescription || defaultDescription
+  );
 
-  const updateHandler = async (e) => {
-    setIsSubmitting(true);
-    const [newLocation, newCaption, newIsPrivate] = getUserInput(e);
+  const [areTagsInvalid, setAreTagsInvalid] = useState(false);
 
-    if (
-      newLocation === location &&
-      newCaption === caption &&
-      newIsPrivate === isPrivate
-    ) {
-      setMsgData({
-        success: false,
-        msg: 'Please make a change before submitting.',
-      });
-      return setIsSubmitting(false);
-    }
-
-    const newDescription = {
-      location: newLocation,
-      caption: newCaption,
-      isPrivate: newIsPrivate,
-    };
-
-    try {
-      await updatePostDescription(id, newDescription);
-      setMsgData({ success: true, msg: 'Post updated.' });
-      setTimeout(closeModal, 1800);
-    } catch (err) {
-      // setMsgData({ success: false, msg: err.message });
-      // setIsSubmitting(false);
-    }
-  };
-
-  const submitHandler = type === 'create' ? createHandler : updateHandler;
-
-  const deleteHandler = async () => {
-    setIsSubmitting(true);
-
-    try {
-      await deletePost(id);
-      setMsgData({ success: true, msg: 'Post deleted.' });
-      setTimeout(closeModal, 2000);
-    } catch (err) {
-      setIsSubmitting(false);
-    }
-  };
+  const updateField = (e) =>
+    setDescription((x) => ({ ...x, [e.target.name]: e.target.value }));
 
   return (
-    <form onSubmit={submitHandler} className={classes.form}>
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+        submitHandler({
+          ...description,
+          tags: formatTagsToArr(description.tags),
+        });
+      }}
+      className={classes.form}>
       <TextField
-        inputRef={locationRef}
         label="Where was this taken?"
         required
-        defaultValue={location}
+        name="location"
+        value={description.location}
+        onChange={updateField}
       />
       <Box className={classes.imageBox} style={{ position: 'relative' }}>
         <img className={classes.image} src={imageURL} alt="Image Preview" />
-        {type === 'update' && (
+        {!!deleteHandler && (
           <IconButton
             onClick={deleteHandler}
             disabled={isSubmitting}
@@ -140,20 +100,35 @@ const PostForm = ({
         )}
       </Box>
       <TextField
-        inputRef={captionRef}
         label="Write your caption!"
         required
-        defaultValue={caption}
+        name="caption"
+        value={description.caption}
+        onChange={updateField}
         multiline
         rows={3}
       />
 
       <TextField
+        label="Give it some tags!"
+        name="tags"
+        value={description.tags}
+        onChange={(e) => {
+          updateField(e);
+          setAreTagsInvalid(/[^#\w, ]/.test(e.target.value));
+        }}
+        error={areTagsInvalid}
+        multiline
+        rows={2}
+      />
+
+      <TextField
         select
-        defaultValue={isPrivate}
-        inputRef={privacyRef}
         label="Choose post visibility:"
         required
+        name="isPrivate"
+        value={description.isPrivate}
+        onChange={updateField}
         helperText="Public posts are visible to all users!">
         {visibilities.map((option) => (
           <MenuItem key={option.value} value={option.value}>
@@ -185,24 +160,15 @@ const PostForm = ({
 
       <Button
         type="submit"
-        disabled={isSubmitting}
+        disabled={
+          description === post?.description || areTagsInvalid || isSubmitting
+        }
         variant="contained"
         fullWidth>
         {submitIcon}
       </Button>
     </form>
   );
-};
-
-PostForm.defaultProps = {
-  doc: {
-    id: null,
-    description: {
-      location: null,
-      caption: null,
-      isPrivate: false,
-    },
-  },
 };
 
 export default PostForm;

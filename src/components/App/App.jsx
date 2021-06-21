@@ -5,7 +5,7 @@ import { ROUTES } from '../../constants/routes';
 
 import { authContext } from '../../contexts/1.auth/authContext';
 
-import { Auth, Home, Profile, Account } from '../../pages';
+import { Auth, Home, Profile, Account, Explore } from '../../pages';
 import { NavBar } from '../NavBar';
 import { Main } from './Main';
 import { UploadModal } from './UploadModal';
@@ -28,6 +28,7 @@ export default function App() {
           />
 
           <ProtectedRoute path={ROUTES.PROFILE} component={Profile} />
+          <ProtectedRoute path={ROUTES.EXPLORE} component={Explore} />
           <ProtectedRoute path={ROUTES.ACCOUNT} component={Account} />
 
           {/* <Route render={() => <h5>Not Found 404</h5>} /> */}

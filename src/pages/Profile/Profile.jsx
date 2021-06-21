@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { authContext } from '../../contexts/1.auth/authContext';
-import ProfileProvider from '../../contexts/4.profile/ProfileProvider';
+import ProfileProvider from '../../contexts/5.profile/ProfileProvider';
 import { useSetDocumentTitle } from '../../custom-hooks';
 import { useParams } from 'react-router-dom';
 

@@ -1,31 +1,34 @@
 import { TextField, Button, Typography } from '@material-ui/core';
 import React from 'react';
+import { useContext } from 'react';
+import { authFormsContext } from '../../../../contexts/4.authForms/authFormsContext';
 import useStyles from './styles';
 
-const LoginControls = ({
-  userAction,
-  refs,
-  msgData,
-  isSubmitting,
-  submitBtnText,
-}) => {
+const Login = () => {
   const classes = useStyles();
+
+  const { email, password, changeHandler, msgData, isSubmitting } =
+    useContext(authFormsContext);
+
   return (
     <>
       <TextField
-        inputRef={refs.emailRef}
-        label="Email address"
         type="email"
+        name="email"
+        label="Email address"
+        value={email}
+        onChange={changeHandler}
         required
       />
-      {userAction !== 'password-reset' && (
-        <TextField
-          inputRef={refs.passwordRef}
-          label="Password"
-          type="password"
-          required
-        />
-      )}
+
+      <TextField
+        type="password"
+        name="password"
+        label="Password"
+        value={password}
+        onChange={changeHandler}
+        required
+      />
 
       {msgData && (
         <Typography color={`${msgData.success ? 'primary' : 'error'}`}>
@@ -39,10 +42,10 @@ const LoginControls = ({
         color="primary"
         fullWidth
         disabled={isSubmitting}>
-        {submitBtnText}
+        Log In
       </Button>
     </>
   );
 };
 
-export default LoginControls;
+export default Login;

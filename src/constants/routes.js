@@ -1,6 +1,7 @@
 export const ROUTES = {
+  AUTH: '/auth/:pageName',
   HOME: '/',
-  AUTH: '/auth/:userAction',
+  EXPLORE: '/explore/tags/:tag',
   PROFILE: '/p/:username/:tabName?',
   ACCOUNT: '/account',
   NOT_FOUND: '/404',

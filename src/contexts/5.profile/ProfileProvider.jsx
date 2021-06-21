@@ -1,6 +1,8 @@
 import React, { useMemo, useState } from 'react';
+import { useContext } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import { usePostsCollection } from '../../custom-hooks';
+import { appContext } from '../3.app/appContext';
 import { profileContext } from './profileContext';
 
 const idxToTabName = {
@@ -17,6 +19,7 @@ const tabNameToIdx = {
 const ProfileProvider = ({ children }) => {
   const { push } = useHistory();
   const { username, tabName } = useParams();
+  const { setMsgData, setIsSubmitting } = useContext(appContext);
 
   //For both user's and altUser's pages:
   const posts = usePostsCollection(username);
@@ -43,10 +46,14 @@ const ProfileProvider = ({ children }) => {
   const [modalPost, setModalPost] = useState(null);
   const gridClickHandler = (e) => {
     if (e.target === e.currentTarget) return;
-    setModalPost(tabbedPosts[e.target.dataset.index]);
+    setModalPost(tabbedPosts[e.target.dataset.postIdx]);
   };
 
-  const resetModalPost = () => setModalPost(null);
+  const resetModalPost = () => {
+    setModalPost(null);
+    setMsgData(null);
+    setIsSubmitting(false);
+  };
 
   return (
     <profileContext.Provider

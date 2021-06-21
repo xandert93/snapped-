@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import { authContext } from '../contexts/1.auth/authContext';
 import { db } from '../lib/firebase/config';
 
-export const usePostsCollection = (username = '') => {
+export const usePostsCollection = (username = '', tag = '') => {
   const { currentUserDoc } = useContext(authContext);
 
   const [allDocRefs, setAllDocRefs] = useState([]);
@@ -11,6 +11,13 @@ export const usePostsCollection = (username = '') => {
   const posts = db.collection('Posts').orderBy('createdAt', 'desc');
 
   const allPublicPosts = posts.where('description.isPrivate', '==', false);
+
+  const allPublicTagPosts = allPublicPosts.where(
+    'description.tags',
+    'array-contains',
+    tag
+  );
+
   const allUserPosts = posts.where('username', '==', username);
 
   const onlyUserPublicPosts = allUserPosts.where(
@@ -57,12 +64,12 @@ export const usePostsCollection = (username = '') => {
     if (!allDocRefs[0].data().createdAt) return;
 
     //"Home"
-    if (!username) {
+    if (!username && !tag) {
       userFollowedDocsRef.get().then(extractDocs);
       return;
     }
 
-    //authenticated user's "CameraRoll" or "OtherUser"
+    //authenticated user's "MyProfile" or "AltProfile"
     if (username) {
       let collectionToQuery =
         username === currentUserDoc.username
@@ -70,6 +77,12 @@ export const usePostsCollection = (username = '') => {
           : onlyUserPublicPosts;
 
       collectionToQuery.get().then(extractDocs);
+      return;
+    }
+
+    //"Explore" with params tag
+    if (tag) {
+      allPublicTagPosts.get().then(extractDocs);
       return;
     }
   }, [allDocRefs]);

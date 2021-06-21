@@ -12,7 +12,7 @@ import {
 import { forwardRef, useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { authContext } from '../../contexts/1.auth/authContext';
-import { profileContext } from '../../contexts/4.profile/profileContext';
+import { profileContext } from '../../contexts/5.profile/profileContext';
 import { FollowButton } from '../FollowButton';
 
 import useStyles from './styles';
