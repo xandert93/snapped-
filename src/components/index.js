@@ -1,4 +1,6 @@
 export { App } from './App';
+export { CreatePostButton } from './CreatePostButton';
+export { ActionDialog } from './ActionDialog';
 export { NavBar } from './NavBar';
 export { ImageGrid } from './ImageGrid';
 export { FollowButton } from './FollowButton';

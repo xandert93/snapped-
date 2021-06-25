@@ -1,7 +1,4 @@
-import { createMuiTheme } from '@material-ui/core';
-import { blue, cyan, green, red } from '@material-ui/core/colors';
-
-const baseProperties = {
+export const base = {
   overrides: {
     MuiToolbar: {
       gutters: {
@@ -16,9 +13,21 @@ const baseProperties = {
 
     MuiButton: {
       root: {
-        height: 'auto',
-        width: 'auto',
+        // height: 'auto',
+        // width: 'auto',
+        borderRadius: 50,
+        padding: '8px 20px', //6px 16px*
       },
+
+      // contained: {
+      //   background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+      //   borderRadius: 3,
+      //   border: 0,
+      //   color: 'white',
+      //   height: 48,
+      //   padding: '0 30px',
+      //   boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
+      // },
 
       //by default, button label is always "uppercase"
       label: {
@@ -38,13 +47,39 @@ const baseProperties = {
       },
     },
 
+    MuiFab: {
+      root: {
+        //default is 56px by 56px, which is too small for me
+        height: 72,
+        width: 72,
+      },
+    },
+
     MuiCardHeader: {
       root: {
-        padding: '10px 14px',
+        padding: '10px 14px', //16px*
+        '@media (max-width: 600px)': {
+          padding: '8px 10px',
+        },
       },
 
       avatar: {
         marginRight: '14px',
+      },
+
+      title: {
+        fontWeight: 600,
+        lineHeight: 1.4, //1.5*
+      },
+
+      subheader: {
+        lineHeight: 1.4, //1.6*
+      },
+
+      action: {
+        alignSelf: 'initial', //flex-start* ugly
+        marginTop: 'initial', //-8px* ugly
+        marginRight: 'initial', //-8px* ugly
       },
     },
 
@@ -95,28 +130,8 @@ const baseProperties = {
       fontSize: '1.3rem',
       fontWeight: 600,
     },
+    body3: {
+      fontSize: '50px',
+    },
   },
 };
-
-export const themeLight = createMuiTheme({
-  ...baseProperties,
-  palette: {
-    type: 'light',
-    secondary: red,
-  },
-});
-
-export const themeDark = createMuiTheme({
-  ...baseProperties,
-  palette: {
-    type: 'dark',
-    primary: {
-      // main: cyan['A200'],
-      main: blue['400'],
-    },
-    // secondary: red,
-    secondary: { main: blue['900'] },
-    background: { default: '#262729', paper: '#000' },
-    //any paper-based components e.g. AppBar <header>, Cards will use the paper backgrounds
-  },
-});

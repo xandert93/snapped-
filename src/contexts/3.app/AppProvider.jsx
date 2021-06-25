@@ -1,12 +1,12 @@
 import React, { useCallback, useState } from 'react';
 import { CssBaseline } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
-import { themeDark, themeLight } from '../../styles/themes/theme';
+import { light, dark } from '../../styles/themes';
 import { appContext } from './appContext';
 import { useGetDeviceWidth } from '../../custom-hooks';
 
 const AppProvider = ({ children }) => {
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(true);
   const innerWidth = useGetDeviceWidth();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -28,7 +28,7 @@ const AppProvider = ({ children }) => {
         msgData,
         setMsgData,
       }}>
-      <ThemeProvider theme={!darkMode ? themeLight : themeDark}>
+      <ThemeProvider theme={!darkMode ? light : dark}>
         <CssBaseline />
         {children}
       </ThemeProvider>

@@ -1,16 +1,19 @@
 import { makeStyles } from '@material-ui/core';
 
 export default makeStyles((theme) => ({
-  cardHeader: {
-    transition: 'background-color 0.2s, color 0.2s',
-    '&:hover': {
-      backgroundColor: theme.palette.secondary.main,
-      color: theme.palette.secondary.contrastText,
+  root: {
+    transitionProperty: 'transform',
+    transitionDuration: theme.transitions.duration.complex,
+    [theme.breakpoints.up('sm')]: {
+      '&:hover': {
+        boxShadow: theme.shadows[20],
+        transform: 'translateY(-5px)',
+      },
     },
   },
 
-  cardTitle: {
-    fontWeight: 600,
+  actionButton: {
+    padding: theme.spacing(1), //make area more clickable
   },
 
   cardMedia: {
@@ -21,26 +24,59 @@ export default makeStyles((theme) => ({
     //for 1:1 shaun also used padding-top: 50%, padding-bottom: 50%
 
     [theme.breakpoints.up('sm')]: {
+      paddingBottom: '100%',
       cursor: 'pointer',
-      opacity: 0.95,
-      '&:hover': {
-        opacity: 1,
-      },
     },
   },
 
-  cardContentPrimary: {
-    display: 'flex',
+  cardActions: {
+    justifyContent: 'space-evenly',
+    paddingLeft: 40,
+    paddingRight: 40,
+    '& div': {
+      flex: 1,
+      textAlign: 'center',
+    },
+  },
+
+  cardContent1: {
+    paddingTop: 0,
+    paddingBottom: 0,
+    '& .MuiPagination-ul': {
+      justifyContent: 'center',
+    },
+  },
+
+  cardCaption: { fontWeight: 600, textAlign: 'center' },
+  cardTags: { textAlign: 'center' },
+
+  commentSVG: {
+    marginTop: 2,
+    paddingTop: 1,
+  },
+
+  // cardContent2: {
+  //   display: 'flex',
+  // },
+
+  commentInput: {
+    width: '100%',
+    fontSize: 16,
+
+    '& .MuiInputAdornment-root': {
+      paddingBottom: 5,
+      paddingLeft: 5,
+    },
   },
 
   clockIcon: {
-    verticalAlign: -theme.spacing(1),
-    marginRight: '12px',
+    fontSize: theme.spacing(3),
+    verticalAlign: -7,
+    marginRight: theme.spacing(1),
   },
 
   clockText: {
     fontStyle: 'italic',
-    flexGrow: 1,
   },
 
   expandMoreCollapsed: {

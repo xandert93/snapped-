@@ -23,8 +23,10 @@ const PostsGrid = ({ posts, openModal }) => {
       className={classes.postsContainer}
       onClick={isMobile ? null : openModal}>
       {posts.map(
-        (doc, idx) =>
-          idx < noOfPostsShown && <PostCard key={doc.id} {...{ doc, idx }} />
+        (post, idx) =>
+          idx < noOfPostsShown && (
+            <PostCard key={post.id} {...{ post, idx, isMobile }} />
+          )
       )}
     </Grid>
   );

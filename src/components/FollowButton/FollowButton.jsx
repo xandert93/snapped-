@@ -5,9 +5,11 @@ import { authContext } from '../../contexts/1.auth/authContext';
 import { updateFollow } from '../../services/firebase';
 import useStyles from './styles';
 
-const followBtn = { text: 'follow', color: 'action' };
-const followingBtn = { text: 'following', color: 'primary' };
-const unfollowBtn = { text: 'unfollow', color: 'secondary' };
+const buttons = {
+  follow: ['follow', 'action'],
+  following: ['following', 'primary'],
+  unfollow: ['unfollow', 'secondary'],
+};
 
 export default function FollowButton({ altUserDoc, setAltUserDoc }) {
   const classes = useStyles();
@@ -18,10 +20,10 @@ export default function FollowButton({ altUserDoc, setAltUserDoc }) {
     altUserDoc.username
   );
 
-  const initialBtn = initialIsFollowed ? followingBtn : followBtn;
-
   const [isFollowed, setIsFollowed] = useState(initialIsFollowed);
-  const [btn, setBtn] = useState(initialBtn);
+  const [buttonData, setButtonData] = useState(
+    initialIsFollowed ? buttons.following : buttons.follow
+  );
 
   const clickHandler = async () => {
     setIsFollowed((isFollowed) => !isFollowed);
@@ -46,7 +48,7 @@ export default function FollowButton({ altUserDoc, setAltUserDoc }) {
       }));
     }
 
-    setBtn(!isFollowed ? followingBtn : followBtn);
+    setButtonData(!isFollowed ? buttons.following : buttons.follow);
   };
 
   return (
@@ -54,17 +56,11 @@ export default function FollowButton({ altUserDoc, setAltUserDoc }) {
       className={classes.followBtn}
       size="small"
       onClick={clickHandler}
-      onMouseEnter={() => {
-        if (!isFollowed) return;
-        setBtn(unfollowBtn);
-      }}
-      onMouseLeave={() => {
-        if (!isFollowed) return;
-        setBtn(followingBtn);
-      }}
+      onMouseEnter={() => isFollowed && setButtonData(buttons.unfollow)}
+      onMouseLeave={() => isFollowed && setButtonData(buttons.following)}
       variant="contained"
-      color={btn.color}>
-      {btn.text}
+      color={buttonData[1]}>
+      {buttonData[0]}
     </Button>
   );
 }
