@@ -55,11 +55,20 @@ export const base = {
       },
     },
 
+    MuiAvatar: {
+      root: {
+        '@media (min-width: 960px)': {
+          height: 56,
+          width: 56,
+        },
+      },
+    },
+
     MuiCardHeader: {
       root: {
-        padding: '10px 14px', //16px*
-        '@media (max-width: 600px)': {
-          padding: '8px 10px',
+        padding: '8px 10px', //16px*
+        '@media (min-width: 600px)': {
+          padding: '10px 14px',
         },
       },
 
@@ -69,11 +78,16 @@ export const base = {
 
       title: {
         fontWeight: 600,
-        lineHeight: 1.4, //1.5*
+        letterSpacing: 2,
+        '@media (max-width: 600px)': {
+          lineHeight: 1.4, //1.5*
+        },
       },
 
       subheader: {
-        lineHeight: 1.4, //1.6*
+        '@media (max-width: 600px)': {
+          lineHeight: 1.4, //1.6*
+        },
       },
 
       action: {

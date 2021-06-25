@@ -1,11 +1,10 @@
 import React, { useContext, useRef, useState } from 'react';
-import { ActionDialog } from '../../../../../components';
+import { ActionDialog, Link } from '../../../../../components';
 import {
   Avatar,
   Box,
   Button,
   Card,
-  CardActionArea,
   CardActions,
   CardContent,
   CardHeader,
@@ -17,13 +16,10 @@ import {
   IconButton,
   Input,
   InputAdornment,
-  Link,
-  Menu,
   MenuItem,
   MenuList,
   Paper,
   Popper,
-  TextField,
   Typography,
 } from '@material-ui/core';
 import {
@@ -47,6 +43,8 @@ import {
   updatePostLikes,
 } from '../../../../../services/firebase';
 import { Pagination } from '@material-ui/lab';
+
+let wasTouchedTwice = false;
 
 const PostCard = ({
   post: {
@@ -97,6 +95,15 @@ const PostCard = ({
     pageChangeHandler(null, Math.ceil((currentComments.length + 1) / 3));
   };
 
+  const touchHandler = (e) => {
+    if (!wasTouchedTwice) {
+      wasTouchedTwice = true;
+      return setTimeout(() => (wasTouchedTwice = false), 300);
+    }
+    e.preventDefault(); //prevents zoom-in on double-touch
+    likeHandler();
+  };
+
   const [pageNo, setPageNo] = useState(1);
 
   const pageChangeHandler = (e, newPageNo) => {
@@ -122,15 +129,13 @@ const PostCard = ({
         <CardHeader
           className={classes.cardHeader}
           avatar={
-            <Avatar
-              variant="rounded"
-              src={``}
-              component={RouterLink}
-              to={`/p/${username}`}>
-              {username[0].toUpperCase()}
-            </Avatar>
+            <Link to={`/p/${username}`}>
+              <Avatar variant="rounded" src={url}>
+                {username[0].toUpperCase()}
+              </Avatar>
+            </Link>
           }
-          title={username}
+          title={<Link to={`/p/${username}`}>{username}</Link>}
           titleTypographyProps={{
             variant: 'body1',
             // className: classes.cardTitle,
@@ -146,7 +151,7 @@ const PostCard = ({
                 <IconButton
                   ref={anchorRef}
                   onClick={() => setOpenPopper((x) => !x)}>
-                  <MoreVert />
+                  <MoreVert color="primary" />
                 </IconButton>
                 <Popper
                   open={openPopper}
@@ -161,7 +166,7 @@ const PostCard = ({
                           onClickAway={() => setOpenPopper(false)}>
                           <MenuList>
                             <MenuItem onClick={() => setOpenPopper(false)}>
-                              <Edit color="secondary" />
+                              <Edit color="disabled" />
                             </MenuItem>
                             <MenuItem
                               onClick={() => {
@@ -186,6 +191,7 @@ const PostCard = ({
           data-posts-idx={idx}
           image={url}
           title={`${username}'s picture`}
+          onTouchStart={touchHandler}
         />
         {/* <CardContent className={classes.cardContent2}>
           <Box>
@@ -242,9 +248,7 @@ const PostCard = ({
           </Typography>
           <Typography className={classes.cardTags} variant="body2" gutterBottom>
             {tags.map((tag) => (
-              <Link component={RouterLink} to={`/explore/tags/${tag}`}>
-                #{tag}{' '}
-              </Link>
+              <Link to={`/explore/tags/${tag}`}>#{tag} </Link>
             ))}
           </Typography>
 
@@ -256,7 +260,7 @@ const PostCard = ({
                   variant="body2"
                   gutterBottom
                   key={`${username}-${text}`}>
-                  <Link component={RouterLink} to={`/p/${username}`}>
+                  <Link to={`/p/${username}`}>
                     <strong>{username}</strong>
                   </Link>{' '}
                   {text}

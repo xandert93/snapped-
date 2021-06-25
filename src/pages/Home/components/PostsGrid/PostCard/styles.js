@@ -36,6 +36,10 @@ export default makeStyles((theme) => ({
     '& div': {
       flex: 1,
       textAlign: 'center',
+
+      '&:not(:last-child)': {
+        borderRight: '2px solid',
+      },
     },
   },
 
