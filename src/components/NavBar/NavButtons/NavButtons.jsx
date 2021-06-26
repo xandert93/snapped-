@@ -7,15 +7,15 @@ import { AccountCircle, CameraRoll, ExitToApp } from '@material-ui/icons';
 
 import { ROUTES } from '../../../constants/routes';
 
-const NavButtons = ({ isMobile, toggleDrawer }) => {
+const NavButtons = ({ isVPsm, toggleDrawer }) => {
   const classes = useStyles();
   const { logout, currentUserDoc } = useContext(authContext);
 
   return (
     <div
-      className={classes[isMobile ? 'navButtonsMob' : 'navButtons']}
+      className={classes[isVPsm ? 'navButtonsMob' : 'navButtons']}
       onClick={() => {
-        if (!isMobile) return;
+        if (!isVPsm) return;
         toggleDrawer();
       }}>
       <Button
@@ -24,14 +24,14 @@ const NavButtons = ({ isMobile, toggleDrawer }) => {
         startIcon={<CameraRoll />}>
         My Profile
       </Button>
-      {isMobile && <Divider />}
+      {isVPsm && <Divider />}
       <Button
         component={RouterLink}
         to={ROUTES.ACCOUNT}
         startIcon={<AccountCircle />}>
         My Account
       </Button>
-      {isMobile && <Divider />}
+      {isVPsm && <Divider />}
       <Button
         variant="contained"
         color="secondary"

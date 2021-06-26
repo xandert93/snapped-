@@ -1,4 +1,3 @@
-import { useContext } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import ConditionalWrapper from './ConditionalWrapper';
 import { NavButtons } from './NavButtons';
