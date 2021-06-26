@@ -1,13 +1,13 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, cloneElement } from 'react';
 import { Drawer, IconButton } from '@material-ui/core';
 import { Menu } from '@material-ui/icons';
 
-const ConditionalWrapper = ({ isMobile, children }) => {
+const ConditionalWrapper = ({ isVPsm, children }) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const toggleDrawer = useCallback(() => setIsDrawerOpen((x) => !x), []);
 
-  return !isMobile ? (
+  return !isVPsm ? (
     children
   ) : (
     <>
@@ -15,7 +15,7 @@ const ConditionalWrapper = ({ isMobile, children }) => {
         <Menu fontSize="large" color="secondary" />
       </IconButton>
       <Drawer anchor="left" open={isDrawerOpen} onClose={toggleDrawer}>
-        {React.cloneElement(children, { isMobile, toggleDrawer })}
+        {cloneElement(children, { isVPsm, toggleDrawer })}
       </Drawer>
     </>
   );

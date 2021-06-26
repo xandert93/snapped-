@@ -10,21 +10,21 @@ export default makeStyles((theme) => ({
     justifyContent: 'space-between',
   },
 
-  headingButtonBox: {
-    order: ({ isMobile }) => (isMobile ? 1 : 'initial'),
+  headingButtonBox: ({ isVPsm }) => ({
+    order: isVPsm ? 1 : 'initial',
     '& h1': {
       textTransform: 'lowercase',
     },
-  },
-
-  themeSwitchBox: ({ isMobile }) => ({
-    order: isMobile ? 2 : 'initial',
-    flexGrow: !isMobile ? 1 : 'initial',
   }),
 
-  logoImg: ({ isMobile }) => ({
-    width: theme.spacing(isMobile ? 7 : 8),
+  themeSwitchBox: ({ isVPsm }) => ({
+    order: isVPsm ? 2 : 'initial',
+    flexGrow: !isVPsm ? 1 : 'initial',
+  }),
+
+  logoImg: ({ isVPsm }) => ({
+    width: theme.spacing(isVPsm ? 7 : 8),
     margin: '-6px 0', //just to crop it on top and bottom
-    marginRight: theme.spacing(isMobile ? 0 : 2),
+    marginRight: theme.spacing(isVPsm ? 0 : 2),
   }),
 }));

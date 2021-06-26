@@ -1,27 +1,20 @@
 import { makeStyles } from '@material-ui/core';
 
 export default makeStyles((theme) => ({
-  fab: {
+  root: ({ isVPxs }) => ({
     position: 'fixed',
-    bottom: theme.spacing(3),
-    right: theme.spacing(3),
-    //TEMPORARY:
-    [theme.breakpoints.down('xs')]: {
-      bottom: theme.spacing(2),
-      right: theme.spacing(2),
-      height: theme.spacing(7),
-      width: theme.spacing(7),
-    },
-  },
+    bottom: theme.spacing(isVPxs ? 2 : 3),
+    right: theme.spacing(isVPxs ? 2 : 3),
+  }),
 
-  addPhotoIcon: {
-    fontSize: theme.spacing(5),
-    //TEMPORARY:
-    [theme.breakpoints.down('xs')]: {
-      fontSize: theme.spacing(4),
-    },
+  fab: ({ isVPxs }) =>
+    isVPxs && { height: theme.spacing(7), width: theme.spacing(7) },
+
+  addPhotoIcon: ({ isVPxs }) => ({
+    fontSize: theme.spacing(isVPxs ? 4 : 5),
+
     paddingRight: 2,
-  },
+  }),
 
   fileInput: {
     display: 'none',
