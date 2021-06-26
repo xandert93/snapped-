@@ -10,8 +10,13 @@ const PostsGrid = ({ posts, openModal }) => {
   const classes = useStyles();
   const { innerWidth } = useContext(appContext);
   const isMobile = innerWidth < 600;
+  const initialNoOfPostsShown = isMobile ? 4 : 8;
 
-  const noOfPostsShown = useGridScroll(4, posts.length, 2000);
+  const noOfPostsShown = useGridScroll(
+    initialNoOfPostsShown,
+    posts.length,
+    2000
+  );
 
   return (
     <Grid

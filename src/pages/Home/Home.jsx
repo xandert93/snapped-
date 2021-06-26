@@ -29,7 +29,7 @@ const Home = () => {
   return (
     <Grid container>
       {!!posts.length && <PostsGrid posts={posts} openModal={openModal} />}
-      <SuggestedProfiles />
+      {/* <SuggestedProfiles /> */}
       {showModal && <ImageModal url={modalImgURL} closeModal={closeModal} />}
       <CreatePostButton />
     </Grid>

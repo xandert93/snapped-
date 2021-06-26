@@ -2,18 +2,26 @@ import { makeStyles } from '@material-ui/core';
 
 export default makeStyles((theme) => ({
   root: {
-    transitionProperty: 'transform',
-    transitionDuration: theme.transitions.duration.complex,
+    transition: theme.transitions.create(['transform', 'box-shadow'], {
+      duration: theme.transitions.duration.complex,
+    }),
     [theme.breakpoints.up('sm')]: {
       '&:hover': {
         boxShadow: theme.shadows[20],
-        transform: 'translateY(-5px)',
+        transform: 'translateY(-8px)',
       },
     },
   },
 
   actionButton: {
     padding: theme.spacing(1), //make area more clickable
+  },
+
+  cardAvatar: {
+    borderRadius: '10px 3px 3px',
+    [theme.breakpoints.down('xs')]: {
+      borderRadius: '50%',
+    },
   },
 
   cardMedia: {

@@ -1,5 +1,4 @@
-import React, { useContext } from 'react';
-import { authContext } from '../../contexts/1.auth/authContext';
+import { useContext, useEffect } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import ConditionalWrapper from './ConditionalWrapper';
 import { NavButtons } from './NavButtons';
@@ -10,57 +9,64 @@ import logo from '../../assets/images/snapped.ico';
 import { ROUTES } from '../../constants/routes';
 import { appContext } from '../../contexts/3.app/appContext';
 import { ThemeSwitch } from '../ThemeSwitch';
+import { useRef } from 'react';
+
+let scrollFromTop = window.pageYOffset;
 
 const NavBar = () => {
-  const classes = useStyles();
-  const { currentUserDoc } = useContext(authContext);
   const { innerWidth } = useContext(appContext);
 
   const isMobile = innerWidth < 960;
+  const classes = useStyles({ isMobile });
+
+  const appBarRef = useRef();
+  useEffect(() => {
+    window.addEventListener('scroll', navScroll);
+
+    function navScroll() {
+      let newScrollFromTop = window.pageYOffset;
+      appBarRef.current.style.top =
+        newScrollFromTop > scrollFromTop ? '-67px' : '0px';
+      scrollFromTop = newScrollFromTop;
+    }
+
+    return () => window.removeEventListener('scroll', navScroll);
+  }, []);
 
   return (
     <>
-      <AppBar className={classes.appBar} color="inherit">
-        <Toolbar style={{ justifyContent: 'space-between' }}>
-          {isMobile && (
-            <Box style={{ order: '2' }}>
-              <ThemeSwitch />
-            </Box>
-          )}
+      <AppBar
+        ref={appBarRef}
+        elevation={0}
+        className={classes.appBar}
+        color="inherit">
+        <Toolbar className={classes.toolbar}>
+          <Box className={classes.headingButtonBox}>
+            <Button component={RouterLink} to={ROUTES.HOME}>
+              <img src={logo} alt="snapped!" className={classes.logoImg} />
+              {!isMobile && (
+                <Typography
+                  variant="h4"
+                  component="h1"
+                  className={classes.heading}>
+                  snapped!
+                </Typography>
+              )}
+            </Button>
+          </Box>
 
-          <Button
-            component={RouterLink}
-            to={ROUTES.HOME}
-            style={{ order: isMobile ? '1' : '0' }}
-            disableRipple>
-            <img src={logo} alt="snapped!" className={classes.logoImg} />
-            {!isMobile && (
-              <Typography
-                variant="h4"
-                component="h1"
-                className={classes.heading}>
-                snapped!
-              </Typography>
-            )}
-          </Button>
+          <Box className={classes.themeSwitchBox}>
+            <ThemeSwitch />
+          </Box>
 
-          {/*duplicate switch cos me lazy*/}
-          {!isMobile && (
-            <Box>
-              <ThemeSwitch />
-            </Box>
-          )}
-
-          {!isMobile && <div className={classes.grow} />}
-
-          {currentUserDoc && (
+          <Box>
             <ConditionalWrapper isMobile={isMobile}>
               <NavButtons />
             </ConditionalWrapper>
-          )}
+          </Box>
         </Toolbar>
       </AppBar>
-      <div className={classes.toolbar} />
+      <Toolbar />
     </>
   );
 };

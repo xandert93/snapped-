@@ -125,12 +125,12 @@ const PostCard = ({
 
   return (
     <Grid item xs={12} sm={9} md={6} lg={3}>
-      <Card className={classes.root} raised={!isMobile} square={isMobile}>
+      <Card className={classes.root} raised={!isMobile}>
         <CardHeader
           className={classes.cardHeader}
           avatar={
             <Link to={`/p/${username}`}>
-              <Avatar variant="rounded" src={url}>
+              <Avatar className={classes.cardAvatar} src={url}>
                 {username[0].toUpperCase()}
               </Avatar>
             </Link>

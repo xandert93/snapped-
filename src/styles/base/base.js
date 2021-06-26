@@ -1,12 +1,9 @@
 export const base = {
   overrides: {
-    MuiToolbar: {
-      gutters: {
-        paddingLeft: 0,
-        paddingRight: 0,
-        '@media (min-width: 600px)': {
-          paddingLeft: 0,
-          paddingRight: 0,
+    MuiContainer: {
+      root: {
+        '@media (max-width: 600px)': {
+          padding: 0, //0 16px*
         },
       },
     },
@@ -64,11 +61,17 @@ export const base = {
       },
     },
 
+    MuiCard: {
+      root: {
+        borderRadius: 20,
+      },
+    },
+
     MuiCardHeader: {
       root: {
         padding: '8px 10px', //16px*
         '@media (min-width: 600px)': {
-          padding: '10px 14px',
+          padding: '12px 13px 11px',
         },
       },
 

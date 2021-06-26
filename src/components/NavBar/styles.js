@@ -2,42 +2,29 @@ import { makeStyles } from '@material-ui/core';
 
 export default makeStyles((theme) => ({
   appBar: {
-    [theme.breakpoints.up('md')]: {
-      minHeight: 100,
-    },
-    [theme.breakpoints.down('md')]: {
-      minHeight: 86,
-    },
-    [theme.breakpoints.down('sm')]: {
-      minHeight: 72,
-    },
+    borderBottom: `3px solid ${theme.palette.primary.main}`,
+    transition: theme.transitions.create('top', { duration: '0.3s' }),
   },
+
   toolbar: {
-    [theme.breakpoints.up('md')]: {
-      minHeight: 100,
-    },
-    [theme.breakpoints.down('md')]: {
-      minHeight: 86,
-    },
-    [theme.breakpoints.down('sm')]: {
-      minHeight: 72,
+    justifyContent: 'space-between',
+  },
+
+  headingButtonBox: {
+    order: ({ isMobile }) => (isMobile ? 1 : 'initial'),
+    '& h1': {
+      textTransform: 'lowercase',
     },
   },
-  logoImg: {
-    width: 80,
-    marginRight: 12,
-    [theme.breakpoints.down('md')]: {
-      width: 70,
-    },
-    [theme.breakpoints.down('sm')]: {
-      marginRight: 0,
-      width: 60,
-    },
-  },
-  heading: {
-    textTransform: 'lowercase',
-  },
-  grow: {
-    flexGrow: 1,
-  },
+
+  themeSwitchBox: ({ isMobile }) => ({
+    order: isMobile ? 2 : 'initial',
+    flexGrow: !isMobile ? 1 : 'initial',
+  }),
+
+  logoImg: ({ isMobile }) => ({
+    width: theme.spacing(isMobile ? 7 : 8),
+    margin: '-6px 0', //just to crop it on top and bottom
+    marginRight: theme.spacing(isMobile ? 0 : 2),
+  }),
 }));

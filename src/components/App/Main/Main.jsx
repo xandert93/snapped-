@@ -1,4 +1,5 @@
 import React, { useContext, useState } from 'react';
+import { Container } from '@material-ui/core';
 import { AddToPhotos } from '@material-ui/icons';
 import useStyles from './styles';
 import { authContext } from '../../../contexts/1.auth/authContext';
@@ -27,11 +28,21 @@ const Main = ({ children }) => {
     validateFile(e.dataTransfer.files[0]);
   };
 
+  return (
+    <Container component="main" maxWidth="xl">
+      {children}
+    </Container>
+  );
+
   return !currentUserDoc ? (
-    <main>{children}</main>
+    <Container component="main" maxWidth="xl">
+      {children}
+    </Container>
   ) : (
     <>
-      <main
+      <Container
+        component="main"
+        maxWidth="xl"
         className={`${classes.main} ${isDragged ? classes.dragged : ''}`}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
@@ -40,7 +51,7 @@ const Main = ({ children }) => {
         <div className={classes[!isDragged ? 'container' : 'containerHidden']}>
           {children}
         </div>
-      </main>
+      </Container>
 
       {isDragged && (
         <AddToPhotos className={classes.uploadIcon} color="secondary" />
