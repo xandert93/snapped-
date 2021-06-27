@@ -29,7 +29,7 @@ const Main = ({ children }) => {
   };
 
   return (
-    <Container component="main" maxWidth="xl">
+    <Container className={classes.root} component="main" maxWidth="xl">
       {children}
     </Container>
   );

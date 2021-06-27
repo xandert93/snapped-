@@ -11,7 +11,6 @@ import {
   CardMedia,
   ClickAwayListener,
   Collapse,
-  Grid,
   Grow,
   IconButton,
   Input,
@@ -58,10 +57,14 @@ const PostCard = ({
     url,
   },
   idx,
-  isMobile,
+  isVPxs,
+  isHovered,
+  hoveredCardIdx,
 }) => {
   const { currentUserDoc } = useContext(authContext);
-  const classes = useStyles();
+  const classes = useStyles({ isHovered });
+
+  console.log(idx, hoveredCardIdx, isHovered);
 
   const [liked, setLiked] = useState(isLikedByUser);
   const [currentNumOfLikes, setCurrentNumOfLikes] = useState(likes.length);
@@ -124,8 +127,8 @@ const PostCard = ({
   };
 
   return (
-    <Grid item xs={12} sm={9} md={6} lg={3}>
-      <Card className={classes.root} raised={!isMobile}>
+    <>
+      <Card className={classes.postCard} raised={!isVPxs}>
         <CardHeader
           className={classes.cardHeader}
           avatar={
@@ -329,7 +332,7 @@ const PostCard = ({
         content="Your post will be permanenty deleted."
         clickHandler={deleteHandler}
       />
-    </Grid>
+    </>
   );
 };
 

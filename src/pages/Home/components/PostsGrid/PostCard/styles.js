@@ -1,17 +1,24 @@
 import { makeStyles } from '@material-ui/core';
 
 export default makeStyles((theme) => ({
-  root: {
+  // root: {
+
+  //   [theme.breakpoints.up('sm')]: {
+  //     '&:hover': {
+  //       boxShadow: theme.shadows[20],
+  //       transform: 'translateY(-8px)',
+  //     },
+  //   },
+  // },
+
+  postCard: ({ isHovered }) => ({
     transition: theme.transitions.create(['transform', 'box-shadow'], {
       duration: theme.transitions.duration.complex,
     }),
-    [theme.breakpoints.up('sm')]: {
-      '&:hover': {
-        boxShadow: theme.shadows[20],
-        transform: 'translateY(-8px)',
-      },
-    },
-  },
+
+    boxShadow: isHovered ? theme.shadows[20] : 'initial',
+    transform: isHovered ? 'translateY(-8px)' : 'initial',
+  }),
 
   actionButton: {
     padding: theme.spacing(1), //make area more clickable

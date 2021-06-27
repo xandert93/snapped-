@@ -1,6 +1,13 @@
 import { makeStyles } from '@material-ui/core';
 
 export default makeStyles((theme) => ({
+  root: {
+    padding: theme.spacing(2),
+    [theme.breakpoints.down('xs')]: {
+      padding: 0,
+    },
+  },
+
   //main needs a temp height for now for the drag and drop
   //or the way i've set it up...look at mp3 cutter which overlays main content
   // main: {

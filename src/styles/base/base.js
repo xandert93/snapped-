@@ -1,5 +1,13 @@
 export const base = {
   overrides: {
+    MuiToolbar: {
+      gutters: {
+        '@media (max-width: 600px)': {
+          padding: '0 8px', //0 16px*
+        },
+      },
+    },
+
     MuiContainer: {
       root: {
         '@media (max-width: 600px)': {
@@ -8,10 +16,14 @@ export const base = {
       },
     },
 
+    MuiLink: {
+      underlineHover: {
+        '&:hover': { textDecoration: 'none' },
+      },
+    },
+
     MuiButton: {
       root: {
-        // height: 'auto',
-        // width: 'auto',
         borderRadius: 50,
         padding: '8px 20px', //6px 16px*
       },
@@ -54,7 +66,7 @@ export const base = {
 
     MuiAvatar: {
       root: {
-        '@media (min-width: 960px)': {
+        '@media (min-width: 600px)': {
           height: 56,
           width: 56,
         },

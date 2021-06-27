@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import { useBucket } from '../../../../custom-hooks';
-import { ProgressCircle } from './ProgressCircle';
+import { ProgressCircle } from '../ProgressCircle';
 import { useHistory, useLocation } from 'react-router-dom';
 import { uploadContext } from '../../../../contexts/2.upload/uploadContext';
 import { ROUTES } from '../../../../constants/routes';

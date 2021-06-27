@@ -1,16 +1,15 @@
-import React from 'react';
 import PostCard from './PostCard';
 import useStyles from './styles';
-import { Grid } from '@material-ui/core';
+import { Grid, useMediaQuery } from '@material-ui/core';
 import { useGridScroll } from '../../../../custom-hooks';
-import { useContext } from 'react';
-import { appContext } from '../../../../contexts/3.app/appContext';
+import { useState } from 'react';
+import { isCardMedia } from '../../../../utils/helpers';
 
 const PostsGrid = ({ posts, openModal }) => {
   const classes = useStyles();
-  const { innerWidth } = useContext(appContext);
-  const isMobile = innerWidth < 600;
-  const initialNoOfPostsShown = isMobile ? 4 : 8;
+  const isVPxs = useMediaQuery(({ breakpoints }) => breakpoints.down('xs'));
+
+  const initialNoOfPostsShown = isVPxs ? 4 : 8;
 
   const noOfPostsShown = useGridScroll(
     initialNoOfPostsShown,
@@ -18,19 +17,40 @@ const PostsGrid = ({ posts, openModal }) => {
     2000
   );
 
+  const [hoveredCardIdx, setHoveredCardIdx] = useState(-1);
+  const mouseMoveHandler = (e) =>
+    !isCardMedia(e.target)
+      ? setHoveredCardIdx(-1)
+      : setHoveredCardIdx(+e.target.dataset.postsIdx);
+
   return (
     <Grid
+      className={classes.gridContainer}
       item
-      sm={9}
-      lg={10}
       container
-      spacing={isMobile ? 0 : 2}
-      className={classes.postsContainer}
-      onClick={isMobile ? null : openModal}>
+      spacing={isVPxs ? 0 : 3}
+      onMouseMove={isVPxs ? null : mouseMoveHandler}
+      onClick={isVPxs ? null : openModal}>
       {posts.map(
         (post, idx) =>
           idx < noOfPostsShown && (
-            <PostCard key={post.id} {...{ post, idx, isMobile }} />
+            <Grid
+              key={post.id}
+              className={classes.gridItem}
+              item
+              xs={12}
+              sm={9}
+              md={6}
+              lg={3}>
+              <PostCard
+                {...{
+                  post,
+                  idx,
+                  isVPxs,
+                  isHovered: hoveredCardIdx === idx ? true : false,
+                }}
+              />
+            </Grid>
           )
       )}
     </Grid>
@@ -38,3 +58,26 @@ const PostsGrid = ({ posts, openModal }) => {
 };
 
 export default PostsGrid;
+
+/*
+onMouseOver
+
+function isCardMedia(node) {
+  return node.className.includes("MuiCardMedia");
+}
+
+!isCardMedia(e.target) return setHoveredCardIdx(-1)
+setHoveredCardIdx(e.target.dataset.postsIdx);
+
+in CSS:
+
+root: ({hoveredCardIdx}) => ({
+  [`nth-child(${hoveredCardIdx})`]: {}
+})
+
+
+onMouseLeave
+
+
+
+*/

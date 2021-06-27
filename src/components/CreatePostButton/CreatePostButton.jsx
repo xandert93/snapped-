@@ -1,12 +1,11 @@
 import { useContext } from 'react';
-import { Box, Fab, useTheme, useMediaQuery } from '@material-ui/core';
+import { Box, Fab, useMediaQuery } from '@material-ui/core';
 import { AddAPhoto } from '@material-ui/icons';
 import { uploadContext } from '../../contexts/2.upload/uploadContext';
 import useStyles from './styles';
 
 export default function CreatePostButton() {
-  const { breakpoints } = useTheme();
-  const isVPxs = useMediaQuery(breakpoints.down('xs')); //is viewport width less than 960px
+  const isVPxs = useMediaQuery(({ breakpoints }) => breakpoints.down('xs')); //is viewport width less than 960px
   const classes = useStyles({ isVPxs });
 
   const { fileData, validateFile } = useContext(uploadContext);

@@ -5,6 +5,7 @@ import { Grid } from '@material-ui/core';
 
 import useStyles from './styles';
 import { CreatePostButton } from '../../components';
+import { isCardMedia } from '../../utils/helpers';
 
 const Home = () => {
   const classes = useStyles();
@@ -15,21 +16,19 @@ const Home = () => {
   const [modalImgURL, setModalImgURL] = useState('');
 
   const openModal = (e) => {
-    if (e.target.classList.contains('MuiCardMedia-root')) {
+    if (isCardMedia(e.target)) {
       setModalImgURL(posts[e.target.dataset.postsIdx].url);
       setShowModal(true);
     }
   };
 
-  const closeModal = (e) => {
-    if (e.target.className.includes('modalImg')) return;
-    setShowModal(false);
-  };
+  const closeModal = (e) =>
+    !e.target.className.includes('modalImg') && setShowModal(false);
 
   return (
     <Grid container>
-      {!!posts.length && <PostsGrid posts={posts} openModal={openModal} />}
       {/* <SuggestedProfiles /> */}
+      {!!posts.length && <PostsGrid posts={posts} openModal={openModal} />}
       {showModal && <ImageModal url={modalImgURL} closeModal={closeModal} />}
       <CreatePostButton />
     </Grid>

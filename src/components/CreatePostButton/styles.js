@@ -12,7 +12,6 @@ export default makeStyles((theme) => ({
 
   addPhotoIcon: ({ isVPxs }) => ({
     fontSize: theme.spacing(isVPxs ? 4 : 5),
-
     paddingRight: 2,
   }),
 
