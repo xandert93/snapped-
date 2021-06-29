@@ -38,7 +38,7 @@ const PostsGrid = ({ posts, openModal }) => {
               key={post.id}
               className={classes.gridItem}
               item
-              sm={12}
+              xs={12}
               md={6}
               lg={4}
               xl={3}>

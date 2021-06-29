@@ -7,11 +7,18 @@ export default makeStyles((theme) => ({
     width: '100%',
     zIndex: 100,
     [theme.breakpoints.up('xs')]: {
-      padding: theme.spacing(3, 3),
+      padding: theme.spacing(2, 1),
+    },
+
+    '& .MuiBottomNavigationAction-iconOnly': {
+      color: theme.palette.text.primary,
+    },
+
+    '& .Mui-selected': {
+      color: theme.palette.secondary.main,
     },
 
     '& svg': {
-      color: theme.palette.text.primary,
       fontSize: theme.spacing(5),
       [theme.breakpoints.down('xs')]: {
         fontSize: theme.spacing(3.5),

@@ -16,21 +16,9 @@ export default function BottomNav() {
       className={classes.root}
       value={tab}
       onChange={handleChange}>
-      <BottomNavigationAction
-        label="Explore"
-        value="Explore"
-        icon={<Search fontSize="large" />}
-      />
-      <BottomNavigationAction
-        label="Timeline"
-        value="Timeline"
-        icon={<Timeline fontSize="large" />}
-      />
-      <BottomNavigationAction
-        label="My Profile"
-        value="My Profile"
-        icon={<AccountCircle fontSize="large" />}
-      />
+      <BottomNavigationAction value="Explore" icon={<Search />} />
+      <BottomNavigationAction value="Timeline" icon={<Timeline />} />
+      <BottomNavigationAction value="My Profile" icon={<AccountCircle />} />
     </BottomNavigation>
   );
 }
