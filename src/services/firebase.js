@@ -1,4 +1,4 @@
-import { db, FieldValue } from '../lib/firebase/config';
+import { bucket, db, FieldValue } from '../lib/firebase/config';
 
 /*USERS COLLECTION*/
 const users = db.collection('Users');
@@ -70,8 +70,9 @@ export const updatePostDescription = async (docId, description) => {
   return;
 };
 
-export const deletePost = async (docId) => {
+export const deletePost = async (docId, fileName) => {
   await posts.doc(docId).delete();
+  await bucket.ref(fileName).delete();
   return;
 };
 

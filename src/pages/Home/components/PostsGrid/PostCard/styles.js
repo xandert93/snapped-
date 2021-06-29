@@ -1,23 +1,22 @@
-import { makeStyles } from '@material-ui/core';
+import { fade, makeStyles } from '@material-ui/core';
 
 export default makeStyles((theme) => ({
-  // root: {
-
-  //   [theme.breakpoints.up('sm')]: {
-  //     '&:hover': {
-  //       boxShadow: theme.shadows[20],
-  //       transform: 'translateY(-8px)',
-  //     },
-  //   },
-  // },
-
-  postCard: ({ isHovered }) => ({
+  postCard: ({ isCardMediaHovered }) => ({
     transition: theme.transitions.create(['transform', 'box-shadow'], {
       duration: theme.transitions.duration.complex,
     }),
 
-    boxShadow: isHovered ? theme.shadows[20] : 'initial',
-    transform: isHovered ? 'translateY(-8px)' : 'initial',
+    backgroundColor: fade(
+      theme.palette.common.black,
+      isCardMediaHovered ? 0.05 : 0.1
+    ),
+    boxShadow: theme.shadows[isCardMediaHovered ? 20 : 8],
+    transform: isCardMediaHovered ? 'translateY(-8px)' : 'initial',
+
+    [theme.breakpoints.down('xs')]: {
+      boxShadow: theme.shadows[1],
+      backgroundColor: 'initial',
+    },
   }),
 
   actionButton: {
@@ -52,25 +51,33 @@ export default makeStyles((theme) => ({
       flex: 1,
       textAlign: 'center',
 
+      '&:not(:first-child)': {
+        marginLeft: 0,
+      },
       '&:not(:last-child)': {
         borderRight: '2px solid',
       },
     },
   },
 
-  cardContent1: {
-    paddingTop: 0,
-    paddingBottom: 0,
+  cardContent3: {
     '& .MuiPagination-ul': {
       justifyContent: 'center',
     },
   },
 
-  cardCaption: { fontWeight: 600, textAlign: 'center' },
-  cardTags: { textAlign: 'center' },
+  cardCaption: {
+    fontWeight: 600,
+    textAlign: 'center',
+  },
+
+  cardTags: {
+    textAlign: 'center',
+    fontStyle: 'italic',
+    fontWeight: 600,
+  },
 
   commentSVG: {
-    marginTop: 2,
     paddingTop: 1,
   },
 

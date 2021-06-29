@@ -4,7 +4,7 @@ import { SuggestedProfiles, PostsGrid, ImageModal } from './components';
 import { Grid } from '@material-ui/core';
 
 import useStyles from './styles';
-import { CreatePostButton } from '../../components';
+import { CreatePostFAB } from '../../components';
 import { isCardMedia } from '../../utils/helpers';
 
 const Home = () => {
@@ -30,7 +30,6 @@ const Home = () => {
       {/* <SuggestedProfiles /> */}
       {!!posts.length && <PostsGrid posts={posts} openModal={openModal} />}
       {showModal && <ImageModal url={modalImgURL} closeModal={closeModal} />}
-      <CreatePostButton />
     </Grid>
   );
 };

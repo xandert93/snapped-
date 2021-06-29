@@ -1,5 +1,5 @@
 export { App } from './App';
-export { CreatePostButton } from './CreatePostButton';
+export { CreatePostFAB } from './CreatePostFAB';
 export { ActionDialog } from './ActionDialog';
 export { Link } from './Link';
 export { NavBar } from './NavBar';

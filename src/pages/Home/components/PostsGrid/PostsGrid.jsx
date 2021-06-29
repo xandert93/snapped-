@@ -38,16 +38,16 @@ const PostsGrid = ({ posts, openModal }) => {
               key={post.id}
               className={classes.gridItem}
               item
-              xs={12}
-              sm={9}
+              sm={12}
               md={6}
-              lg={3}>
+              lg={4}
+              xl={3}>
               <PostCard
                 {...{
                   post,
                   idx,
                   isVPxs,
-                  isHovered: hoveredCardIdx === idx ? true : false,
+                  isCardMediaHovered: hoveredCardIdx === idx ? true : false,
                 }}
               />
             </Grid>

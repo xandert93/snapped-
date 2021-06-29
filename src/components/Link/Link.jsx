@@ -6,7 +6,7 @@ import useStyles from './styles';
 export default function Link({ to, children }) {
   const classes = useStyles();
   return (
-    <MuiLink component={RouterLink} to={to}>
+    <MuiLink className={classes.link} component={RouterLink} to={to}>
       {children}
     </MuiLink>
   );

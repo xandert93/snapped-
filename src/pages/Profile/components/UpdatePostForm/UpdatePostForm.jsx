@@ -24,7 +24,7 @@ const UpdatePostForm = ({ post, imageURL, closeModal }) => {
 
   const deleteHandler = async () => {
     try {
-      await deletePost(post.id);
+      await deletePost(post.id, post.fileName);
       setMsgData({ success: true, msg: 'Post deleted.' });
       setTimeout(closeModal, 2000);
     } catch (err) {

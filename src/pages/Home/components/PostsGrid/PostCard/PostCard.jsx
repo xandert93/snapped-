@@ -34,7 +34,6 @@ import {
 } from '@material-ui/icons';
 import useStyles from './styles';
 import moment from 'moment';
-import { Link as RouterLink } from 'react-router-dom';
 import { authContext } from '../../../../../contexts/1.auth/authContext';
 import {
   deletePost,
@@ -55,16 +54,14 @@ const PostCard = ({
     likes,
     comments,
     url,
+    fileName,
   },
   idx,
   isVPxs,
-  isHovered,
-  hoveredCardIdx,
+  isCardMediaHovered,
 }) => {
   const { currentUserDoc } = useContext(authContext);
-  const classes = useStyles({ isHovered });
-
-  console.log(idx, hoveredCardIdx, isHovered);
+  const classes = useStyles({ isCardMediaHovered });
 
   const [liked, setLiked] = useState(isLikedByUser);
   const [currentNumOfLikes, setCurrentNumOfLikes] = useState(likes.length);
@@ -120,7 +117,7 @@ const PostCard = ({
 
   const deleteHandler = async () => {
     try {
-      await deletePost(id);
+      await deletePost(id, fileName);
     } catch (err) {
     } finally {
     }
@@ -128,7 +125,7 @@ const PostCard = ({
 
   return (
     <>
-      <Card className={classes.postCard} raised={!isVPxs}>
+      <Card className={classes.postCard}>
         <CardHeader
           className={classes.cardHeader}
           avatar={
@@ -145,7 +142,7 @@ const PostCard = ({
           }}
           subheader={location}
           subheaderTypographyProps={{
-            variant: 'caption',
+            variant: 'subtitle2',
             // className: classes.cardSubheader,
           }}
           action={
@@ -214,6 +211,14 @@ const PostCard = ({
             <ExpandMore />
           </IconButton> */}
 
+        <CardContent>
+          <Typography className={classes.cardTags} variant="body2">
+            {tags.map((tag) => (
+              <Link to={`/explore/tags/${tag}`}>#{tag} </Link>
+            ))}
+          </Typography>
+        </CardContent>
+
         <CardActions className={classes.cardActions}>
           <Box>
             <IconButton onClick={likeHandler}>
@@ -224,7 +229,7 @@ const PostCard = ({
               )}
             </IconButton>
 
-            <Typography variant="subtitle2">
+            <Typography variant="caption" component="p">
               {currentNumOfLikes} like{currentNumOfLikes !== 1 && 's'}
             </Typography>
           </Box>
@@ -235,26 +240,20 @@ const PostCard = ({
                 className={classes.commentSVG}
               />
             </IconButton>
-            <Typography variant="subtitle2">
+            <Typography variant="caption" component="p">
               {currentComments.length} comment
               {currentComments.length !== 1 && 's'}
             </Typography>
           </Box>
         </CardActions>
 
-        <CardContent className={classes.cardContent1}>
-          <Typography
-            className={classes.cardCaption}
-            variant="body1"
-            gutterBottom>
+        <CardContent>
+          <Typography className={classes.cardCaption} variant="body1">
             {caption}
           </Typography>
-          <Typography className={classes.cardTags} variant="body2" gutterBottom>
-            {tags.map((tag) => (
-              <Link to={`/explore/tags/${tag}`}>#{tag} </Link>
-            ))}
-          </Typography>
+        </CardContent>
 
+        <CardContent className={classes.cardContent3}>
           {!!currentComments.length &&
             currentComments
               .slice(sliceNum - 3, sliceNum)

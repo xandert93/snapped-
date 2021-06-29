@@ -2,7 +2,7 @@ export const base = {
   overrides: {
     MuiToolbar: {
       gutters: {
-        '@media (max-width: 600px)': {
+        '@media (max-width: 576px)': {
           padding: '0 8px', //0 16px*
         },
       },
@@ -10,7 +10,7 @@ export const base = {
 
     MuiContainer: {
       root: {
-        '@media (max-width: 600px)': {
+        '@media (max-width: 576px)': {
           padding: 0, //0 16px*
         },
       },
@@ -66,7 +66,7 @@ export const base = {
 
     MuiAvatar: {
       root: {
-        '@media (min-width: 600px)': {
+        '@media (min-width: 576px)': {
           height: 56,
           width: 56,
         },
@@ -82,7 +82,7 @@ export const base = {
     MuiCardHeader: {
       root: {
         padding: '8px 10px', //16px*
-        '@media (min-width: 600px)': {
+        '@media (min-width: 576px)': {
           padding: '12px 13px 11px',
         },
       },
@@ -94,29 +94,40 @@ export const base = {
       title: {
         fontWeight: 600,
         letterSpacing: 2,
-        '@media (max-width: 600px)': {
+        '@media (max-width: 576px)': {
           lineHeight: 1.4, //1.5*
         },
       },
 
       subheader: {
-        '@media (max-width: 600px)': {
+        '@media (max-width: 576px)': {
           lineHeight: 1.4, //1.6*
         },
       },
 
       action: {
-        alignSelf: 'initial', //flex-start* ugly
-        marginTop: 'initial', //-8px* ugly
-        marginRight: 'initial', //-8px* ugly
+        alignSelf: 'initial', //flex-start* (ugly)
+        marginTop: 'initial', //-8px* (ugly)
+        marginRight: 'initial', //-8px* (ugly)
       },
     },
 
     MuiCardContent: {
       root: {
-        padding: '10px 14px',
+        padding: '10px 14px', //16px*
+        '@media (max-width: 576px)': {
+          padding: 8,
+        },
         '&:last-child': {
-          paddingBottom: '10px',
+          paddingBottom: '10px', //24px* (massive)
+        },
+      },
+    },
+
+    MuiBottomNavigation: {
+      root: {
+        '@media (min-width: 576px)': {
+          height: 64, //otherwise always 56px*
         },
       },
     },
@@ -124,7 +135,7 @@ export const base = {
     MuiStepper: {
       root: {
         padding: '0 24px',
-        '@media (max-width: 600px)': {
+        '@media (max-width: 576px)': {
           padding: 0,
         },
         marginRight: 24,
@@ -133,10 +144,20 @@ export const base = {
 
     MuiStepConnector: {
       lineVertical: {
-        '@media (max-width: 600px)': {
+        '@media (max-width: 576px)': {
           minHeight: 0,
         },
       },
+    },
+  },
+
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 576,
+      md: 768,
+      lg: 992,
+      xl: 1200,
     },
   },
 

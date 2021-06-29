@@ -5,7 +5,7 @@ import { createPost } from '../services/firebase';
 import exifr from 'exifr';
 import imageCompression from 'browser-image-compression';
 
-export const useBucket = (file, description) => {
+export function useBucket(file, description) {
   const { currentUserDoc } = useContext(authContext);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadURL, setUploadURL] = useState('');
@@ -15,9 +15,9 @@ export const useBucket = (file, description) => {
     if (!file) return;
 
     const uploadAndCreatePost = async () => {
-      const storedItemRef = bucket.ref(
-        currentUserDoc.username + '--' + file.name
-      );
+      const imageRef = bucket.ref(currentUserDoc.username + '--' + file.name);
+
+      console.log(imageRef.name);
 
       const exifOrientation = await exifr.orientation(file);
 
@@ -27,13 +27,13 @@ export const useBucket = (file, description) => {
         exifOrientation,
       });
 
-      storedItemRef.put(compressedFile).on(
+      imageRef.put(compressedFile).on(
         'state_changed',
         ({ bytesTransferred, totalBytes }) =>
           setUploadProgress((bytesTransferred / totalBytes) * 100),
         (err) => setUploadErrMsg(err.message),
         async () => {
-          const url = await storedItemRef.getDownloadURL();
+          const url = await imageRef.getDownloadURL();
 
           const newPost = {
             userId: currentUserDoc.userId,
@@ -42,6 +42,7 @@ export const useBucket = (file, description) => {
             likes: [],
             comments: [],
             url,
+            fileName: imageRef.name,
             createdAt: FieldValue.serverTimestamp(),
           };
 
@@ -55,7 +56,7 @@ export const useBucket = (file, description) => {
   }, [file]);
 
   return { uploadProgress, uploadURL, uploadErrMsg };
-};
+}
 
 /*When image is compressed, it is stripped of its EXIF data. This is problematic because the EXIF
 data contains an "orientation" property that determines the image's orientation when the image

@@ -4,7 +4,9 @@ export default makeStyles((theme) => ({
   gridContainer: {
     margin: 0, //-4 * grid spacing #weird
     [theme.breakpoints.down('xs')]: {
-      '& >:not(:last-child)': { marginBottom: theme.spacing(2) },
+      '& >:not(:last-child)': {
+        marginBottom: theme.spacing(2),
+      },
     },
   },
 }));

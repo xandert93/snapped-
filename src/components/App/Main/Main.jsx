@@ -29,7 +29,7 @@ const Main = ({ children }) => {
   };
 
   return (
-    <Container className={classes.root} component="main" maxWidth="xl">
+    <Container className={classes.root} component="main" maxWidth={false}>
       {children}
     </Container>
   );
@@ -42,7 +42,7 @@ const Main = ({ children }) => {
     <>
       <Container
         component="main"
-        maxWidth="xl"
+        maxWidth={false}
         className={`${classes.main} ${isDragged ? classes.dragged : ''}`}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
