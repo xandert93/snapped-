@@ -116,7 +116,7 @@ export const base = {
       root: {
         padding: '10px 14px', //16px*
         '@media (max-width: 576px)': {
-          padding: 12,
+          padding: '8px 12px',
         },
         '&:last-child': {
           paddingBottom: '10px', //24px* (massive)
@@ -174,6 +174,9 @@ export const base = {
       variant: 'outlined',
       fullWidth: true,
       // size: 'small',
+    },
+    MuiBottomNavigationAction: {
+      disableRipple: true,
     },
   },
 

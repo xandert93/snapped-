@@ -1,13 +1,19 @@
 import PostCard from './PostCard';
 import useStyles from './styles';
-import { Grid, useMediaQuery } from '@material-ui/core';
+import { useMediaQuery, useTheme } from '@material-ui/core';
 import { useGridScroll } from '../../../../custom-hooks';
 import { useState } from 'react';
 import { isCardMedia } from '../../../../utils/helpers';
+import Masonry from 'react-masonry-css';
 
 const PostsGrid = ({ posts, openModal }) => {
   const classes = useStyles();
   const isVPxs = useMediaQuery(({ breakpoints }) => breakpoints.down('xs'));
+  const {
+    breakpoints: {
+      values: { md, lg, xl },
+    },
+  } = useTheme();
 
   const initialNoOfPostsShown = isVPxs ? 4 : 8;
 
@@ -18,30 +24,21 @@ const PostsGrid = ({ posts, openModal }) => {
   );
 
   const [hoveredCardIdx, setHoveredCardIdx] = useState(-1);
-  const mouseMoveHandler = (e) =>
-    !isCardMedia(e.target)
-      ? setHoveredCardIdx(-1)
-      : setHoveredCardIdx(+e.target.dataset.postsIdx);
+  const mouseOverHandler = (e) =>
+    isCardMedia(e.target) && setHoveredCardIdx(+e.target.dataset.postsIdx);
 
   return (
-    <Grid
-      className={classes.gridContainer}
-      item
-      container
-      spacing={isVPxs ? 0 : 3}
-      onMouseMove={isVPxs ? null : mouseMoveHandler}
+    <Masonry
+      className={classes.masonryContainer}
+      columnClassName={classes.masonryColumn}
+      breakpointCols={{ default: 4, [xl]: 3, [lg]: 2, [md]: 1 }}
+      onMouseOver={isVPxs ? null : mouseOverHandler}
+      onMouseOut={() => setHoveredCardIdx(-1)}
       onClick={isVPxs ? null : openModal}>
       {posts.map(
         (post, idx) =>
           idx < noOfPostsShown && (
-            <Grid
-              key={post.id}
-              className={classes.gridItem}
-              item
-              xs={12}
-              md={6}
-              lg={4}
-              xl={3}>
+            <div key={post.id} className={classes.gridItem}>
               <PostCard
                 {...{
                   post,
@@ -50,34 +47,11 @@ const PostsGrid = ({ posts, openModal }) => {
                   isCardMediaHovered: hoveredCardIdx === idx ? true : false,
                 }}
               />
-            </Grid>
+            </div>
           )
       )}
-    </Grid>
+    </Masonry>
   );
 };
 
 export default PostsGrid;
-
-/*
-onMouseOver
-
-function isCardMedia(node) {
-  return node.className.includes("MuiCardMedia");
-}
-
-!isCardMedia(e.target) return setHoveredCardIdx(-1)
-setHoveredCardIdx(e.target.dataset.postsIdx);
-
-in CSS:
-
-root: ({hoveredCardIdx}) => ({
-  [`nth-child(${hoveredCardIdx})`]: {}
-})
-
-
-onMouseLeave
-
-
-
-*/

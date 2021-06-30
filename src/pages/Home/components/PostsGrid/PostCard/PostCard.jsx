@@ -100,7 +100,6 @@ const PostCard = ({
       wasTouchedTwice = true;
       return setTimeout(() => (wasTouchedTwice = false), 300);
     }
-    e.preventDefault(); //prevents zoom-in on double-touch
     likeHandler();
   };
 

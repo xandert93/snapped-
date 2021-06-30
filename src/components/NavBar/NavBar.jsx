@@ -93,7 +93,7 @@ const NavBar = () => {
             <ListItemIcon>
               <ExitToApp color="secondary" />
             </ListItemIcon>
-            <ListItemText primary="logout" secondary="bye, dickhead" />
+            <ListItemText primary="logout" secondary="ruuuuude" />
           </ListItem>
         </List>
       </Box>
@@ -114,7 +114,8 @@ const NavBar = () => {
                   <SwipeableDrawer
                     anchor="left"
                     open={isDrawerOpen}
-                    onClose={toggleDrawer(false)}>
+                    onClose={toggleDrawer(false)}
+                    onOpen={toggleDrawer(true)}>
                     {zeList()}
                   </SwipeableDrawer>
                 </>

@@ -8,6 +8,8 @@ export const light = createMuiTheme({
     type: 'light',
     secondary: red,
 
+    // background: { default: '#f5ebda' },
+
     action: {
       active: 'rgba(0,0,0,0.85)',
     },

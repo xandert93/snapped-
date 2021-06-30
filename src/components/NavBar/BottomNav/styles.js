@@ -25,4 +25,14 @@ export default makeStyles((theme) => ({
       },
     },
   },
+
+  avatar: {
+    border: '2px solid ' + theme.palette.text.primary,
+    height: theme.spacing(5),
+    width: theme.spacing(5),
+    [theme.breakpoints.down('xs')]: {
+      height: theme.spacing(3.5),
+      width: theme.spacing(3.5),
+    },
+  },
 }));

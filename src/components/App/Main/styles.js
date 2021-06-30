@@ -6,6 +6,9 @@ export default makeStyles((theme) => ({
     [theme.breakpoints.down('xs')]: {
       padding: 0,
     },
+    background: `linear-gradient(130deg, ${theme.palette.primary.dark}, ${theme.palette.secondary.dark})`,
+    backgroundSize: 'cover',
+    backgroundAttachment: 'fixed',
   },
 
   bottomNavSpacer: {

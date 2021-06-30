@@ -33,7 +33,9 @@ const Main = ({ children }) => {
   return (
     <Container className={classes.root} component="main" maxWidth={false}>
       {children}
-      {isVPsm && <Toolbar className={classes.bottomNavSpacer} />}
+      {isVPsm && currentUserDoc && (
+        <Toolbar className={classes.bottomNavSpacer} />
+      )}
     </Container>
   );
 
