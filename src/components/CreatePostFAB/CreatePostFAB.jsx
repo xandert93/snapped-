@@ -13,7 +13,7 @@ export default function CreatePostFAB({ isScrolledDown }) {
 
   return (
     <Zoom in={!isScrolledDown} timeout={500}>
-      <Box className={classes.root}>
+      <Box className={classes.root + ' mui-fixed'}>
         <Fab color="secondary" className={classes.fab}>
           <input
             className={classes.fileInput}

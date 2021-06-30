@@ -1,12 +1,14 @@
 import React, { useContext, useState } from 'react';
-import { Container } from '@material-ui/core';
+import { Container, Toolbar } from '@material-ui/core';
 import { AddToPhotos } from '@material-ui/icons';
 import useStyles from './styles';
 import { authContext } from '../../../contexts/1.auth/authContext';
 import { uploadContext } from '../../../contexts/2.upload/uploadContext';
+import { useMediaQuery } from '@material-ui/core';
 
 const Main = ({ children }) => {
   const classes = useStyles();
+  const isVPsm = useMediaQuery(({ breakpoints }) => breakpoints.down('sm'));
   const { currentUserDoc } = useContext(authContext);
   const { validateFile } = useContext(uploadContext);
 
@@ -31,6 +33,7 @@ const Main = ({ children }) => {
   return (
     <Container className={classes.root} component="main" maxWidth={false}>
       {children}
+      {isVPsm && <Toolbar className={classes.bottomNavSpacer} />}
     </Container>
   );
 

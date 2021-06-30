@@ -1,5 +1,5 @@
-import { Switch, IconButton } from '@material-ui/core';
-import { NightsStay, WbSunny } from '@material-ui/icons';
+import { Box, Switch, IconButton } from '@material-ui/core';
+import { Brightness4, NightsStay, WbSunny } from '@material-ui/icons';
 import React, { useContext } from 'react';
 import { appContext } from '../../contexts/3.app/appContext';
 import useStyles from './styles';
@@ -8,14 +8,15 @@ const ThemeSwitch = () => {
   const classes = useStyles();
   const { darkMode, toggleDarkMode } = useContext(appContext);
 
+  return <Switch checked={darkMode} onChange={toggleDarkMode} />;
+
   return (
-    <IconButton onClick={toggleDarkMode}>
-      {darkMode ? (
-        <WbSunny className={classes.sunIcon} fontSize="large" />
-      ) : (
-        <NightsStay className={classes.moonIcon} fontSize="large" />
-      )}
-    </IconButton>
+    <Box>
+      <IconButton onClick={toggleDarkMode}>
+        <Brightness4 />
+      </IconButton>
+      <Switch checked={darkMode} onChange={toggleDarkMode} />
+    </Box>
   );
 
   return <Switch checked={darkMode} onChange={toggleDarkMode} />;

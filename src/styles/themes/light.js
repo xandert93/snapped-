@@ -7,5 +7,9 @@ export const light = createMuiTheme({
   palette: {
     type: 'light',
     secondary: red,
+
+    action: {
+      active: 'rgba(0,0,0,0.85)',
+    },
   },
 });

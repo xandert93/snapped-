@@ -5,41 +5,49 @@ import useStyles from './styles';
 import {
   AppBar,
   Avatar,
-  BottomNavigation,
-  BottomNavigationAction,
   Box,
   Button,
   InputBase,
-  InputAdornment,
   Toolbar,
   Typography,
   Slide,
   useScrollTrigger,
   useMediaQuery,
+  ListItem,
 } from '@material-ui/core';
 import logo from '../../assets/images/snapped.ico';
 
 import { ROUTES } from '../../constants/routes';
 import { ThemeSwitch } from '../ThemeSwitch';
 import BackToTopFAB from './BackToTopFAB/BackToTopFAB';
-import { Badge } from '@material-ui/core';
 import {
-  Notifications,
   AccountCircle,
+  Brightness4,
+  ContactSupport,
+  ExitToApp,
+  Favorite,
+  Folder,
+  Inbox,
+  Restore,
+  LocationOn,
+  Menu,
+  Notifications,
   Search,
   Settings,
-  ExitToApp,
-  Restore,
-  Favorite,
-  LocationOn,
-  Folder,
-  Menu,
 } from '@material-ui/icons';
-import { IconButton } from '@material-ui/core';
 import { CreatePostFAB } from '../CreatePostFAB';
 import React, { useContext, useState } from 'react';
 import { authContext } from '../../contexts/1.auth/authContext';
 import BottomNav from './BottomNav/BottomNav';
+import {
+  IconButton,
+  SwipeableDrawer,
+  List,
+  ListItemIcon,
+  ListItemText,
+  Badge,
+  Divider,
+} from '@material-ui/core';
 
 const NavBar = () => {
   const { logout } = useContext(authContext);
@@ -49,6 +57,49 @@ const NavBar = () => {
 
   const isScrolledDown = useScrollTrigger({ target: window, threshold: 100 });
 
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const toggleDrawer = (newState) => () => setIsDrawerOpen(newState);
+
+  //refactor into [].map()
+  function zeList() {
+    return (
+      <Box className={classes.drawerContentBox}>
+        <List>
+          <ListItem>
+            <ListItemIcon>
+              <Brightness4 />
+            </ListItemIcon>
+            <ThemeSwitch />
+          </ListItem>
+          <Divider />
+          <ListItem button>
+            <ListItemIcon>
+              <Settings color="primary" />
+            </ListItemIcon>
+            <ListItemText primary="settings" secondary="change shit" />
+          </ListItem>
+          <Divider />
+          <ListItem button>
+            <ListItemIcon>
+              <ContactSupport className={classes.contactSVG} />
+            </ListItemIcon>
+            <ListItemText
+              primary="contact us"
+              secondary="tissues for ur issues"
+            />
+          </ListItem>
+          <Divider />
+          <ListItem button onClick={logout}>
+            <ListItemIcon>
+              <ExitToApp color="secondary" />
+            </ListItemIcon>
+            <ListItemText primary="logout" secondary="bye, dickhead" />
+          </ListItem>
+        </List>
+      </Box>
+    );
+  }
+
   return (
     <>
       <Slide in={!isScrolledDown} timeout={500}>
@@ -56,9 +107,17 @@ const NavBar = () => {
           <Toolbar className={classes.toolbar}>
             <Box className={classes.headingButtonBox}>
               {isVPmd && (
-                <IconButton onClick={null}>
-                  <Menu color="secondary" />
-                </IconButton>
+                <>
+                  <IconButton onClick={toggleDrawer(true)}>
+                    <Menu color="secondary" />
+                  </IconButton>
+                  <SwipeableDrawer
+                    anchor="left"
+                    open={isDrawerOpen}
+                    onClose={toggleDrawer(false)}>
+                    {zeList()}
+                  </SwipeableDrawer>
+                </>
               )}
               <Button component={RouterLink} to={ROUTES.HOME}>
                 <img src={logo} alt="snapped!" className={classes.logoImg} />
@@ -101,8 +160,6 @@ const NavBar = () => {
                   </Avatar>
                 </IconButton>
               )}
-
-              {!isVPmd && <ThemeSwitch />}
 
               {!isVPmd && (
                 <IconButton>

@@ -8,6 +8,10 @@ export default makeStyles((theme) => ({
     },
   },
 
+  bottomNavSpacer: {
+    height: 64,
+  },
+
   //main needs a temp height for now for the drag and drop
   //or the way i've set it up...look at mp3 cutter which overlays main content
   // main: {

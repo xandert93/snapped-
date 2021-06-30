@@ -6,16 +6,16 @@ export default makeStyles((theme) => ({
       duration: theme.transitions.duration.complex,
     }),
 
-    backgroundColor: fade(
-      theme.palette.common.black,
-      isCardMediaHovered ? 0.05 : 0.1
-    ),
+    // backgroundColor: fade(
+    //   theme.palette.common.black,
+    //   isCardMediaHovered ? 0.05 : 0.1
+    // ),
     boxShadow: theme.shadows[isCardMediaHovered ? 20 : 8],
     transform: isCardMediaHovered ? 'translateY(-8px)' : 'initial',
 
     [theme.breakpoints.down('xs')]: {
       boxShadow: theme.shadows[1],
-      backgroundColor: 'initial',
+      // backgroundColor: 'initial',
     },
   }),
 

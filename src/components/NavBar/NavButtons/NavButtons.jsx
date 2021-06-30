@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { authContext } from '../../../contexts/1.auth/authContext';
 import { Link as RouterLink } from 'react-router-dom';
 import useStyles from '../styles';
-import { Button, Divider } from '@material-ui/core';
+import { Box, Button, Divider } from '@material-ui/core';
 import { AccountCircle, CameraRoll, ExitToApp } from '@material-ui/icons';
 
 import { ROUTES } from '../../../constants/routes';
@@ -12,7 +12,7 @@ const NavButtons = ({ isVPsm, toggleDrawer }) => {
   const { logout, currentUserDoc } = useContext(authContext);
 
   return (
-    <div
+    <Box
       className={classes[isVPsm ? 'navButtonsMob' : 'navButtons']}
       onClick={() => {
         if (!isVPsm) return;
@@ -39,7 +39,7 @@ const NavButtons = ({ isVPsm, toggleDrawer }) => {
         startIcon={<ExitToApp />}>
         Logout
       </Button>
-    </div>
+    </Box>
   );
 };
 

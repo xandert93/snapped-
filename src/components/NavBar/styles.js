@@ -63,8 +63,9 @@ export default makeStyles((theme) => ({
   }),
 
   avatar: {
-    height: theme.spacing(4.3),
-    width: theme.spacing(4.3),
+    border: 'medium solid ' + theme.palette.text.primary,
+    height: theme.spacing(4.5),
+    width: theme.spacing(4.5),
     [theme.breakpoints.down('xs')]: {
       height: theme.spacing(2.8),
       width: theme.spacing(2.8),
@@ -74,6 +75,15 @@ export default makeStyles((theme) => ({
   notificationButton: {
     '& .MuiBadge-anchorOriginTopRightRectangle': {
       transform: 'scale(1) translate(-30%, 50%)',
+    },
+  },
+
+  drawerContentBox: {
+    '& .MuiSvgIcon-root': {
+      fontSize: theme.spacing(5),
+      [theme.breakpoints.down('xs')]: {
+        fontSize: theme.spacing(3.5),
+      },
     },
   },
 }));

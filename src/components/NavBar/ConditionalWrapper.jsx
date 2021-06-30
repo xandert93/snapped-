@@ -1,4 +1,4 @@
-import React, { useCallback, useState, cloneElement } from 'react';
+import { useCallback, useState, cloneElement } from 'react';
 import { Drawer, IconButton } from '@material-ui/core';
 import { Menu } from '@material-ui/icons';
 

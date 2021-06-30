@@ -306,7 +306,7 @@ const PostCard = ({
               </InputAdornment>
             }
           />
-          <Box mt={1}>
+          <Box mt={1.5}>
             <Schedule color="primary" className={classes.clockIcon} />
             <Typography
               className={classes.clockText}

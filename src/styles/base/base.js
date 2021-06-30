@@ -116,7 +116,7 @@ export const base = {
       root: {
         padding: '10px 14px', //16px*
         '@media (max-width: 576px)': {
-          padding: 8,
+          padding: 12,
         },
         '&:last-child': {
           paddingBottom: '10px', //24px* (massive)
@@ -128,6 +128,14 @@ export const base = {
       root: {
         '@media (min-width: 576px)': {
           height: 64, //otherwise always 56px*
+        },
+      },
+    },
+
+    MuiListItemIcon: {
+      root: {
+        '@media (max-width: 768px)': {
+          minWidth: 48, //56* (too big)
         },
       },
     },

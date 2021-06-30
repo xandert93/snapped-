@@ -20,6 +20,7 @@ export const dark = createMuiTheme({
     secondary: red,
     // secondary: { main: blue['900'] },
     // secondary: { main: amber['A700'] },
+
     background: { default: '#03092b', paper: '#000' },
     //any paper-based components e.g. AppBar <header>, Cards will use the paper backgrounds
     // text: {

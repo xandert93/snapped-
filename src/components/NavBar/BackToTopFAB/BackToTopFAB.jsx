@@ -12,7 +12,7 @@ export default function BackToTopFAB({ isScrolledDown }) {
 
   return (
     <Zoom in={isScrolledDown} timeout={500}>
-      <Box onClick={scrollToTop} className={classes.root}>
+      <Box onClick={scrollToTop} className={classes.root + ' mui-fixed'}>
         <Fab color="primary">
           <KeyboardArrowUp fontSize="large" className={classes.arrowUpIcon} />
         </Fab>

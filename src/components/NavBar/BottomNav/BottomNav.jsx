@@ -11,9 +11,10 @@ export default function BottomNav() {
   const handleChange = (e, newTab) => {
     setTab(newTab);
   };
+
   return (
     <BottomNavigation
-      className={classes.root}
+      className={classes.root + ' mui-fixed'}
       value={tab}
       onChange={handleChange}>
       <BottomNavigationAction value="Explore" icon={<Search />} />
