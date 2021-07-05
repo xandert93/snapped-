@@ -3,14 +3,20 @@ import { CssBaseline } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
 import { light, dark } from '../../styles/themes';
 import { appContext } from './appContext';
-import { useGetDeviceWidth } from '../../custom-hooks';
+
+const initialSnackbar = {
+  isOpen: false,
+  isSuccess: true,
+  message: '',
+};
 
 const AppProvider = ({ children }) => {
   const [darkMode, setDarkMode] = useState(true);
-  const innerWidth = useGetDeviceWidth();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [msgData, setMsgData] = useState(null);
+  const [snackbar, setSnackbar] = useState(initialSnackbar);
+
+  const resetSnackbar = () => setSnackbar((x) => ({ ...x, isOpen: false }));
 
   const toggleDarkMode = useCallback(
     () => setDarkMode((x) => !x),
@@ -22,11 +28,11 @@ const AppProvider = ({ children }) => {
       value={{
         darkMode,
         toggleDarkMode,
-        innerWidth,
         isSubmitting,
         setIsSubmitting,
-        msgData,
-        setMsgData,
+        snackbar,
+        setSnackbar,
+        resetSnackbar,
       }}>
       <ThemeProvider theme={!darkMode ? light : dark}>
         <CssBaseline />

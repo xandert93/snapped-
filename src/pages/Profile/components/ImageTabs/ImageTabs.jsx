@@ -10,9 +10,10 @@ const ImageTabs = () => {
   const { selectedTab, tabChangeHandler } = useContext(profileContext);
 
   return (
-    <AppBar position="static" color="inherit" className={classes.appBar}>
+    <AppBar component="div" position="static" className={classes.appBar}>
       <Tabs
         textColor="secondary"
+        indicatorColor="primary"
         variant="fullWidth"
         value={selectedTab}
         onChange={tabChangeHandler}>

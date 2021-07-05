@@ -1,18 +1,16 @@
-import React, { useContext, useState } from 'react';
+import { useContext, useState } from 'react';
 import { appContext } from '../../contexts/3.app/appContext';
 import useStyles from './styles';
 
 import {
   Box,
-  Button,
+  CircularProgress,
   IconButton,
   MenuItem,
-  Slide,
-  Snackbar,
   TextField,
 } from '@material-ui/core';
-import Alert from '@material-ui/lab/Alert';
-import { DeleteForever, Lock, Public } from '@material-ui/icons';
+import { Lock, Public } from '@material-ui/icons';
+import _ from 'lodash';
 
 import { formatTagsToArr } from '../../utils/helpers';
 
@@ -45,24 +43,17 @@ const defaultDescription = {
   isPrivate: false,
 };
 
-const PostForm = ({
-  imageURL,
-  post,
-  submitIcon,
-  submitHandler,
-  deleteHandler,
-}) => {
+const PostForm = ({ imageURL, post, submitIcon, submitHandler }) => {
   const classes = useStyles();
-  const { isSubmitting, setIsSubmitting, msgData, setMsgData } =
-    useContext(appContext);
+  const { isSubmitting, setIsSubmitting } = useContext(appContext);
 
-  const currentDescription = post?.description && {
+  const existingDescription = post?.description && {
     ...post.description,
     tags: post.description.tags.join(', '),
   };
 
   const [description, setDescription] = useState(
-    currentDescription || defaultDescription
+    existingDescription || defaultDescription
   );
 
   const [areTagsInvalid, setAreTagsInvalid] = useState(false);
@@ -72,6 +63,7 @@ const PostForm = ({
 
   return (
     <form
+      className={classes.form}
       onSubmit={(e) => {
         e.preventDefault();
         setIsSubmitting(true);
@@ -79,29 +71,18 @@ const PostForm = ({
           ...description,
           tags: formatTagsToArr(description.tags),
         });
-      }}
-      className={classes.form}>
+      }}>
+      <Box className={classes.imageBox} style={{ position: 'relative' }}>
+        <img className={classes.image} src={imageURL} alt="Image Preview" />
+      </Box>
       <TextField
         label="Where was this taken?"
-        required
         name="location"
         value={description.location}
         onChange={updateField}
       />
-      <Box className={classes.imageBox} style={{ position: 'relative' }}>
-        <img className={classes.image} src={imageURL} alt="Image Preview" />
-        {!!deleteHandler && (
-          <IconButton
-            onClick={deleteHandler}
-            disabled={isSubmitting}
-            style={{ position: 'absolute', right: 5, top: 5 }}>
-            <DeleteForever color="secondary" />
-          </IconButton>
-        )}
-      </Box>
       <TextField
         label="Write your caption!"
-        required
         name="caption"
         value={description.caption}
         onChange={updateField}
@@ -110,6 +91,7 @@ const PostForm = ({
       />
 
       <TextField
+        required={false}
         label="Give it some tags!"
         name="tags"
         value={description.tags}
@@ -118,6 +100,9 @@ const PostForm = ({
           setAreTagsInvalid(/[^#\w, ]/.test(e.target.value));
         }}
         error={areTagsInvalid}
+        helperText={
+          areTagsInvalid ? 'You cannot include any special characters.' : null
+        }
         multiline
         rows={2}
       />
@@ -125,7 +110,6 @@ const PostForm = ({
       <TextField
         select
         label="Choose post visibility:"
-        required
         name="isPrivate"
         value={description.isPrivate}
         onChange={updateField}
@@ -137,36 +121,22 @@ const PostForm = ({
         ))}
       </TextField>
 
-      <Snackbar
-        open={!!msgData}
-        autoHideDuration={5000}
-        onClose={() => setMsgData(null)}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-        TransitionComponent={Slide}>
-        {msgData && (
-          //Violent unmount makes animation crap.
-          //setting default state to {success: null, msg: ""} made it better
-          //but fact msg becomes "" onClose, meant that snackbar became really small
-          //might need to use setTimeout to wait for exit animation to finish and then set back to default state
-          <Alert
-            onClose={() => setMsgData(null)}
-            elevation={6}
-            variant="filled"
-            severity={msgData.success ? 'success' : 'error'}>
-            {msgData.msg}
-          </Alert>
+      <Box className={classes.submitButtonBox}>
+        {!isSubmitting ? (
+          <IconButton
+            className={classes.submitButton}
+            type="submit"
+            disabled={
+              _.isEqual(description, existingDescription) || areTagsInvalid
+            }
+            variant="contained"
+            fullWidth>
+            {submitIcon}
+          </IconButton>
+        ) : (
+          <CircularProgress />
         )}
-      </Snackbar>
-
-      <Button
-        type="submit"
-        disabled={
-          description === post?.description || areTagsInvalid || isSubmitting
-        }
-        variant="contained"
-        fullWidth>
-        {submitIcon}
-      </Button>
+      </Box>
     </form>
   );
 };

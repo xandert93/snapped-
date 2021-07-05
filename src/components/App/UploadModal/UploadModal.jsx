@@ -8,9 +8,9 @@ const UploadModal = () => {
   const { file, dataURL, resetForm } = useContext(uploadContext);
   return (
     <SlidingModal
-      showModal={!!dataURL}
-      closeModal={resetForm}
-      modalHeading="Create Your Post!">
+      isOpen={!!dataURL}
+      close={resetForm}
+      title="Create Your Post!">
       {!file ? <CreatePostForm /> : <Progress />}
     </SlidingModal>
   );

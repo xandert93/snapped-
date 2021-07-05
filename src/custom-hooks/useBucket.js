@@ -6,7 +6,7 @@ import exifr from 'exifr';
 import imageCompression from 'browser-image-compression';
 
 export function useBucket(file, description) {
-  const { currentUserDoc } = useContext(authContext);
+  const { currentUser } = useContext(authContext);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadURL, setUploadURL] = useState('');
   const [uploadErrMsg, setUploadErrMsg] = useState('');
@@ -15,7 +15,7 @@ export function useBucket(file, description) {
     if (!file) return;
 
     const uploadAndCreatePost = async () => {
-      const imageRef = bucket.ref(currentUserDoc.username + '--' + file.name);
+      const imageRef = bucket.ref(currentUser.username + '--' + file.name);
 
       console.log(imageRef.name);
 
@@ -36,8 +36,8 @@ export function useBucket(file, description) {
           const url = await imageRef.getDownloadURL();
 
           const newPost = {
-            userId: currentUserDoc.userId,
-            username: currentUserDoc.username,
+            userId: currentUser.userId,
+            username: currentUser.username,
             description,
             likes: [],
             comments: [],

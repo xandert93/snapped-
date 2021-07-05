@@ -3,13 +3,13 @@ import { Redirect, Route } from 'react-router-dom';
 import { authContext } from '../contexts/1.auth/authContext';
 
 const PublicRoute = ({ component: Component, ...rest }) => {
-  const { currentUserDoc } = useContext(authContext);
+  const { currentUser } = useContext(authContext);
 
   return (
     <Route
       {...rest}
       render={() =>
-        !currentUserDoc ? <Component {...rest} /> : <Redirect to="/" />
+        !currentUser ? <Component {...rest} /> : <Redirect to="/" />
       }
     />
   );

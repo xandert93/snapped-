@@ -1,6 +1,6 @@
 export { App } from './App';
 export { CreatePostFAB } from './CreatePostFAB';
-export { ActionDialog } from './ActionDialog';
+export { ConfirmationDialog } from './ConfirmationDialog';
 export { Link } from './Link';
 export { NavBar } from './NavBar';
 export { ImageGrid } from './ImageGrid';

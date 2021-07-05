@@ -22,6 +22,10 @@ export default makeStyles((theme) => ({
       textTransform: 'lowercase',
       display: isVPsm ? 'none' : 'block', //leave <h1> in DOM for SEO?
     },
+
+    '& .MuiIconButton-root': {
+      padding: theme.spacing(1),
+    },
   }),
 
   searchBox: {
@@ -50,15 +54,16 @@ export default makeStyles((theme) => ({
     marginRight: theme.spacing(isVPsm ? 0 : 2),
   }),
 
-  // themeSwitchBox: ({ isVPsm }) => ({
-  //   order: isVPsm ? 2 : 'initial',
-  // }),
-
   actionsBox: ({ isVPmd }) => ({
     flex: isVPmd ? 1 : 3,
     textAlign: 'right',
     '& > *': {
       padding: theme.spacing(0, 1),
+    },
+
+    //for some reason, <a> font-size affects settings icon positioning
+    '& .MuiLink-root': {
+      fontSize: 0,
     },
   }),
 

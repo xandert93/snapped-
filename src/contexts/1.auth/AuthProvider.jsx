@@ -6,14 +6,14 @@ import { authContext } from './authContext';
 
 const AuthProvider = ({ children }) => {
   const [isCheckingUser, setIsCheckingUser] = useState(true);
-  const [currentUser, setCurrentUser] = useState(null); //FB Auth user
-  const [currentUserDoc, setCurrentUserDoc] = useState(null); //FB FS userDoc
+  const [firebaseAuthUser, setFirebaseAuthUser] = useState(null); //FB Auth user
+  const [currentUser, setCurrentUser] = useState(null); //FB FS userDoc
 
   const signUpNames = useRef();
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
-      setCurrentUser(user);
+      setFirebaseAuthUser(user);
 
       if (user) {
         if (!user.displayName) {
@@ -21,10 +21,10 @@ const AuthProvider = ({ children }) => {
           await user.updateProfile({ displayName: username }); //*see notes
           await addUserToDb(user, username, fullName);
         }
-        setCurrentUserDoc(await getUserDocFromDb(user.uid));
+        setCurrentUser(await getUserDocFromDb(user.uid));
       }
 
-      if (!user) setCurrentUserDoc(null);
+      if (!user) setCurrentUser(null);
 
       setIsCheckingUser(false);
     });
@@ -54,16 +54,16 @@ const AuthProvider = ({ children }) => {
   );
 
   const updateEmail = useCallback(
-    (email) => currentUser.updateEmail(email),
-    [currentUser]
+    (email) => firebaseAuthUser.updateEmail(email),
+    [firebaseAuthUser]
   );
   const updatePassword = useCallback(
-    (password) => currentUser.updatePassword(password),
-    [currentUser]
+    (password) => firebaseAuthUser.updatePassword(password),
+    [firebaseAuthUser]
   );
   const updateProfileData = useCallback(
-    (obj) => currentUser.updateProfile(obj),
-    [currentUser]
+    (obj) => firebaseAuthUser.updateProfile(obj),
+    [firebaseAuthUser]
   );
 
   if (isCheckingUser)
@@ -82,8 +82,8 @@ const AuthProvider = ({ children }) => {
   return (
     <authContext.Provider
       value={{
-        currentUserDoc,
-        setCurrentUserDoc,
+        currentUser,
+        setCurrentUser,
         register,
         login,
         resetPassword,
@@ -118,26 +118,26 @@ and that we should plainly get their userDoc.
 //UNDERSTANDING INITIAL USEFFECT HOOK
 /*
 When loading spinner has rendered, useEffect runs. "onAuthStateChanged" will run (always runs
-initially) with "null" getting passed into it i.e. no authenticated user (yet!). The currentUser
-and currentUserDoc are both set to null to reflect this. 
+initially) with "null" getting passed into it i.e. no authenticated user (yet!). The firebaseAuthUser
+and currentUser are both set to null to reflect this. 
 
 1.2s passes, "isChecking" is set to false. AuthProvider re-renders, and alternate render statement
-runs, invoking <App/> with a "null" currentUserDoc. <App/> sees this and renders out the 
+runs, invoking <App/> with a "null" currentUser. <App/> sees this and renders out the 
 authentication page. 
 
 Now, when a user logs in (or signs up), "onAuthStateChanged" runs, but this time with the 
-FB Auth user (contains very basic info, sadly). We set the currentUser to it and we then, using
+FB Auth user (contains very basic info, sadly). We set the firebaseAuthUser to it and we then, using
 their unique "displayName", fetch the FB Auth user's userDoc from FB FS. This is then set to 
-currentUserDoc. Again, AuthProvider re-renders, but this time <App/> receives a valid 
-currentUserDoc. <App/> re-renders and since the user is currently on <PublicRoute /> whilst
+currentUser. Again, AuthProvider re-renders, but this time <App/> receives a valid 
+currentUser. <App/> re-renders and since the user is currently on <PublicRoute /> whilst
 authenticated, they are immediately <Redirect to="/">. This stipulates a <ProtectedRoute />
 and the user is successfully sent to the home page. 
 
-Now, when a user signs out, we must reset currentUserDoc. This ensures that the 
+Now, when a user signs out, we must reset currentUser. This ensures that the 
 whole <App/> re-renders and that if user is on <ProtectedRoute/> at time of signout, then they 
 will immediately <Redirect to="/auth/login"/> :). 
 
-This is why we must also pre-emptively set the currentUserDoc to "null" in the useEffect. 
+This is why we must also pre-emptively set the currentUser to "null" in the useEffect. 
 
 P.S. aside from allowing us to fetch the more useful userDoc from the FB FS, we may think that 
 there is no need to store the basic FB Auth user in state. However, as we should notice

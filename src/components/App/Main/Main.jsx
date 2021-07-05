@@ -9,7 +9,7 @@ import { useMediaQuery } from '@material-ui/core';
 const Main = ({ children }) => {
   const classes = useStyles();
   const isVPsm = useMediaQuery(({ breakpoints }) => breakpoints.down('sm'));
-  const { currentUserDoc } = useContext(authContext);
+  const { currentUser } = useContext(authContext);
   const { validateFile } = useContext(uploadContext);
 
   const [isDragged, setIsDragged] = useState(false);
@@ -31,15 +31,15 @@ const Main = ({ children }) => {
   };
 
   return (
-    <Container className={classes.root} component="main" maxWidth={false}>
-      {children}
-      {isVPsm && currentUserDoc && (
-        <Toolbar className={classes.bottomNavSpacer} />
-      )}
-    </Container>
+    <>
+      <Container className={classes.root} component="main" maxWidth={false}>
+        {children}
+      </Container>
+      {isVPsm && currentUser && <Toolbar className={classes.bottomNavSpacer} />}
+    </>
   );
 
-  return !currentUserDoc ? (
+  return !currentUser ? (
     <Container component="main" maxWidth="xl">
       {children}
     </Container>

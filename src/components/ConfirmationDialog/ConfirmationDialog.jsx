@@ -8,32 +8,33 @@ import {
   DialogTitle,
 } from '@material-ui/core';
 
-export default function ActionDialog({
-  isDialogOpen,
-  closeDialog,
+export default function ConfirmationDialog({
+  isOpen,
+  close,
   title,
   content,
+  choices,
   clickHandler,
 }) {
   const classes = useStyles();
 
   return (
-    <Dialog open={isDialogOpen} onClose={closeDialog}>
+    <Dialog open={isOpen}>
       <DialogTitle>Are you sure that you want to {title}</DialogTitle>
       <DialogContent>
         <DialogContentText>{content}</DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={closeDialog} color="primary">
-          No
+        <Button onClick={close} color="primary">
+          {choices[0]}
         </Button>
         <Button
           onClick={() => {
-            closeDialog();
+            close();
             clickHandler();
           }}
-          color="primary">
-          Yes
+          color="secondary">
+          {choices[1]}
         </Button>
       </DialogActions>
     </Dialog>

@@ -1,23 +1,53 @@
 import { fade, makeStyles } from '@material-ui/core';
 
 export default makeStyles((theme) => ({
-  postCard: ({ isCardMediaHovered }) => ({
-    transition: theme.transitions.create(['transform', 'box-shadow'], {
-      duration: theme.transitions.duration.complex,
-    }),
+  postCard: () => ({
+    //       ^ { isCardMediaHovered }
+    transition: theme.transitions.create(
+      ['transform', 'box-shadow', 'background-color'],
+      {
+        duration: theme.transitions.duration.complex,
+      }
+    ),
 
-    // backgroundColor: fade(
-    //   theme.palette.common.black,
-    //   isCardMediaHovered ? 0.05 : 0.1
-    // ),
-    boxShadow: theme.shadows[isCardMediaHovered ? 20 : 8],
-    transform: isCardMediaHovered ? 'translateY(-8px)' : 'initial',
+    backgroundColor: fade(theme.palette.background.paper, 0.75),
 
     [theme.breakpoints.down('xs')]: {
       boxShadow: theme.shadows[1],
-      // backgroundColor: 'initial',
     },
+
+    [theme.breakpoints.between('sm', 'xl')]: {
+      '&:hover': {
+        backgroundColor: fade(theme.palette.background.paper, 0.1),
+        boxShadow: theme.shadows[20],
+        transform: 'translateY(-8px)',
+      },
+    },
+
+    // background: fade(
+    //   theme.palette.background.paper,
+    //   isCardMediaHovered ? 0.4 : 0.8
+    // ),
+    // boxShadow: theme.shadows[isCardMediaHovered ? 20 : 8],
+    // transform: isCardMediaHovered ? 'translateY(-8px)' : 'initial',
+
+    // [theme.breakpoints.down('xs')]: {
+    //   boxShadow: theme.shadows[1],
+    // },
   }),
+
+  popperItem: {
+    position: 'relative',
+  },
+
+  popperItemOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 2,
+  },
 
   actionButton: {
     padding: theme.spacing(1), //make area more clickable

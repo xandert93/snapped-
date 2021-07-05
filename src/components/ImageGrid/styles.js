@@ -1,25 +1,35 @@
-import { makeStyles } from '@material-ui/core';
+import { makeStyles, fade } from '@material-ui/core';
 
 export default makeStyles((theme) => ({
-  imageWrap: {
-    position: 'relative',
-  },
-
-  imageBox: {
-    height: 0,
-    paddingBottom: '100%',
+  root: {
     overflow: 'hidden',
-    borderRadius: 2,
-
-    position: 'relative',
+    backgroundColor: fade(theme.palette.background.paper, 0.3),
   },
 
-  image: {
-    width: '100%',
-
-    position: 'absolute',
-    left: '50%',
-    top: '50%',
-    transform: 'translate(-50%, -50%)',
+  tile: {
+    cursor: 'pointer',
   },
+
+  // imageWrap: {
+  //   position: 'relative',
+  // },
+
+  // imageBox: {
+  //   height: 0,
+  //   paddingBottom: '100%',
+  //   overflow: 'hidden',
+  //   borderRadius: 2,
+  //   cursor: 'pointer',
+
+  //   position: 'relative',
+  // },
+
+  // image: {
+  //   width: '100%',
+
+  //   position: 'absolute',
+  //   left: '50%',
+  //   top: '50%',
+  //   transform: 'translate(-50%, -50%)',
+  // },
 }));

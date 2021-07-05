@@ -48,9 +48,11 @@ import {
   Badge,
   Divider,
 } from '@material-ui/core';
+import { ConfirmationDialog } from '../ConfirmationDialog';
+import { Link } from '../Link';
 
 const NavBar = () => {
-  const { logout } = useContext(authContext);
+  const { currentUser, logout } = useContext(authContext);
   const isVPsm = useMediaQuery(({ breakpoints }) => breakpoints.down('sm')); //is viewport width less than 768px
   const isVPmd = useMediaQuery(({ breakpoints }) => breakpoints.down('md'));
   const classes = useStyles({ isVPsm, isVPmd });
@@ -60,6 +62,7 @@ const NavBar = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const toggleDrawer = (newState) => () => setIsDrawerOpen(newState);
 
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   //refactor into [].map()
   function zeList() {
     return (
@@ -89,7 +92,7 @@ const NavBar = () => {
             />
           </ListItem>
           <Divider />
-          <ListItem button onClick={logout}>
+          <ListItem button onClick={() => setIsDialogOpen(true)}>
             <ListItemIcon>
               <ExitToApp color="secondary" />
             </ListItemIcon>
@@ -154,21 +157,28 @@ const NavBar = () => {
               </IconButton>
               {!isVPsm && (
                 <IconButton>
-                  <Avatar
-                    src="https://pbs.twimg.com/profile_images/1325229157131890689/dWcfdxWS_400x400.jpg"
-                    className={classes.avatar}>
-                    <AccountCircle />
-                  </Avatar>
+                  <Link to={`/p/${currentUser.username}`}>
+                    <Avatar
+                      src="https://pbs.twimg.com/profile_images/1325229157131890689/dWcfdxWS_400x400.jpg"
+                      className={classes.avatar}>
+                      <AccountCircle />
+                    </Avatar>
+                  </Link>
                 </IconButton>
               )}
 
               {!isVPmd && (
                 <IconButton>
-                  <Settings />
+                  <Link to={ROUTES.ACCOUNT}>
+                    <Settings />
+                  </Link>
                 </IconButton>
               )}
               {!isVPmd && (
-                <IconButton edge="end" color="secondary" onClick={logout}>
+                <IconButton
+                  edge="end"
+                  color="secondary"
+                  onClick={() => setIsDialogOpen(true)}>
                   <ExitToApp />
                 </IconButton>
               )}
@@ -188,6 +198,15 @@ const NavBar = () => {
       <CreatePostFAB isScrolledDown={isScrolledDown} />
 
       {isVPsm && <BottomNav />}
+
+      <ConfirmationDialog
+        isOpen={isDialogOpen}
+        close={() => setIsDialogOpen(false)}
+        title="logout?"
+        content="RUUUUUUUDE"
+        choices={['hola!', 'adios']}
+        clickHandler={logout}
+      />
     </>
   );
 };

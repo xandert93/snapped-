@@ -1,6 +1,6 @@
-import React, { useContext, useRef, useState } from 'react';
+import { useContext, useRef, useState } from 'react';
 import { authContext } from '../../contexts/1.auth/authContext';
-import { Button, TextField, Typography } from '@material-ui/core';
+import { Button, TextField, Typography, Container } from '@material-ui/core';
 import useStyles from './styles';
 import { useSetDocumentTitle } from '../../custom-hooks';
 import { db } from '../../lib/firebase/config';
@@ -11,8 +11,8 @@ export default function Account() {
   const classes = useStyles();
   useSetDocumentTitle('My Account');
   const {
-    currentUserDoc,
-    setCurrentUserDoc,
+    currentUser,
+    setCurrentUser,
     updateEmail,
     updatePassword,
     updateProfileData,
@@ -45,23 +45,23 @@ export default function Account() {
     //REFACTOR:
     const promises = [];
     if (
-      fullName !== currentUserDoc.fullName
-      // || username !== currentUserDoc.username
+      fullName !== currentUser.fullName
+      // || username !== currentUser.username
     ) {
       promises.push(
-        db.collection('Users').doc(currentUserDoc.id).update({
+        db.collection('Users').doc(currentUser.id).update({
           fullName /*, username */,
         })
       );
     }
 
-    // if (username !== currentUserDoc.username) {
+    // if (username !== currentUser.username) {
     //   promises.push(updateProfileData({ displayName: username }));
-    //   promises.push(updatePostsUsername(currentUserDoc.username, username));
+    //   promises.push(updatePostsUsername(currentUser.username, username));
     // }
 
-    if (email !== currentUserDoc.email) promises.push(updateEmail(email));
-    if (password && password !== currentUserDoc.password)
+    if (email !== currentUser.email) promises.push(updateEmail(email));
+    if (password && password !== currentUser.password)
       promises.push(updatePassword(password));
 
     if (!promises.length)
@@ -72,7 +72,7 @@ export default function Account() {
       //first need to update Auth user, DB user and current propagated user
       await Promise.all(promises)
         .then(() =>
-          setCurrentUserDoc((x) => ({ ...x, fullName, /*username,*/ email }))
+          setCurrentUser((x) => ({ ...x, fullName, /*username,*/ email }))
         )
         .finally(() => setIsUpdating(false));
       setSuccessMsg('Your account details have been updated.');
@@ -82,58 +82,60 @@ export default function Account() {
   };
 
   return (
-    <form onSubmit={attemptUpdate}>
-      {successMsg && <Typography color="primary">{successMsg}</Typography>}
+    <Container maxWidth="xs">
+      <form className={classes.form} onSubmit={attemptUpdate}>
+        {successMsg && <Typography color="primary">{successMsg}</Typography>}
 
-      <TextField
-        className={classes.textField}
-        inputRef={fullNameRef}
-        variant="outlined"
-        label="Full Name"
-        defaultValue={currentUserDoc.fullName}
-        required
-      />
-      {/* <TextField
+        <TextField
+          className={classes.textField}
+          inputRef={fullNameRef}
+          variant="outlined"
+          label="Full Name"
+          defaultValue={currentUser.fullName}
+          required
+        />
+        {/* <TextField
         className={classes.textField}
         inputRef={usernameRef}
         variant="outlined"
         label="Username"
-        defaultValue={currentUserDoc.username}
+        defaultValue={currentUser.username}
         required
       /> */}
-      <TextField
-        className={classes.textField}
-        inputRef={emailRef}
-        variant="outlined"
-        label="Email address"
-        defaultValue={currentUserDoc.email}
-        type="email"
-        required
-      />
-      <TextField
-        className={classes.textField}
-        inputRef={passwordRef}
-        variant="outlined"
-        label="Password"
-        type="password"
-        helperText="Please leave blank to keep the same."
-      />
-      <TextField
-        className={classes.textField}
-        inputRef={passwordConfirmRef}
-        variant="outlined"
-        label="Password"
-        type="password"
-        helperText="Please leave blank to keep the same."
-      />
-      {errMsg && <Typography color="error">{errMsg}</Typography>}
-      <Button
-        type="submit"
-        variant="contained"
-        color="primary"
-        disabled={isUpdating}>
-        Update Details
-      </Button>
-    </form>
+        <TextField
+          className={classes.textField}
+          inputRef={emailRef}
+          variant="outlined"
+          label="Email address"
+          defaultValue={currentUser.email}
+          type="email"
+          required
+        />
+        <TextField
+          className={classes.textField}
+          inputRef={passwordRef}
+          variant="outlined"
+          label="Password"
+          type="password"
+          helperText="Please leave blank to keep the same."
+        />
+        <TextField
+          className={classes.textField}
+          inputRef={passwordConfirmRef}
+          variant="outlined"
+          label="Password"
+          type="password"
+          helperText="Please leave blank to keep the same."
+        />
+        {errMsg && <Typography color="error">{errMsg}</Typography>}
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          disabled={isUpdating}>
+          Update Details
+        </Button>
+      </form>
+    </Container>
   );
 }

@@ -26,7 +26,7 @@ export const addUserToDb = (user, username, fullName) =>
     createdAt: FieldValue.serverTimestamp(),
   });
 
-//a) FBA user loaded. Now use its "uid" to get currentUserDoc from FBFS. Populate UI with it
+//a) FBA user loaded. Now use its "uid" to get currentUser from FBFS. Populate UI with it
 //b) used <Link to "/p/:username"> to another user's page. Take the param to get their doc
 export const getUserDocFromDb = async (uid, username) => {
   const args = uid ? ['userId', '==', uid] : ['username', '==', username];
@@ -82,11 +82,11 @@ export const getNumOfUserPosts = async (username) => {
 };
 
 export const updateFollow = async (
-  currentUserDoc,
+  currentUser,
   suggestedProfileDoc,
   isAlreadyFollowing = false //will be useful on OtherProfile page to toggle follow/unfollow
 ) => {
-  await users.doc(currentUserDoc.id).update({
+  await users.doc(currentUser.id).update({
     following: !isAlreadyFollowing
       ? FieldValue.arrayUnion(suggestedProfileDoc.username)
       : FieldValue.arrayRemove(suggestedProfileDoc.username),
@@ -94,8 +94,8 @@ export const updateFollow = async (
 
   await users.doc(suggestedProfileDoc.id).update({
     followers: !isAlreadyFollowing
-      ? FieldValue.arrayUnion(currentUserDoc.username)
-      : FieldValue.arrayRemove(currentUserDoc.username),
+      ? FieldValue.arrayUnion(currentUser.username)
+      : FieldValue.arrayRemove(currentUser.username),
   });
   return;
 };

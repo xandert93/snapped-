@@ -6,7 +6,7 @@ import SuggestedProfile from './SuggestedProfile';
 
 export default function SuggestedProfiles() {
   const {
-    currentUserDoc: { username, following },
+    currentUser: { username, following },
   } = useContext(authContext);
   const [altUsersDocs, setAltUsersDocs] = useState([]);
 

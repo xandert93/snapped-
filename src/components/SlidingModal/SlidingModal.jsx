@@ -1,30 +1,50 @@
-import React from 'react';
+import { forwardRef } from 'react';
 import useStyles from './styles';
 import {
   AppBar,
+  Container,
   Dialog,
   IconButton,
   Slide,
+  Fade,
   Toolbar,
   Typography,
+  useMediaQuery,
 } from '@material-ui/core';
-import { Close } from '@material-ui/icons';
+import { ArrowBack } from '@material-ui/icons';
+import { useContext } from 'react';
+import { appContext } from '../../contexts/3.app/appContext';
 
-const SlidingModal = ({ showModal, closeModal, modalHeading, children }) => {
+const CustomSlide = forwardRef((props, ref) => (
+  <Slide direction="left" ref={ref} {...props} />
+));
+
+const SlidingModal = ({ isOpen, close, title, children }) => {
   const classes = useStyles();
+  const isVPxs = useMediaQuery(({ breakpoints }) => breakpoints.only('xs'));
+  const { isSubmitting } = useContext(appContext);
 
   return (
-    <Dialog open={showModal} fullScreen TransitionComponent={Slide}>
-      <AppBar color="secondary">
+    <Dialog
+      open={isOpen}
+      onClose={isSubmitting ? null : close}
+      fullScreen={isVPxs}
+      TransitionComponent={isVPxs ? CustomSlide : Fade}>
+      <AppBar position="relative" className={classes.appBar}>
         <Toolbar>
-          <IconButton color="inherit" onClick={closeModal}>
-            <Close />
+          <IconButton
+            className={classes.backButton}
+            color="inherit"
+            disabled={isSubmitting}
+            onClick={close}>
+            <ArrowBack />
           </IconButton>
-          <Typography variant="h5">{modalHeading}</Typography>
+          <Typography color="inherit" variant="h5">
+            {title}
+          </Typography>
         </Toolbar>
       </AppBar>
-      <div className={classes.toolbar} />
-      {children}
+      <Container maxWidth="md">{children}</Container>
     </Dialog>
   );
 };

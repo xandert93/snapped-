@@ -3,7 +3,7 @@ import { FavoriteBorder, MessageOutlined } from '@material-ui/icons';
 import React from 'react';
 import useStyles from './styles';
 
-const ImageBoxOverlay = ({ idx, noOfLikes, noOfComments }) => {
+const TileOverlay = ({ idx, noOfLikes, noOfComments }) => {
   const classes = useStyles();
 
   return (
@@ -20,7 +20,7 @@ const ImageBoxOverlay = ({ idx, noOfLikes, noOfComments }) => {
   );
 };
 
-export default ImageBoxOverlay;
+export default TileOverlay;
 
 //for non-mobile devices, since overlay will block original image,
 //"data-index={idx}" is needed for their div, enabling modal opening

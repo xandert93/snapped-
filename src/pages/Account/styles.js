@@ -2,13 +2,12 @@ import { makeStyles } from '@material-ui/core';
 
 export default makeStyles((theme) => ({
   form: {
-    maxWidth: '30rem',
-  },
-  textField: {
-    marginBottom: '16px',
-    display: 'block',
-    '&:first-child': {
-      marginTop: 30,
+    '& .MuiTextField-root': {
+      marginBottom: theme.spacing(2),
+      display: 'block',
+      '&:first-child': {
+        marginTop: theme.spacing(4),
+      },
     },
   },
 }));

@@ -9,13 +9,14 @@ import { Auth, Home, Profile, Account, Explore } from '../../pages';
 import { NavBar } from '../NavBar';
 import { Main } from './Main';
 import { UploadModal } from './UploadModal';
+import { Snackbar } from './Snackbar';
 
 export default function App() {
-  const { currentUserDoc } = useContext(authContext);
+  const { currentUser } = useContext(authContext);
 
   return (
     <>
-      {currentUserDoc && <NavBar />}
+      {currentUser && <NavBar />}
       <Main>
         <Switch>
           <PublicRoute path={ROUTES.AUTH} component={Auth} />
@@ -23,8 +24,8 @@ export default function App() {
 
           <Redirect
             exact
-            from={`/p/${currentUserDoc?.username}`}
-            to={`/p/${currentUserDoc?.username}/public`}
+            from={`/p/${currentUser?.username}`}
+            to={`/p/${currentUser?.username}/public`}
           />
 
           <ProtectedRoute path={ROUTES.PROFILE} component={Profile} />
@@ -35,6 +36,7 @@ export default function App() {
           <Route path={ROUTES.NOT_FOUND} render={() => <h5>404 RNF</h5>} />
         </Switch>
       </Main>
+      <Snackbar />
       <UploadModal />
     </>
   );

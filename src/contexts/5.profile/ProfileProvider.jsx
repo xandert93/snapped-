@@ -19,7 +19,7 @@ const tabNameToIdx = {
 const ProfileProvider = ({ children }) => {
   const { push } = useHistory();
   const { username, tabName } = useParams();
-  const { setMsgData, setIsSubmitting } = useContext(appContext);
+  const { resetSnackbar, setIsSubmitting } = useContext(appContext);
 
   //For both user's and altUser's pages:
   const posts = usePostsCollection(username);
@@ -34,24 +34,26 @@ const ProfileProvider = ({ children }) => {
 
   const tabbedPosts = useMemo(() => {
     if (!posts.length) return [];
-    if (selectedTab === 0) {
-      return posts.filter((post) => !post.description.isPrivate);
+
+    switch (selectedTab) {
+      case 0:
+        return posts.filter((post) => !post.description.isPrivate);
+      case 1:
+        return posts.filter((post) => post.description.isPrivate);
+      default:
+        return posts;
     }
-    if (selectedTab === 1) {
-      return posts.filter((post) => post.description.isPrivate);
-    }
-    if (selectedTab === 2) return posts; //all posts
   }, [selectedTab, posts]);
 
-  const [modalPost, setModalPost] = useState(null);
+  const [postToEdit, setPostToEdit] = useState(null);
   const gridClickHandler = (e) => {
     if (e.target === e.currentTarget) return;
-    setModalPost(tabbedPosts[e.target.dataset.postIdx]);
+    setPostToEdit(tabbedPosts[e.target.dataset.postIdx]);
   };
 
-  const resetModalPost = () => {
-    setModalPost(null);
-    setMsgData(null);
+  const resetPostToEdit = () => {
+    setPostToEdit(null);
+    resetSnackbar();
     setIsSubmitting(false);
   };
 
@@ -63,8 +65,8 @@ const ProfileProvider = ({ children }) => {
         selectedTab,
         tabChangeHandler,
         tabbedPosts,
-        modalPost,
-        resetModalPost,
+        postToEdit,
+        resetPostToEdit,
         gridClickHandler,
       }}>
       {children}

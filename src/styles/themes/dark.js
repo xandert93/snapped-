@@ -26,5 +26,8 @@ export const dark = createMuiTheme({
     // text: {
     //   primary: amber['A200'],
     // },
+    text: {
+      secondary: '#fff',
+    },
   },
 });

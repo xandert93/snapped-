@@ -6,6 +6,7 @@ import {
   Dialog,
   DialogTitle,
   Grid,
+  Paper,
   Slide,
   Typography,
 } from '@material-ui/core';
@@ -24,16 +25,56 @@ const Transition = forwardRef(function Transition(props, ref) {
 export default function ProfileHeader({ userDoc, setUserDoc }) {
   const { username, fullName, followers, following } = userDoc;
   const classes = useStyles();
-  const { currentUserDoc } = useContext(authContext);
+  const { currentUser } = useContext(authContext);
   const { noOfPosts } = useContext(profileContext);
 
   const [modalOpened, setModalOpened] = useState(false);
 
   const mutualFollow = followers.filter((f) =>
-    currentUserDoc.following.includes(f)
+    currentUser.following.includes(f)
   );
 
-  const isCurrentUserPage = currentUserDoc.username === username;
+  const isCurrentUserPage = currentUser.username === username;
+
+  return (
+    <Paper className={classes.root}>
+      <Grid container justify="center" alignItems="center" spacing={1}>
+        <Grid item xs={12}>
+          <Typography variant="h6" component="h2" noWrap>
+            <strong>{username}</strong>
+          </Typography>
+        </Grid>
+        <Grid item xs={4}>
+          <Typography variant="body2">{following.length} following</Typography>
+          <Typography variant="body2">
+            {followers.length} follower
+            {followers.length !== 1 && 's'}
+          </Typography>
+        </Grid>
+        <Grid item xs={3}>
+          <Avatar
+            className={classes.avatar}
+            alt={fullName}
+            src="https://pbs.twimg.com/profile_images/1325229157131890689/dWcfdxWS_400x400.jpg"
+          />
+        </Grid>
+        <Grid item xs={4}>
+          <Typography variant="body2">{noOfPosts} posts</Typography>
+          {!isCurrentUserPage && (
+            <FollowButton altUserDoc={userDoc} setAltUserDoc={setUserDoc} />
+          )}
+        </Grid>
+
+        <Grid item xs={12}>
+          <Typography>{fullName}</Typography>
+        </Grid>
+        <Grid item xs={12}>
+          <Typography variant="body2">Bio</Typography>
+        </Grid>
+      </Grid>
+    </Paper>
+  );
+
   return (
     <Grid container>
       <Grid item xs={3}>

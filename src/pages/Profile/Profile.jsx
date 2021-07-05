@@ -12,24 +12,31 @@ import {
   AltUserHeader,
   AltImageGrid,
 } from './components';
+import { Container } from '@material-ui/core';
 
 export default function Profile() {
   const { username } = useParams();
   useSetDocumentTitle(username);
-  const { currentUserDoc } = useContext(authContext);
-  const isCurrentUserPage = currentUserDoc.username === username;
+  const { currentUser } = useContext(authContext);
+  const isCurrentUserPage = currentUser.username === username;
 
-  return isCurrentUserPage ? (
+  return (
     <ProfileProvider>
-      <UserHeader />
-      <ImageTabs />
-      <UserImageGrid />
-      <UpdateModal />
-    </ProfileProvider>
-  ) : (
-    <ProfileProvider>
-      <AltUserHeader />
-      <AltImageGrid />
+      <Container maxWidth="xl" disableGutters>
+        {isCurrentUserPage ? (
+          <>
+            <UserHeader />
+            <ImageTabs />
+            <UserImageGrid />
+            <UpdateModal />
+          </>
+        ) : (
+          <>
+            <AltUserHeader />
+            <AltImageGrid />
+          </>
+        )}
+      </Container>
     </ProfileProvider>
   );
 }

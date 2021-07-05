@@ -1,33 +1,28 @@
-import { Save } from '@material-ui/icons';
-import React, { useContext } from 'react';
-import { PostForm } from '../../../../components';
+import { useContext } from 'react';
 import { appContext } from '../../../../contexts/3.app/appContext';
-import {
-  deletePost,
-  updatePostDescription,
-} from '../../../../services/firebase';
+import { updatePostDescription } from '../../../../services/firebase';
+import { Check } from '@material-ui/icons';
+import { PostForm } from '../../../../components';
 
 const UpdatePostForm = ({ post, imageURL, closeModal }) => {
-  const { setMsgData } = useContext(appContext);
+  const { setSnackbar, setIsSubmitting } = useContext(appContext);
 
   const updateHandler = async (newDescription) => {
     try {
       await updatePostDescription(post.id, newDescription);
-      setMsgData({ success: true, msg: 'Post updated.' });
-      setTimeout(closeModal, 1800);
-    } catch (err) {
-      // setMsgData({ success: false, msg: err.message });
-      // setIsSubmitting();
-    } finally {
-    }
-  };
+      setSnackbar({
+        isOpen: true,
+        isSuccess: true,
+        message: 'Your post has been updated.',
+      });
 
-  const deleteHandler = async () => {
-    try {
-      await deletePost(post.id, post.fileName);
-      setMsgData({ success: true, msg: 'Post deleted.' });
-      setTimeout(closeModal, 2000);
+      setTimeout(() => {
+        closeModal();
+        setIsSubmitting(false);
+      }, 1800);
     } catch (err) {
+      // setSnackbar({isOpen: true, isSuccess: false, message: err.message });
+      // setIsSubmitting(false);
     } finally {
     }
   };
@@ -36,9 +31,8 @@ const UpdatePostForm = ({ post, imageURL, closeModal }) => {
     <PostForm
       post={post}
       imageURL={imageURL}
-      submitIcon={<Save color="primary" />}
+      submitIcon={<Check color="inherit" />}
       submitHandler={updateHandler}
-      deleteHandler={deleteHandler}
     />
   );
 };

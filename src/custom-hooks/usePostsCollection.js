@@ -3,7 +3,7 @@ import { authContext } from '../contexts/1.auth/authContext';
 import { db } from '../lib/firebase/config';
 
 export const usePostsCollection = (username = '', tag = '') => {
-  const { currentUserDoc } = useContext(authContext);
+  const { currentUser } = useContext(authContext);
 
   const [allDocRefs, setAllDocRefs] = useState([]);
   const [docs, setDocs] = useState([]);
@@ -29,7 +29,7 @@ export const usePostsCollection = (username = '', tag = '') => {
   const userFollowedDocsRef = allPublicPosts.where(
     'username',
     'in',
-    currentUserDoc.following.concat(currentUserDoc.username) //so user can see their own posts on timeline
+    currentUser.following.concat(currentUser.username) //so user can see their own posts on timeline
   );
 
   function extractDocs({ docs: docRefs }) {
@@ -37,9 +37,7 @@ export const usePostsCollection = (username = '', tag = '') => {
     for (let i = 0; i < docRefs.length; i++) {
       retrievedDocs.push({
         ...docRefs[i].data(),
-        isLikedByUser: docRefs[i]
-          .data()
-          .likes.includes(currentUserDoc.username),
+        isLikedByUser: docRefs[i].data().likes.includes(currentUser.username),
         id: docRefs[i].id,
       });
     }
@@ -72,9 +70,7 @@ export const usePostsCollection = (username = '', tag = '') => {
     //authenticated user's "MyProfile" or "AltProfile"
     if (username) {
       let collectionToQuery =
-        username === currentUserDoc.username
-          ? allUserPosts
-          : onlyUserPublicPosts;
+        username === currentUser.username ? allUserPosts : onlyUserPublicPosts;
 
       collectionToQuery.get().then(extractDocs);
       return;

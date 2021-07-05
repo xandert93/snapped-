@@ -14,11 +14,9 @@ const buttons = {
 export default function FollowButton({ altUserDoc, setAltUserDoc }) {
   const classes = useStyles();
 
-  const { currentUserDoc, setCurrentUserDoc } = useContext(authContext);
+  const { currentUser, setCurrentUser } = useContext(authContext);
 
-  const initialIsFollowed = currentUserDoc.following.includes(
-    altUserDoc.username
-  );
+  const initialIsFollowed = currentUser.following.includes(altUserDoc.username);
 
   const [isFollowed, setIsFollowed] = useState(initialIsFollowed);
   const [buttonData, setButtonData] = useState(
@@ -27,9 +25,9 @@ export default function FollowButton({ altUserDoc, setAltUserDoc }) {
 
   const clickHandler = async () => {
     setIsFollowed((isFollowed) => !isFollowed);
-    await updateFollow(currentUserDoc, altUserDoc, isFollowed);
+    await updateFollow(currentUser, altUserDoc, isFollowed);
 
-    setCurrentUserDoc((x) => ({
+    setCurrentUser((x) => ({
       ...x,
       following: !isFollowed //concat + filter return new arrays
         ? x.following.concat(altUserDoc.username)
@@ -41,10 +39,8 @@ export default function FollowButton({ altUserDoc, setAltUserDoc }) {
       setAltUserDoc((x) => ({
         ...x,
         followers: !isFollowed //concat + filter return new arrays
-          ? x.followers.concat(currentUserDoc.username)
-          : x.followers.filter(
-              (username) => username !== currentUserDoc.username
-            ),
+          ? x.followers.concat(currentUser.username)
+          : x.followers.filter((username) => username !== currentUser.username),
       }));
     }
 

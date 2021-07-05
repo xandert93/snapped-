@@ -157,6 +157,11 @@ export const base = {
         },
       },
     },
+    MuiTab: {
+      root: {
+        minWidth: '56px', //72* (too big)
+      },
+    },
   },
 
   breakpoints: {
@@ -173,10 +178,15 @@ export const base = {
     MuiTextField: {
       variant: 'outlined',
       fullWidth: true,
-      // size: 'small',
+      required: true,
     },
     MuiBottomNavigationAction: {
       disableRipple: true,
+    },
+
+    MuiAlert: {
+      elevation: 8,
+      variant: 'filled',
     },
   },
 

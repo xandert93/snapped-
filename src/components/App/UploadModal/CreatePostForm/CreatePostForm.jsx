@@ -1,5 +1,5 @@
-import { Publish } from '@material-ui/icons';
-import React, { useContext } from 'react';
+import { CloudUpload } from '@material-ui/icons';
+import { useContext } from 'react';
 import { uploadContext } from '../../../../contexts/2.upload/uploadContext';
 import { appContext } from '../../../../contexts/3.app/appContext';
 
@@ -11,7 +11,7 @@ const CreatePostForm = () => {
 
   const { setIsSubmitting } = useContext(appContext);
 
-  const createHandler = (description) => {
+  const createPost = (description) => {
     setPostDescription(description);
     setConfirmedFile(fileData.file);
     setIsSubmitting(false);
@@ -21,8 +21,8 @@ const CreatePostForm = () => {
   return (
     <PostForm
       imageURL={dataURL}
-      submitIcon={<Publish color="primary" />}
-      submitHandler={createHandler}
+      submitIcon={<CloudUpload color="inherit" />}
+      submitHandler={createPost}
     />
   );
 };
