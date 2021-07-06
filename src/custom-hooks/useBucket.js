@@ -7,7 +7,7 @@ import { createCompressedFile } from '../utils/helpers';
 export function useBucket(file, description) {
   const { user } = useContext(authContext);
   const [uploadProgress, setUploadProgress] = useState(0);
-  const [uploadURL, setUploadURL] = useState('');
+  const [firestoreDoc, setFirestoreDoc] = useState(null);
   const [uploadErrMsg, setUploadErrMsg] = useState('');
 
   useEffect(() => {
@@ -37,8 +37,7 @@ export function useBucket(file, description) {
             createdAt: FieldValue.serverTimestamp(),
           };
 
-          await createPost(newPost);
-          setUploadURL(url);
+          setFirestoreDoc(await createPost(newPost));
         }
       );
     };
@@ -46,7 +45,7 @@ export function useBucket(file, description) {
     uploadAndCreatePost();
   }, [file]);
 
-  return { uploadProgress, uploadURL, uploadErrMsg };
+  return { uploadProgress, firestoreDoc, uploadErrMsg };
 }
 
 /*When image is compressed, it is stripped of its EXIF data. This is problematic because the EXIF

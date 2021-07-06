@@ -84,8 +84,11 @@ export const createFollowUsersLookup = async (followers, following) => {
 const posts = db.collection('Posts');
 
 export const createPost = async (newPost) => {
-  await posts.add(newPost);
-  return;
+  const docRef = await posts.add(newPost);
+  //this ^ doesn't have createdAt value, so let's  get actual inserted doc from firestore:
+  const docRefwTimestamp = await posts.doc(docRef.id).get();
+
+  return { ...docRefwTimestamp.data(), id: docRef.id };
 };
 
 export const updatePostDescription = async (docId, description) => {

@@ -17,7 +17,7 @@ import { UpdatePostForm } from '../../../Profile/components';
 import { deletePost } from '../../../../services/firebase';
 import { Skeleton } from '@material-ui/lab';
 
-const PostsGrid = ({ posts, openModal }) => {
+const PostsGrid = ({ posts, setPosts, openModal }) => {
   const classes = useStyles();
   const isVPxs = useMediaQuery(({ breakpoints }) => breakpoints.down('xs'));
   const {
@@ -25,6 +25,8 @@ const PostsGrid = ({ posts, openModal }) => {
       values: { md, lg, xl },
     },
   } = useTheme();
+
+  const usersPfPLookup = useUsersCollection();
 
   const initialNoOfPostsShown = isVPxs ? 4 : 8;
 
@@ -34,8 +36,10 @@ const PostsGrid = ({ posts, openModal }) => {
     2000
   );
 
+  const publicPosts = posts.filter((post) => !post.description.isPrivate);
+
   // const [showModal, setShowModal] = useState(false);
-  const [postToEdit, setPostToEdit] = useState(null);
+  const [postToUpdate, setPostToUpdate] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   // const [hoveredCardIdx, setHoveredCardIdx] = useState(-1);
@@ -44,17 +48,17 @@ const PostsGrid = ({ posts, openModal }) => {
 
   const clickHandler = ({ target: { dataset } }) => {
     if (dataset.role) {
-      setPostToEdit(posts[dataset.postsIdx]);
+      setPostToUpdate(publicPosts[dataset.postsIdx]);
       if (dataset.role === 'Delete Post') {
         setIsDialogOpen(true);
       }
     }
   };
 
-  const deleteHandler = async () =>
-    await deletePost(postToEdit.id, postToEdit.fileName);
-
-  const usersPfPLookup = useUsersCollection();
+  const deleteHandler = async () => {
+    await deletePost(postToUpdate.id, postToUpdate.fileName);
+    setPosts((x) => x.filter((post) => post.id !== postToUpdate.id));
+  };
 
   return (
     <>
@@ -67,8 +71,8 @@ const PostsGrid = ({ posts, openModal }) => {
         // onClick={isVPxs ? null : openModal}
         onClick={clickHandler}>
         {!posts.length //0 while fetch is happening
-          ? Array.from(new Array(initialNoOfPostsShown)).map((_) => (
-              <Card>
+          ? Array.from(new Array(initialNoOfPostsShown)).map((_, idx) => (
+              <Card key={idx}>
                 <CardHeader
                   avatar={
                     <Skeleton
@@ -105,7 +109,7 @@ const PostsGrid = ({ posts, openModal }) => {
                 </CardContent>
               </Card>
             ))
-          : posts.map(
+          : publicPosts.map(
               (post, idx) =>
                 idx < noOfPostsShown && (
                   <div key={post.id} className={classes.gridItem}>
@@ -113,7 +117,7 @@ const PostsGrid = ({ posts, openModal }) => {
                       {...{
                         post,
                         idx,
-                        pfpURL: usersPfPLookup[post.username].profilePicURL,
+                        pfpURL: usersPfPLookup?.[post.username].profilePicURL,
                         isVPxs,
                         // isCardMediaHovered: hoveredCardIdx === idx ? true : false,
                       }}
@@ -125,13 +129,14 @@ const PostsGrid = ({ posts, openModal }) => {
 
       {/* repeated, refactor into single component*/}
       <SlidingModal
-        isOpen={!isDialogOpen && !!postToEdit}
-        close={() => setPostToEdit(null)}
+        isOpen={!isDialogOpen && !!postToUpdate}
+        close={() => setPostToUpdate(null)}
         title="Edit Your Post!">
         <UpdatePostForm
-          imageURL={postToEdit?.url}
-          post={postToEdit}
-          closeModal={() => setPostToEdit(null)}
+          imageURL={postToUpdate?.url}
+          postToUpdate={postToUpdate}
+          setPosts={setPosts}
+          closeModal={() => setPostToUpdate(null)}
         />
       </SlidingModal>
 
@@ -139,7 +144,7 @@ const PostsGrid = ({ posts, openModal }) => {
         isOpen={isDialogOpen}
         close={() => {
           setIsDialogOpen(false);
-          setPostToEdit(null);
+          setPostToUpdate(null);
         }}
         title="delete this post?"
         content="Your post will be permanenty deleted and cannot be recovered."

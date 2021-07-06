@@ -112,7 +112,7 @@ export default function ProfileHeader({ profile, setProfile }) {
             <Avatar
               component={({ children }) => (
                 <Avatar className={classes.avatar}>
-                  {isUsersPage && (
+                  {isUsersPage ? (
                     <label style={{ cursor: 'pointer' }}>
                       {children}
                       <input
@@ -122,11 +122,13 @@ export default function ProfileHeader({ profile, setProfile }) {
                         hidden
                       />
                     </label>
+                  ) : (
+                    children
                   )}
                 </Avatar>
               )}
               alt={fullName}
-              src={user.profilePicURL}
+              src={profile.profilePicURL}
             />
           </Grid>
           <Grid item xs={4}>

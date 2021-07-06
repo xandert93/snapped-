@@ -3,13 +3,34 @@ import { appContext } from '../../../../contexts/3.app/appContext';
 import { updatePostDescription } from '../../../../services/firebase';
 import { Check } from '@material-ui/icons';
 import { PostForm } from '../../../../components';
+import { profileContext } from '../../../../contexts/5.profile/profileContext';
 
-const UpdatePostForm = ({ post, imageURL, closeModal }) => {
-  const { setSnackbar, setIsSubmitting } = useContext(appContext);
+const UpdatePostForm = ({ postToUpdate, imageURL, closeModal }) => {
+  const { setSnackbar, setIsSubmitting, setHomePosts } = useContext(appContext);
+  const { setPosts } = useContext(profileContext);
 
   const updateHandler = async (newDescription) => {
     try {
-      await updatePostDescription(post.id, newDescription);
+      await updatePostDescription(postToUpdate.id, newDescription);
+      setHomePosts((posts) =>
+        posts.map((post) =>
+          post.id === postToUpdate.id
+            ? { ...post, description: newDescription }
+            : post
+        )
+      );
+
+      //if we're on profile page and edit a post
+      if (setPosts) {
+        setPosts((posts) =>
+          posts.map((post) =>
+            post.id === postToUpdate.id
+              ? { ...post, description: newDescription }
+              : post
+          )
+        );
+      }
+
       setSnackbar({
         isOpen: true,
         isSuccess: true,
@@ -29,7 +50,7 @@ const UpdatePostForm = ({ post, imageURL, closeModal }) => {
 
   return (
     <PostForm
-      post={post}
+      post={postToUpdate}
       imageURL={imageURL}
       submitIcon={<Check color="inherit" />}
       submitHandler={updateHandler}

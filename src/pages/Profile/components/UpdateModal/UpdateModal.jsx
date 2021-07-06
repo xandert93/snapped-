@@ -5,18 +5,18 @@ import { SlidingModal } from '../../../../components/SlidingModal';
 import { UpdatePostForm } from '../UpdatePostForm';
 
 const UpdateModal = () => {
-  const { postToEdit, resetPostToEdit } = useContext(profileContext);
+  const { postToUpdate, resetPostToUpdate } = useContext(profileContext);
 
   return (
     <SlidingModal
-      isOpen={!!postToEdit}
-      close={resetPostToEdit}
+      isOpen={!!postToUpdate}
+      close={resetPostToUpdate}
       title="Edit Your Post!">
-      {postToEdit && (
+      {postToUpdate && (
         <UpdatePostForm
-          imageURL={postToEdit.url}
-          post={postToEdit}
-          closeModal={resetPostToEdit}
+          imageURL={postToUpdate.url}
+          postToUpdate={postToUpdate}
+          closeModal={resetPostToUpdate}
         />
       )}
     </SlidingModal>

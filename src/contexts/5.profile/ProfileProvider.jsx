@@ -22,7 +22,7 @@ const ProfileProvider = ({ children }) => {
   const { resetSnackbar, setIsSubmitting } = useContext(appContext);
 
   //For both user's and altUser's pages:
-  const posts = usePostsCollection(username);
+  const [posts, setPosts] = usePostsCollection(username);
 
   //For only user's page:
   const [selectedTab, setSelectedTab] = useState(idxToTabName[tabName]);
@@ -45,14 +45,14 @@ const ProfileProvider = ({ children }) => {
     }
   }, [selectedTab, posts]);
 
-  const [postToEdit, setPostToEdit] = useState(null);
+  const [postToUpdate, setPostToUpdate] = useState(null);
   const gridClickHandler = (e) => {
     if (e.target === e.currentTarget) return;
-    setPostToEdit(tabbedPosts[e.target.dataset.postIdx]);
+    setPostToUpdate(tabbedPosts[e.target.dataset.postIdx]);
   };
 
-  const resetPostToEdit = () => {
-    setPostToEdit(null);
+  const resetPostToUpdate = () => {
+    setPostToUpdate(null);
     resetSnackbar();
     setIsSubmitting(false);
   };
@@ -61,12 +61,13 @@ const ProfileProvider = ({ children }) => {
     <profileContext.Provider
       value={{
         posts,
+        setPosts,
         noOfPosts: posts.length,
         selectedTab,
         tabChangeHandler,
         tabbedPosts,
-        postToEdit,
-        resetPostToEdit,
+        postToUpdate,
+        resetPostToUpdate,
         gridClickHandler,
       }}>
       {children}

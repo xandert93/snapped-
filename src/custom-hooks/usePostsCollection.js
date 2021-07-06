@@ -5,34 +5,42 @@ import { db } from '../lib/firebase/config';
 export const usePostsCollection = (username = '', tag = '') => {
   const { user } = useContext(authContext);
 
-  const [allDocRefs, setAllDocRefs] = useState([]);
   const [docs, setDocs] = useState([]);
 
   const posts = db.collection('Posts').orderBy('createdAt', 'desc');
 
-  const allPublicPosts = posts.where('description.isPrivate', '==', false);
+  let allPublicPosts,
+    allPublicTagPosts,
+    allUserPosts,
+    onlyUserPublicPosts,
+    userFollowedDocsRef;
 
-  const allPublicTagPosts = allPublicPosts.where(
-    'description.tags',
-    'array-contains',
-    tag
-  );
+  //if there is a user, prepare the references to query the database
+  if (user) {
+    allPublicPosts = posts.where('description.isPrivate', '==', false);
 
-  const allUserPosts = posts.where('username', '==', username);
+    allPublicTagPosts = allPublicPosts.where(
+      'description.tags',
+      'array-contains',
+      tag
+    );
 
-  const onlyUserPublicPosts = allUserPosts.where(
-    'description.isPrivate',
-    '==',
-    false
-  );
+    allUserPosts = posts.where('username', '==', username);
 
-  const userFollowedDocsRef = allPublicPosts.where(
-    'username',
-    'in',
-    user.following.concat(user.username) //so user can see their own posts on timeline
-  );
+    onlyUserPublicPosts = allUserPosts.where(
+      'description.isPrivate',
+      '==',
+      false
+    );
 
-  function extractDocs({ docs: docRefs }) {
+    userFollowedDocsRef = posts.where(
+      'username',
+      'in',
+      user.following.concat(user.username) //so user can see their own posts on timeline
+    );
+  }
+
+  function extractPosts({ docs: docRefs }) {
     let retrievedDocs = [];
     for (let i = 0; i < docRefs.length; i++) {
       retrievedDocs.push({
@@ -44,26 +52,11 @@ export const usePostsCollection = (username = '', tag = '') => {
     setDocs(retrievedDocs);
   }
 
-  // set up a single onSnapshot listener that fires with qS of entire collection
   useEffect(() => {
-    const unsub = posts.onSnapshot(({ docs: docRefs }) => {
-      if (docRefs.length === allDocRefs.length) return;
-      /*^ensures new docs only set following CD (create || delete)
-      oSS will also fire when any document is updated e.g. a single liked added to "likes" []
-      setting new docs & re-rendering whole page for this would be overkill*/
-      setAllDocRefs(docRefs);
-    });
-    return unsub;
-  }, []);
-
-  // to be run when onSnapshot handler updates allDocRefs
-  useEffect(() => {
-    if (!allDocRefs.length) return;
-    if (!allDocRefs[0].data().createdAt) return;
-
+    if (!user) return;
     //"Home"
     if (!username && !tag) {
-      userFollowedDocsRef.get().then(extractDocs);
+      userFollowedDocsRef.get().then(extractPosts);
       return;
     }
 
@@ -72,18 +65,18 @@ export const usePostsCollection = (username = '', tag = '') => {
       let collectionToQuery =
         username === user.username ? allUserPosts : onlyUserPublicPosts;
 
-      collectionToQuery.get().then(extractDocs);
+      collectionToQuery.get().then(extractPosts);
       return;
     }
 
     //"Explore" with params tag
     if (tag) {
-      allPublicTagPosts.get().then(extractDocs);
+      allPublicTagPosts.get().then(extractPosts);
       return;
     }
-  }, [allDocRefs]);
+  }, [user]);
 
-  return docs;
+  return [docs, setDocs];
 };
 
 //when a image uploaded, doc is added, but when onSnapshot initially fires
@@ -100,4 +93,4 @@ export const usePostsCollection = (username = '', tag = '') => {
 //also, whilst this is more succicnt than for loop above, for loop might be faster
 //could have easily used maps above too, but wanted to use for loop for practice
 
-//extractDocs called with snapshot passed into it. Therefore docRefs destructured from it
+//extractPosts called with snapshot passed into it. Therefore docRefs destructured from it

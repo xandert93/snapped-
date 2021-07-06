@@ -6,7 +6,7 @@ import { authContext } from '../../../contexts/1.auth/authContext';
 import { uploadContext } from '../../../contexts/2.upload/uploadContext';
 import { useMediaQuery } from '@material-ui/core';
 
-const Main = ({ children }) => {
+export default function Main({ children }) {
   const classes = useStyles();
   const isVPsm = useMediaQuery(({ breakpoints }) => breakpoints.down('sm'));
   const { user } = useContext(authContext);
@@ -63,6 +63,4 @@ const Main = ({ children }) => {
       )}
     </>
   );
-};
-
-export default Main;
+}

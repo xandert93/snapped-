@@ -6,7 +6,7 @@ import { ImageGrid } from '../../components/ImageGrid';
 const Explore = () => {
   const { tag } = useParams();
 
-  const posts = usePostsCollection(null, tag);
+  const [posts] = usePostsCollection(null, tag);
 
   return (
     <>

@@ -3,6 +3,7 @@ import { CssBaseline } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
 import { light, dark } from '../../styles/themes';
 import { appContext } from './appContext';
+import { usePostsCollection } from '../../custom-hooks';
 
 const initialSnackbar = {
   isOpen: false,
@@ -11,6 +12,8 @@ const initialSnackbar = {
 };
 
 const AppProvider = ({ children }) => {
+  const [homePosts, setHomePosts] = usePostsCollection();
+
   const [darkMode, setDarkMode] = useState(true);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -26,6 +29,8 @@ const AppProvider = ({ children }) => {
   return (
     <appContext.Provider
       value={{
+        homePosts,
+        setHomePosts,
         darkMode,
         toggleDarkMode,
         isSubmitting,

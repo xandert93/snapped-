@@ -11,15 +11,18 @@ import useStyles from './styles';
 import { CreatePostFAB, SlidingModal } from '../../components';
 import { isCardMedia } from '../../utils/helpers';
 import { UpdatePostForm } from '../Profile/components';
+import { useContext } from 'react';
+import { appContext } from '../../contexts/3.app/appContext';
 
 const Home = () => {
   const classes = useStyles();
   useSetDocumentTitle('Home');
-  const posts = usePostsCollection();
+
+  const { homePosts, setHomePosts } = useContext(appContext);
 
   // const openModal = (e) => {
   //   if (isCardMedia(e.target)) {
-  //     setPostToEdit(posts[e.target.dataset.postsIdx]);
+  //     setPostToUpdate(homePosts[e.target.dataset.postsIdx]);
   //     setShowModal(true);
   //   }
   // };
@@ -32,12 +35,13 @@ const Home = () => {
       {/* <SuggestedProfiles /> */}
 
       <PostsGrid
-        posts={posts}
+        posts={homePosts}
+        setPosts={setHomePosts}
         // openModal={openModal}
       />
 
       {/* {showModal && (
-          <ImageModal url={postToEdit.url} closeModal={closeModal} />
+          <ImageModal url={postToUpdate.url} closeModal={closeModal} />
         )} */}
     </Grid>
   );
