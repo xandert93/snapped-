@@ -52,7 +52,7 @@ import { ConfirmationDialog } from '../ConfirmationDialog';
 import { Link } from '../Link';
 
 const NavBar = () => {
-  const { currentUser, logout } = useContext(authContext);
+  const { user, logout } = useContext(authContext);
   const isVPsm = useMediaQuery(({ breakpoints }) => breakpoints.down('sm')); //is viewport width less than 768px
   const isVPmd = useMediaQuery(({ breakpoints }) => breakpoints.down('md'));
   const classes = useStyles({ isVPsm, isVPmd });
@@ -157,10 +157,8 @@ const NavBar = () => {
               </IconButton>
               {!isVPsm && (
                 <IconButton>
-                  <Link to={`/p/${currentUser.username}`}>
-                    <Avatar
-                      src="https://pbs.twimg.com/profile_images/1325229157131890689/dWcfdxWS_400x400.jpg"
-                      className={classes.avatar}>
+                  <Link to={`/p/${user.username}`}>
+                    <Avatar src={user.profilePicURL} className={classes.avatar}>
                       <AccountCircle />
                     </Avatar>
                   </Link>

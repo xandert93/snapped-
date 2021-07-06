@@ -10,7 +10,7 @@ import useStyles from './styles';
 
 export default function BottomNav() {
   const classes = useStyles();
-  const { currentUser } = useContext(authContext);
+  const { user } = useContext(authContext);
   const [tab, setTab] = useState('Timeline');
 
   const handleChange = (e, newTab) => {
@@ -34,10 +34,8 @@ export default function BottomNav() {
       <BottomNavigationAction
         value="My Profile"
         icon={
-          <Link to={`/p/${currentUser.username}`}>
-            <Avatar
-              src="https://pbs.twimg.com/profile_images/1325229157131890689/dWcfdxWS_400x400.jpg"
-              className={classes.avatar}>
+          <Link to={`/p/${user.username}`}>
+            <Avatar src={user.profilePicURL} className={classes.avatar}>
               <AccountCircle />
             </Avatar>
           </Link>

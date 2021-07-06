@@ -121,7 +121,9 @@ const PostForm = ({ imageURL, post, submitIcon, submitHandler }) => {
         ))}
       </TextField>
 
-      <Box className={classes.submitButtonBox}>
+      <Box
+      // className={classes.submitButtonBox}
+      >
         {!isSubmitting ? (
           <IconButton
             className={classes.submitButton}

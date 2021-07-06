@@ -11,7 +11,7 @@ const Progress = () => {
   const history = useHistory();
 
   const {
-    currentUser: { username },
+    user: { username },
   } = useContext(authContext);
 
   const { file, description, resetForm } = useContext(uploadContext);

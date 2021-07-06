@@ -11,12 +11,12 @@ const buttons = {
   unfollow: ['unfollow', 'secondary'],
 };
 
-export default function FollowButton({ altUserDoc, setAltUserDoc }) {
+export default function FollowButton({ altUser, setAltUser }) {
   const classes = useStyles();
 
-  const { currentUser, setCurrentUser } = useContext(authContext);
+  const { user, setUser } = useContext(authContext);
 
-  const initialIsFollowed = currentUser.following.includes(altUserDoc.username);
+  const initialIsFollowed = user.following.includes(altUser.username);
 
   const [isFollowed, setIsFollowed] = useState(initialIsFollowed);
   const [buttonData, setButtonData] = useState(
@@ -25,22 +25,22 @@ export default function FollowButton({ altUserDoc, setAltUserDoc }) {
 
   const clickHandler = async () => {
     setIsFollowed((isFollowed) => !isFollowed);
-    await updateFollow(currentUser, altUserDoc, isFollowed);
+    await updateFollow(user, altUser, isFollowed);
 
-    setCurrentUser((x) => ({
+    setUser((x) => ({
       ...x,
       following: !isFollowed //concat + filter return new arrays
-        ? x.following.concat(altUserDoc.username)
-        : x.following.filter((username) => username !== altUserDoc.username),
+        ? x.following.concat(altUser.username)
+        : x.following.filter((username) => username !== altUser.username),
     }));
 
     //only passed by AltUser page, because we need UI to reflect follower +/-
-    if (setAltUserDoc) {
-      setAltUserDoc((x) => ({
+    if (setAltUser) {
+      setAltUser((x) => ({
         ...x,
         followers: !isFollowed //concat + filter return new arrays
-          ? x.followers.concat(currentUser.username)
-          : x.followers.filter((username) => username !== currentUser.username),
+          ? x.followers.concat(user.username)
+          : x.followers.filter((username) => username !== user.username),
       }));
     }
 
@@ -48,15 +48,17 @@ export default function FollowButton({ altUserDoc, setAltUserDoc }) {
   };
 
   return (
-    <Button
-      className={classes.followBtn}
-      size="small"
-      onClick={clickHandler}
-      onMouseEnter={() => isFollowed && setButtonData(buttons.unfollow)}
-      onMouseLeave={() => isFollowed && setButtonData(buttons.following)}
-      variant="contained"
-      color={buttonData[1]}>
-      {buttonData[0]}
-    </Button>
+    user.username !== altUser.username && (
+      <Button
+        className={classes.followBtn}
+        size="small"
+        onClick={clickHandler}
+        onMouseEnter={() => isFollowed && setButtonData(buttons.unfollow)}
+        onMouseLeave={() => isFollowed && setButtonData(buttons.following)}
+        variant="contained"
+        color={buttonData[1]}>
+        {buttonData[0]}
+      </Button>
+    )
   );
 }

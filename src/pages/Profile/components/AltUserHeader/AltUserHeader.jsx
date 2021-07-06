@@ -6,16 +6,12 @@ import { getUserDocFromDb } from '../../../../services/firebase';
 const AltUserHeader = () => {
   const { username } = useParams();
 
-  const [altUserDoc, setAltUserDoc] = useState(null);
+  const [altUser, setAltUser] = useState(null);
   useEffect(() => {
-    getUserDocFromDb(null, username).then(setAltUserDoc);
+    getUserDocFromDb(null, username).then(setAltUser);
   }, []);
 
-  return (
-    altUserDoc && (
-      <ProfileHeader userDoc={altUserDoc} setUserDoc={setAltUserDoc} />
-    )
-  );
+  return altUser && <ProfileHeader profile={altUser} setProfile={setAltUser} />;
 };
 
 export default AltUserHeader;

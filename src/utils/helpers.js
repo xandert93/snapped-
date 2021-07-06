@@ -1,3 +1,6 @@
+import exifr from 'exifr';
+import imageCompression from 'browser-image-compression';
+
 export const formatTagsToArr = (str) =>
   str
     .replaceAll('#', '') //remove hashtags from user
@@ -5,3 +8,15 @@ export const formatTagsToArr = (str) =>
 
 export const isCardMedia = (node) =>
   typeof node.className === 'string' && node.className.includes('MuiCardMedia');
+
+export const createCompressedFile = async (file) => {
+  const exifOrientation = await exifr.orientation(file);
+
+  const compressedFile = await imageCompression(file, {
+    maxSizeMB: 1,
+    maxWidthOrHeight: 1500,
+    exifOrientation,
+  });
+
+  return compressedFile;
+};

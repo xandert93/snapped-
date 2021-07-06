@@ -6,20 +6,20 @@ import SuggestedProfile from './SuggestedProfile';
 
 export default function SuggestedProfiles() {
   const {
-    currentUser: { username, following },
+    user: { username, following },
   } = useContext(authContext);
-  const [altUsersDocs, setAltUsersDocs] = useState([]);
+  const [altUsers, setAltUsers] = useState([]);
 
   useEffect(() => {
     //used .then because using async/await would require creation of another function here
-    getSuggestedUserDocs(username, following).then(setAltUsersDocs);
+    getSuggestedUserDocs(username, following).then(setAltUsers);
   }, []);
 
   return (
     <Grid item sm={3} lg={2}>
-      {!!altUsersDocs.length &&
-        altUsersDocs.map((altUserDoc) => (
-          <SuggestedProfile key={altUserDoc.id} altUserDoc={altUserDoc} />
+      {!!altUsers.length &&
+        altUsers.map((altUser) => (
+          <SuggestedProfile key={altUser.id} altUser={altUser} />
         ))}
     </Grid>
   );

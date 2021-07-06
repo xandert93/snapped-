@@ -12,11 +12,11 @@ import { UploadModal } from './UploadModal';
 import { Snackbar } from './Snackbar';
 
 export default function App() {
-  const { currentUser } = useContext(authContext);
+  const { user } = useContext(authContext);
 
   return (
     <>
-      {currentUser && <NavBar />}
+      {user && <NavBar />}
       <Main>
         <Switch>
           <PublicRoute path={ROUTES.AUTH} component={Auth} />
@@ -24,8 +24,8 @@ export default function App() {
 
           <Redirect
             exact
-            from={`/p/${currentUser?.username}`}
-            to={`/p/${currentUser?.username}/public`}
+            from={`/p/${user?.username}`}
+            to={`/p/${user?.username}/public`}
           />
 
           <ProtectedRoute path={ROUTES.PROFILE} component={Profile} />

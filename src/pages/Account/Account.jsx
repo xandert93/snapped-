@@ -10,13 +10,8 @@ import { db } from '../../lib/firebase/config';
 export default function Account() {
   const classes = useStyles();
   useSetDocumentTitle('My Account');
-  const {
-    currentUser,
-    setCurrentUser,
-    updateEmail,
-    updatePassword,
-    updateProfileData,
-  } = useContext(authContext);
+  const { user, setUser, updateEmail, updatePassword, updateProfileData } =
+    useContext(authContext);
 
   const [errMsg, setErrMsg] = useState('');
   //inefficient - make into a single message
@@ -45,23 +40,23 @@ export default function Account() {
     //REFACTOR:
     const promises = [];
     if (
-      fullName !== currentUser.fullName
-      // || username !== currentUser.username
+      fullName !== user.fullName
+      // || username !== user.username
     ) {
       promises.push(
-        db.collection('Users').doc(currentUser.id).update({
+        db.collection('Users').doc(user.id).update({
           fullName /*, username */,
         })
       );
     }
 
-    // if (username !== currentUser.username) {
+    // if (username !== user.username) {
     //   promises.push(updateProfileData({ displayName: username }));
-    //   promises.push(updatePostsUsername(currentUser.username, username));
+    //   promises.push(updatePostsUsername(user.username, username));
     // }
 
-    if (email !== currentUser.email) promises.push(updateEmail(email));
-    if (password && password !== currentUser.password)
+    if (email !== user.email) promises.push(updateEmail(email));
+    if (password && password !== user.password)
       promises.push(updatePassword(password));
 
     if (!promises.length)
@@ -71,9 +66,7 @@ export default function Account() {
       setIsUpdating(true);
       //first need to update Auth user, DB user and current propagated user
       await Promise.all(promises)
-        .then(() =>
-          setCurrentUser((x) => ({ ...x, fullName, /*username,*/ email }))
-        )
+        .then(() => setUser((x) => ({ ...x, fullName, /*username,*/ email })))
         .finally(() => setIsUpdating(false));
       setSuccessMsg('Your account details have been updated.');
     } catch (err) {
@@ -91,7 +84,7 @@ export default function Account() {
           inputRef={fullNameRef}
           variant="outlined"
           label="Full Name"
-          defaultValue={currentUser.fullName}
+          defaultValue={user.fullName}
           required
         />
         {/* <TextField
@@ -99,7 +92,7 @@ export default function Account() {
         inputRef={usernameRef}
         variant="outlined"
         label="Username"
-        defaultValue={currentUser.username}
+        defaultValue={user.username}
         required
       /> */}
         <TextField
@@ -107,7 +100,7 @@ export default function Account() {
           inputRef={emailRef}
           variant="outlined"
           label="Email address"
-          defaultValue={currentUser.email}
+          defaultValue={user.email}
           type="email"
           required
         />

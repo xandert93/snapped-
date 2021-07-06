@@ -9,7 +9,7 @@ import { ROUTES } from '../../../constants/routes';
 
 const NavButtons = ({ isVPsm, toggleDrawer }) => {
   const classes = useStyles();
-  const { logout, currentUser } = useContext(authContext);
+  const { logout, user } = useContext(authContext);
 
   return (
     <Box
@@ -20,7 +20,7 @@ const NavButtons = ({ isVPsm, toggleDrawer }) => {
       }}>
       <Button
         component={RouterLink}
-        to={`/p/${currentUser.username}`}
+        to={`/p/${user.username}`}
         startIcon={<CameraRoll />}>
         My Profile
       </Button>

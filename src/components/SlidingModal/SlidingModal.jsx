@@ -30,7 +30,7 @@ const SlidingModal = ({ isOpen, close, title, children }) => {
       onClose={isSubmitting ? null : close}
       fullScreen={isVPxs}
       TransitionComponent={isVPxs ? CustomSlide : Fade}>
-      <AppBar position="relative" className={classes.appBar}>
+      <AppBar className={classes.appBar} position="sticky" component="div">
         <Toolbar>
           <IconButton
             className={classes.backButton}

@@ -15,18 +15,18 @@ export const checkUsernameTaken = async (username) => {
 };
 
 //FBA user created. Use it to create userDoc on FBFS
-export const addUserToDb = (user, username, fullName) =>
+export const addUserToDb = (userRecord, username, fullName) =>
   users.add({
-    userId: user.uid,
+    userId: userRecord.uid,
     username: username.toLowerCase(),
     fullName: fullName.toLowerCase().replace(/\b./g, (a) => a.toUpperCase()),
-    email: user.email,
+    email: userRecord.email,
     following: [],
     followers: [],
     createdAt: FieldValue.serverTimestamp(),
   });
 
-//a) FBA user loaded. Now use its "uid" to get currentUser from FBFS. Populate UI with it
+//a) FBA user loaded. Now use its "uid" to get user from FBFS. Populate UI with it
 //b) used <Link to "/p/:username"> to another user's page. Take the param to get their doc
 export const getUserDocFromDb = async (uid, username) => {
   const args = uid ? ['userId', '==', uid] : ['username', '==', username];
@@ -37,6 +37,14 @@ export const getUserDocFromDb = async (uid, username) => {
   return { ...docRef.data(), id: docRef.id };
 };
 
+export const updateUserProfilePic = async (docId, url) => {
+  await users.doc(docId).update({
+    profilePicURL: url,
+  });
+
+  return;
+};
+
 export const getSuggestedUserDocs = async (username, following) => {
   const { docs: docRefs } = await users
     .where('username', '!=', username)
@@ -45,7 +53,22 @@ export const getSuggestedUserDocs = async (username, following) => {
 
   return docRefs
     .map((docRef) => ({ ...docRef.data(), id: docRef.id }))
-    .filter((otherUserDoc) => !following.includes(otherUserDoc.username));
+    .filter((altUser) => !following.includes(altUser.username));
+};
+
+export const createFollowUsersLookup = async (followers, following) => {
+  const followUsernames = [...new Set([...followers, ...following])];
+
+  const { docs: docRefs } = await users
+    .where('username', 'in', followUsernames)
+    .get();
+
+  //create object lookup e.g.: {zeldie: {username: 'zeldie', id: ""}, chaz: {}}
+  return docRefs.reduce((acca, docRef) => {
+    const username = docRef.data().username;
+    acca[username] = { username, id: docRef.id };
+    return acca;
+  }, {});
 };
 
 //CRAP:
@@ -82,20 +105,20 @@ export const getNumOfUserPosts = async (username) => {
 };
 
 export const updateFollow = async (
-  currentUser,
-  suggestedProfileDoc,
-  isAlreadyFollowing = false //will be useful on OtherProfile page to toggle follow/unfollow
+  user,
+  altUser,
+  isAlreadyFollowing = false //will be useful on AltUser page to toggle follow/unfollow
 ) => {
-  await users.doc(currentUser.id).update({
+  await users.doc(user.id).update({
     following: !isAlreadyFollowing
-      ? FieldValue.arrayUnion(suggestedProfileDoc.username)
-      : FieldValue.arrayRemove(suggestedProfileDoc.username),
+      ? FieldValue.arrayUnion(altUser.username)
+      : FieldValue.arrayRemove(altUser.username),
   });
 
-  await users.doc(suggestedProfileDoc.id).update({
+  await users.doc(altUser.id).update({
     followers: !isAlreadyFollowing
-      ? FieldValue.arrayUnion(currentUser.username)
-      : FieldValue.arrayRemove(currentUser.username),
+      ? FieldValue.arrayUnion(user.username)
+      : FieldValue.arrayRemove(user.username),
   });
   return;
 };

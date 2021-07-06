@@ -17,13 +17,13 @@ import { Container } from '@material-ui/core';
 export default function Profile() {
   const { username } = useParams();
   useSetDocumentTitle(username);
-  const { currentUser } = useContext(authContext);
-  const isCurrentUserPage = currentUser.username === username;
+  const { user } = useContext(authContext);
+  const isUsersProfile = user.username === username;
 
   return (
     <ProfileProvider>
       <Container maxWidth="xl" disableGutters>
-        {isCurrentUserPage ? (
+        {isUsersProfile ? (
           <>
             <UserHeader />
             <ImageTabs />

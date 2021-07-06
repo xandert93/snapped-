@@ -1,5 +1,9 @@
 import { useState } from 'react';
-import { usePostsCollection, useSetDocumentTitle } from '../../custom-hooks';
+import {
+  usePostsCollection,
+  useSetDocumentTitle,
+  useUsersCollection,
+} from '../../custom-hooks';
 import { SuggestedProfiles, PostsGrid, ImageModal } from './components';
 import { Fade, Grid, Grow, Zoom } from '@material-ui/core';
 

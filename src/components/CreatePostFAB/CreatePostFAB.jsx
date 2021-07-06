@@ -16,11 +16,12 @@ export default function CreatePostFAB({ isScrolledDown }) {
       <Box className={classes.root + ' mui-fixed'}>
         <Fab color="secondary" className={classes.fab}>
           <input
-            className={classes.fileInput}
+            // className={classes.fileInput}
             type="file"
             id="file-input"
             value={fileData.path}
             onChange={(e) => validateFile(e.target.files[0])}
+            hidden
           />
           <label htmlFor="file-input" className={classes.fileInputLabel} />
           <AddAPhoto className={classes.addPhotoIcon} />

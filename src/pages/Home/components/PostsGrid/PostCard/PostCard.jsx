@@ -36,7 +36,6 @@ import useStyles from './styles';
 import moment from 'moment';
 import { authContext } from '../../../../../contexts/1.auth/authContext';
 import {
-  deletePost,
   updatePostComments,
   updatePostLikes,
 } from '../../../../../services/firebase';
@@ -54,13 +53,13 @@ const PostCard = ({
     likes,
     comments,
     url,
-    fileName,
   },
   idx,
+  pfpURL,
   isVPxs,
   // isCardMediaHovered,
 }) => {
-  const { currentUser } = useContext(authContext);
+  const { user } = useContext(authContext);
   const classes = useStyles(); // <-- { isCardMediaHovered }
 
   const [liked, setLiked] = useState(isLikedByUser);
@@ -74,7 +73,7 @@ const PostCard = ({
   const likeHandler = async () => {
     setLiked((liked) => !liked); //immediately reflected in UI
 
-    await updatePostLikes(id, currentUser.username, !liked); //updates DB
+    await updatePostLikes(id, user.username, !liked); //updates DB
     //^should be in useEffect following "liked" state update, but, since toggling, easier way
     //is to pass fresh "liked" value via "!liked"
 
@@ -83,7 +82,7 @@ const PostCard = ({
 
   const newCommentHandler = async () => {
     let commentObj = {
-      username: currentUser.username,
+      username: user.username,
       text: commentText,
     };
     await updatePostComments(id, commentObj);
@@ -117,7 +116,7 @@ const PostCard = ({
         className={classes.cardHeader}
         avatar={
           <Link to={`/p/${username}`}>
-            <Avatar className={classes.cardAvatar} src={url}>
+            <Avatar className={classes.cardAvatar} src={pfpURL}>
               {username[0].toUpperCase()}
             </Avatar>
           </Link>
@@ -133,7 +132,7 @@ const PostCard = ({
           // className: classes.cardSubheader,
         }}
         action={
-          username === currentUser.username && (
+          username === user.username && (
             <>
               <IconButton
                 ref={anchorRef}

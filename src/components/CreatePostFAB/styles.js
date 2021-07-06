@@ -18,9 +18,11 @@ export default makeStyles((theme) => ({
     paddingRight: 2,
   }),
 
-  fileInput: {
-    display: 'none',
-  },
+  // fileInput: {
+  //   display: 'none',
+  // },
+
+  //instead of using display none, we can just pass the global hidden attribute - see MDN
 
   fileInputLabel: {
     position: 'absolute',

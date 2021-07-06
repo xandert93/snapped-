@@ -1,7 +1,14 @@
 import PostCard from './PostCard';
 import useStyles from './styles';
-import { Box, useMediaQuery, useTheme } from '@material-ui/core';
-import { useGridScroll } from '../../../../custom-hooks';
+import {
+  Box,
+  Card,
+  CardContent,
+  CardHeader,
+  useMediaQuery,
+  useTheme,
+} from '@material-ui/core';
+import { useGridScroll, useUsersCollection } from '../../../../custom-hooks';
 import { useState } from 'react';
 import { isCardMedia } from '../../../../utils/helpers';
 import Masonry from 'react-masonry-css';
@@ -47,6 +54,8 @@ const PostsGrid = ({ posts, openModal }) => {
   const deleteHandler = async () =>
     await deletePost(postToEdit.id, postToEdit.fileName);
 
+  const usersPfPLookup = useUsersCollection();
+
   return (
     <>
       <Masonry
@@ -59,16 +68,42 @@ const PostsGrid = ({ posts, openModal }) => {
         onClick={clickHandler}>
         {!posts.length //0 while fetch is happening
           ? Array.from(new Array(initialNoOfPostsShown)).map((_) => (
-              <Box>
-                <Skeleton
-                  animation="pulse"
-                  variant="rect"
-                  width={350}
-                  height={550}
+              <Card>
+                <CardHeader
+                  avatar={
+                    <Skeleton
+                      animation="wave"
+                      variant="circle"
+                      width={56}
+                      height={56}
+                    />
+                  }
+                  title={
+                    <Skeleton
+                      animation="wave"
+                      height={10}
+                      width="80%"
+                      style={{ marginBottom: 6 }}
+                    />
+                  }
+                  subheader={
+                    <Skeleton animation="wave" height={10} width="40%" />
+                  }
                 />
-                <Skeleton animation="pulse" />
-                <Skeleton animation="pulse" width="60%" />
-              </Box>
+                <Skeleton
+                  animation="wave"
+                  variant="rect"
+                  className={classes.media}
+                />
+                <CardContent>
+                  <Skeleton
+                    animation="wave"
+                    height={10}
+                    style={{ marginBottom: 6 }}
+                  />
+                  <Skeleton animation="wave" height={10} width="80%" />
+                </CardContent>
+              </Card>
             ))
           : posts.map(
               (post, idx) =>
@@ -78,6 +113,7 @@ const PostsGrid = ({ posts, openModal }) => {
                       {...{
                         post,
                         idx,
+                        pfpURL: usersPfPLookup[post.username].profilePicURL,
                         isVPxs,
                         // isCardMediaHovered: hoveredCardIdx === idx ? true : false,
                       }}

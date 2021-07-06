@@ -7,24 +7,24 @@ import { authContext } from './authContext';
 const AuthProvider = ({ children }) => {
   const [isCheckingUser, setIsCheckingUser] = useState(true);
   const [firebaseAuthUser, setFirebaseAuthUser] = useState(null); //FB Auth user
-  const [currentUser, setCurrentUser] = useState(null); //FB FS userDoc
+  const [user, setUser] = useState(null); //FB FS userDoc
 
   const signUpNames = useRef();
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(async (user) => {
-      setFirebaseAuthUser(user);
+    const unsubscribe = auth.onAuthStateChanged(async (userRecord) => {
+      setFirebaseAuthUser(userRecord);
 
-      if (user) {
-        if (!user.displayName) {
+      if (userRecord) {
+        if (!userRecord.displayName) {
           const [username, fullName] = signUpNames.current;
-          await user.updateProfile({ displayName: username }); //*see notes
-          await addUserToDb(user, username, fullName);
+          await userRecord.updateProfile({ displayName: username }); //*see notes
+          await addUserToDb(userRecord, username, fullName);
         }
-        setCurrentUser(await getUserDocFromDb(user.uid));
+        setUser(await getUserDocFromDb(userRecord.uid));
       }
 
-      if (!user) setCurrentUser(null);
+      if (!userRecord) setUser(null);
 
       setIsCheckingUser(false);
     });
@@ -82,8 +82,9 @@ const AuthProvider = ({ children }) => {
   return (
     <authContext.Provider
       value={{
-        currentUser,
-        setCurrentUser,
+        firebaseAuthUser,
+        user,
+        setUser,
         register,
         login,
         resetPassword,
@@ -119,25 +120,25 @@ and that we should plainly get their userDoc.
 /*
 When loading spinner has rendered, useEffect runs. "onAuthStateChanged" will run (always runs
 initially) with "null" getting passed into it i.e. no authenticated user (yet!). The firebaseAuthUser
-and currentUser are both set to null to reflect this. 
+and user are both set to null to reflect this. 
 
 1.2s passes, "isChecking" is set to false. AuthProvider re-renders, and alternate render statement
-runs, invoking <App/> with a "null" currentUser. <App/> sees this and renders out the 
+runs, invoking <App/> with a "null" user. <App/> sees this and renders out the 
 authentication page. 
 
 Now, when a user logs in (or signs up), "onAuthStateChanged" runs, but this time with the 
 FB Auth user (contains very basic info, sadly). We set the firebaseAuthUser to it and we then, using
 their unique "displayName", fetch the FB Auth user's userDoc from FB FS. This is then set to 
-currentUser. Again, AuthProvider re-renders, but this time <App/> receives a valid 
-currentUser. <App/> re-renders and since the user is currently on <PublicRoute /> whilst
+user. Again, AuthProvider re-renders, but this time <App/> receives a valid 
+user. <App/> re-renders and since the user is currently on <PublicRoute /> whilst
 authenticated, they are immediately <Redirect to="/">. This stipulates a <ProtectedRoute />
 and the user is successfully sent to the home page. 
 
-Now, when a user signs out, we must reset currentUser. This ensures that the 
+Now, when a user signs out, we must reset user. This ensures that the 
 whole <App/> re-renders and that if user is on <ProtectedRoute/> at time of signout, then they 
 will immediately <Redirect to="/auth/login"/> :). 
 
-This is why we must also pre-emptively set the currentUser to "null" in the useEffect. 
+This is why we must also pre-emptively set the user to "null" in the useEffect. 
 
 P.S. aside from allowing us to fetch the more useful userDoc from the FB FS, we may think that 
 there is no need to store the basic FB Auth user in state. However, as we should notice

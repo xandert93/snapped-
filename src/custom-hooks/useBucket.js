@@ -2,11 +2,10 @@ import { useContext, useEffect, useState } from 'react';
 import { authContext } from '../contexts/1.auth/authContext';
 import { bucket, FieldValue } from '../lib/firebase/config';
 import { createPost } from '../services/firebase';
-import exifr from 'exifr';
-import imageCompression from 'browser-image-compression';
+import { createCompressedFile } from '../utils/helpers';
 
 export function useBucket(file, description) {
-  const { currentUser } = useContext(authContext);
+  const { user } = useContext(authContext);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadURL, setUploadURL] = useState('');
   const [uploadErrMsg, setUploadErrMsg] = useState('');
@@ -15,17 +14,9 @@ export function useBucket(file, description) {
     if (!file) return;
 
     const uploadAndCreatePost = async () => {
-      const imageRef = bucket.ref(currentUser.username + '--' + file.name);
+      const imageRef = bucket.ref(user.username + '--' + file.name);
 
-      console.log(imageRef.name);
-
-      const exifOrientation = await exifr.orientation(file);
-
-      const compressedFile = await imageCompression(file, {
-        maxSizeMB: 1,
-        maxWidthOrHeight: 1500,
-        exifOrientation,
-      });
+      const compressedFile = await createCompressedFile(file);
 
       imageRef.put(compressedFile).on(
         'state_changed',
@@ -36,8 +27,8 @@ export function useBucket(file, description) {
           const url = await imageRef.getDownloadURL();
 
           const newPost = {
-            userId: currentUser.userId,
-            username: currentUser.username,
+            userId: user.userId,
+            username: user.username,
             description,
             likes: [],
             comments: [],

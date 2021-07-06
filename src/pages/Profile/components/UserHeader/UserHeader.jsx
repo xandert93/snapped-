@@ -3,9 +3,9 @@ import { ProfileHeader } from '../../../../components';
 import { authContext } from '../../../../contexts/1.auth/authContext';
 
 const UserHeader = () => {
-  const { currentUser } = useContext(authContext);
+  const { user } = useContext(authContext);
 
-  return <ProfileHeader userDoc={currentUser} />;
+  return <ProfileHeader profile={user} />;
 };
 
 export default UserHeader;
