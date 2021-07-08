@@ -86,9 +86,9 @@ const posts = db.collection('Posts');
 export const createPost = async (newPost) => {
   const docRef = await posts.add(newPost);
   //this ^ doesn't have createdAt value, so let's  get actual inserted doc from firestore:
-  const docRefwTimestamp = await posts.doc(docRef.id).get();
+  const docRefWithTimeStamp = await posts.doc(docRef.id).get();
 
-  return { ...docRefwTimestamp.data(), id: docRef.id };
+  return { ...docRefWithTimeStamp.data(), id: docRef.id };
 };
 
 export const updatePostDescription = async (docId, description) => {
@@ -135,9 +135,15 @@ export const updatePostLikes = async (docId, username, wasLiked) => {
   return;
 };
 
-export const updatePostComments = async (docId, commentObj) => {
+export const createPostComment = async (docId, comment) => {
   await posts.doc(docId).update({
-    comments: FieldValue.arrayUnion(commentObj),
+    comments: FieldValue.arrayUnion(comment),
+  });
+};
+
+export const deletePostComment = async (docId, comment) => {
+  await posts.doc(docId).update({
+    comments: FieldValue.arrayRemove(comment),
   });
 };
 

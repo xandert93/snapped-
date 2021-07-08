@@ -36,7 +36,8 @@ import useStyles from './styles';
 import moment from 'moment';
 import { authContext } from '../../../../../contexts/1.auth/authContext';
 import {
-  updatePostComments,
+  createPostComment,
+  deletePostComment,
   updatePostLikes,
 } from '../../../../../services/firebase';
 import { Pagination } from '@material-ui/lab';
@@ -51,7 +52,7 @@ const PostCard = ({
     description: { location, caption, tags },
     isLikedByUser,
     likes,
-    comments,
+    comments, //array of comment objects
     url,
   },
   idx,
@@ -81,13 +82,13 @@ const PostCard = ({
   };
 
   const newCommentHandler = async () => {
-    let commentObj = {
+    let comment = {
       username: user.username,
       text: commentText,
     };
-    await updatePostComments(id, commentObj);
+    await createPostComment(id, comment);
     setCommentText('');
-    setCurrentComments([...currentComments, commentObj]);
+    setCurrentComments([...currentComments, comment]);
     pageChangeHandler(null, Math.ceil((currentComments.length + 1) / 3));
   };
 
@@ -109,6 +110,16 @@ const PostCard = ({
   const [openPopper, setOpenPopper] = useState(false);
 
   const anchorRef = useRef();
+
+  const commentDoubleClickHandler = async (e) => {
+    const commentIdx = +e.target.dataset.commentIdx;
+    const comment = currentComments[commentIdx];
+    await deletePostComment(id, comment);
+    setCurrentComments((x) => x.filter((_, idx) => idx !== commentIdx));
+    pageChangeHandler(null, Math.ceil((currentComments.length - 1) / 3));
+  };
+
+  const isUserCard = username === user.username;
 
   return (
     <Card className={classes.postCard} raised>
@@ -132,7 +143,7 @@ const PostCard = ({
           // className: classes.cardSubheader,
         }}
         action={
-          username === user.username && (
+          isUserCard && (
             <>
               <IconButton
                 ref={anchorRef}
@@ -235,19 +246,25 @@ const PostCard = ({
 
       <CardContent className={classes.cardContent3}>
         {!!currentComments.length &&
-          currentComments
-            .slice(sliceNum - 3, sliceNum)
-            .map(({ username, text }) => (
+          currentComments.slice(sliceNum - 3, sliceNum).map((comment, idx) => (
+            <Box key={`${comment.username}-${idx}`}>
+              <Link to={`/p/${comment.username}`}>
+                <strong>{comment.username}</strong>
+              </Link>{' '}
               <Typography
+                onDoubleClick={
+                  comment.username === user.username
+                    ? commentDoubleClickHandler
+                    : null
+                }
                 variant="body2"
-                gutterBottom
-                key={`${username}-${text}`}>
-                <Link to={`/p/${username}`}>
-                  <strong>{username}</strong>
-                </Link>{' '}
-                {text}
+                component="span"
+                data-comment-idx={idx}
+                gutterBottom>
+                {comment.text}
               </Typography>
-            ))}
+            </Box>
+          ))}
 
         {currentComments.length > 3 && (
           <Box my={1.5}>

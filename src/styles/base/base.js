@@ -1,5 +1,15 @@
 export const base = {
   overrides: {
+    MuiCssBaseline: {
+      '@global': {
+        '@media (max-width: 768px)': {
+          body: {
+            userSelect: 'none',
+          },
+        },
+      },
+    },
+
     MuiToolbar: {
       gutters: {
         '@media (max-width: 576px)': {

@@ -55,7 +55,7 @@ const PostForm = ({ imageURL, post, submitIcon, submitHandler }) => {
   const [description, setDescription] = useState(
     existingDescription || defaultDescription
   );
-
+  console.log(formatTagsToArr(description.tags));
   const [areTagsInvalid, setAreTagsInvalid] = useState(false);
 
   const updateField = (e) =>

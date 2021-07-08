@@ -3,7 +3,8 @@ import imageCompression from 'browser-image-compression';
 
 export const formatTagsToArr = (str) =>
   str
-    .replaceAll('#', '') //remove hashtags from user
+    .replace(/#/g, ' ') //remove all hashtags from String, for ""
+    .trim() //remove any "" at start or end
     .split(/[ ,]+/); //split into array, using whitespace or comma as delimiter
 
 export const isCardMedia = (node) =>

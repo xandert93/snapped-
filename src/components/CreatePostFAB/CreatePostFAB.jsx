@@ -18,6 +18,7 @@ export default function CreatePostFAB({ isScrolledDown }) {
           <input
             // className={classes.fileInput}
             type="file"
+            accept="image/*"
             id="file-input"
             value={fileData.path}
             onChange={(e) => validateFile(e.target.files[0])}

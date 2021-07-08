@@ -33,6 +33,7 @@ const Home = () => {
   return (
     <Grid container>
       {/* <SuggestedProfiles /> */}
+      {/* changes user doc when altuser followed. usepostscoll fires again, returns new docs */}
 
       <PostsGrid
         posts={homePosts}
