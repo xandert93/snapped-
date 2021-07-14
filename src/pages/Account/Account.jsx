@@ -1,11 +1,12 @@
 import { useRef, useState } from 'react';
-import { Button, TextField, Typography, Container } from '@material-ui/core';
+import { Button, Typography, Container } from '@material-ui/core';
 import useStyles from './styles';
 import { useSetDocumentTitle } from '../../custom-hooks';
 import { db } from '../../lib/firebase/config';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUser } from '../../state/auth/actions';
 import { userSelector } from '../../state/selectors';
+import { TextField } from '../../components';
 
 // import { updatePostsUsername } from '../../../../services/firebase/firestore';
 
@@ -91,43 +92,35 @@ export default function Account() {
         {successMsg && <Typography color="primary">{successMsg}</Typography>}
 
         <TextField
-          className={classes.textField}
           inputRef={fullNameRef}
-          variant="outlined"
           label="Full Name"
           defaultValue={user.fullName}
           required
         />
         {/* <TextField
-        className={classes.textField}
+        
         inputRef={usernameRef}
-        variant="outlined"
+        
         label="Username"
         defaultValue={user.username}
         required
       /> */}
         <TextField
-          className={classes.textField}
           inputRef={emailRef}
-          variant="outlined"
           label="Email address"
           defaultValue={user.email}
           type="email"
           required
         />
         <TextField
-          className={classes.textField}
           inputRef={passwordRef}
-          variant="outlined"
           label="Password"
           type="password"
           required={false}
           helperText="Please leave blank to keep the same."
         />
         <TextField
-          className={classes.textField}
           inputRef={passwordConfirmRef}
-          variant="outlined"
           label="Password"
           type="password"
           required={false}

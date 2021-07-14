@@ -8,8 +8,8 @@ import useStyles from './styles';
 const ThemeSwitch = () => {
   const classes = useStyles();
 
-  const isDarkMode = useSelector((state) => state.app.isDarkMode);
   const dispatch = useDispatch();
+  const isDarkMode = useSelector((state) => state.app.isDarkMode);
 
   return (
     <Switch checked={isDarkMode} onChange={() => dispatch(toggleDarkMode())} />

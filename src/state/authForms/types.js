@@ -1,5 +1,5 @@
-export const A = 'A';
-export const B = 'B';
-export const C = 'C';
-export const D = 'D';
-export const E = 'E';
+export const SET_USER_DETAILS = 'SET_USER_DETAILS';
+export const SET_SUCCESS_MESSAGE = 'SET_SUCCESS_MESSAGE';
+export const SET_FAILURE_MESSAGE = 'SET_FAILURE_MESSAGE';
+export const REMOVE_MESSAGE = 'REMOVE_MESSAGE';
+export const CLEAR_FORM = 'CLEAR_FORM';

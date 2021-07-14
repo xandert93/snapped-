@@ -1,18 +1,16 @@
 import {
   Box,
-  Button,
   IconButton,
   Step,
   StepContent,
   StepLabel,
   Stepper,
-  TextField,
-  Typography,
 } from '@material-ui/core';
 import { ArrowDownward, ArrowUpward } from '@material-ui/icons';
 import { useState } from 'react';
-import { useContext } from 'react';
-import { authFormsContext } from '../../../../contexts/4.authForms/authFormsContext';
+import { useSelector } from 'react-redux';
+import { userDetailsSelector } from '../../../../state/selectors';
+import AuthTextField from '../AuthTextField';
 import useStyles from './styles';
 
 const steps = [
@@ -22,19 +20,11 @@ const steps = [
   'Provide a secure password',
 ];
 
-const Register = () => {
+export default function Register() {
   const classes = useStyles();
 
-  const {
-    username,
-    fullName,
-    email,
-    password,
-    passwordConfirm,
-    changeHandler,
-    msgData,
-    isSubmitting,
-  } = useContext(authFormsContext);
+  const { username, fullName, email, password, passwordConfirm } =
+    useSelector(userDetailsSelector);
 
   const [activeStep, setActiveStep] = useState(0);
 
@@ -66,67 +56,37 @@ const Register = () => {
   ];
 
   return (
-    <>
-      <Stepper
-        activeStep={activeStep}
-        orientation="vertical"
-        className={classes.stepper}>
-        {steps.map((stepName, idx) => (
-          <Step key={stepName}>
-            <StepLabel>{stepName}</StepLabel>
-            <StepContent TransitionProps={{ unmountOnExit: false }}>
-              {idx < stepContent.length - 1 ? (
-                <TextField
-                  {...stepContent[idx]}
-                  onChange={changeHandler}
-                  required
-                />
-              ) : (
-                <Box className={classes.stepperFields}>
-                  <TextField
-                    {...stepContent[idx][0]}
-                    onChange={changeHandler}
-                    required
-                  />
-                  <TextField
-                    {...stepContent[idx][1]}
-                    onChange={changeHandler}
-                    required
-                  />
-                </Box>
-              )}
-              <Box className={classes.actionBtns}>
-                <IconButton
-                  onClick={() => setActiveStep(activeStep - 1)}
-                  disabled={activeStep === 0}>
-                  <ArrowUpward />
-                </IconButton>
-                <IconButton
-                  onClick={() => setActiveStep(activeStep + 1)}
-                  disabled={activeStep === steps.length - 1}>
-                  <ArrowDownward />
-                </IconButton>
+    <Stepper
+      activeStep={activeStep}
+      orientation="vertical"
+      className={classes.stepper}>
+      {steps.map((stepName, idx) => (
+        <Step key={stepName}>
+          <StepLabel>{stepName}</StepLabel>
+          <StepContent TransitionProps={{ unmountOnExit: false }}>
+            {idx < stepContent.length - 1 ? (
+              <AuthTextField {...stepContent[idx]} />
+            ) : (
+              <Box className={classes.stepperFields}>
+                <AuthTextField {...stepContent[idx][0]} />
+                <AuthTextField {...stepContent[idx][1]} />
               </Box>
-            </StepContent>
-          </Step>
-        ))}
-      </Stepper>
-      {msgData && (
-        <Typography color={`${msgData.success ? 'primary' : 'error'}`}>
-          {msgData.msg}
-        </Typography>
-      )}
-      <Button
-        className={classes.btnSubmit}
-        type="submit"
-        variant="contained"
-        color="primary"
-        fullWidth
-        disabled={isSubmitting || activeStep !== steps.length - 1}>
-        Create Account
-      </Button>
-    </>
+            )}
+            <Box className={classes.actionButtons}>
+              <IconButton
+                onClick={() => setActiveStep(activeStep - 1)}
+                disabled={activeStep === 0}>
+                <ArrowUpward />
+              </IconButton>
+              <IconButton
+                onClick={() => setActiveStep(activeStep + 1)}
+                disabled={activeStep === steps.length - 1}>
+                <ArrowDownward />
+              </IconButton>
+            </Box>
+          </StepContent>
+        </Step>
+      ))}
+    </Stepper>
   );
-};
-
-export default Register;
+}

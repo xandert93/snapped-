@@ -1,13 +1,21 @@
 import { Box, Typography } from '@material-ui/core';
-
-import { useContext } from 'react';
-import { authFormsContext } from '../../../../contexts/4.authForms/authFormsContext';
 import useStyles from './styles';
 import logo from '../../../../assets/images/snapped.ico';
+import { useDispatch } from 'react-redux';
+import { removeMessage } from '../../../../state/authForms/actions';
+import { setIsSubmitting } from '../../../../state/app/actions';
 
-const AuthForm = ({ children }) => {
-  const { submitHandler } = useContext(authFormsContext);
+export default function AuthForm({ submitAuthDetails, children }) {
   const classes = useStyles();
+
+  const dispatch = useDispatch();
+
+  const submitHandler = (e) => {
+    e.preventDefault();
+    dispatch(removeMessage());
+    dispatch(setIsSubmitting(true));
+    dispatch(submitAuthDetails());
+  };
 
   return (
     <form className={classes.form} onSubmit={submitHandler}>
@@ -20,6 +28,4 @@ const AuthForm = ({ children }) => {
       {children}
     </form>
   );
-};
-
-export default AuthForm;
+}

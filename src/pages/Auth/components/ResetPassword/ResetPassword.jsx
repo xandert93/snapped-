@@ -1,40 +1,16 @@
-import { TextField, Button, Typography } from '@material-ui/core';
-import { useContext } from 'react';
-import { authFormsContext } from '../../../../contexts/4.authForms/authFormsContext';
-import useStyles from './styles';
+import { useSelector } from 'react-redux';
+import { userDetailsSelector } from '../../../../state/selectors';
+import AuthTextField from '../AuthTextField';
 
-const ResetPassword = () => {
-  const classes = useStyles();
-  const { email, changeHandler, msgData, isSubmitting } =
-    useContext(authFormsContext);
+export default function ResetPassword() {
+  const { email } = useSelector(userDetailsSelector);
 
   return (
-    <>
-      <TextField
-        type="email"
-        name="email"
-        label="Email address"
-        value={email}
-        onChange={changeHandler}
-        required
-      />
-
-      {msgData && (
-        <Typography color={`${msgData.success ? 'primary' : 'error'}`}>
-          {msgData.msg}
-        </Typography>
-      )}
-      <Button
-        className={classes.btnSubmit}
-        type="submit"
-        variant="contained"
-        color="primary"
-        fullWidth
-        disabled={isSubmitting}>
-        Reset Password
-      </Button>
-    </>
+    <AuthTextField
+      type="email"
+      name="email"
+      label="Email address"
+      value={email}
+    />
   );
-};
-
-export default ResetPassword;
+}

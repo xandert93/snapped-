@@ -7,7 +7,6 @@ import {
   CircularProgress,
   IconButton,
   MenuItem,
-  TextField,
   useMediaQuery,
 } from '@material-ui/core';
 import { Lock, Public } from '@material-ui/icons';
@@ -17,6 +16,7 @@ import { formatTagsToArr } from '../../utils/helpers';
 import { useDispatch, useSelector } from 'react-redux';
 import { isSubmittingSelector } from '../../state/selectors';
 import { setIsSubmitting } from '../../state/app/actions';
+import { TextField } from '../TextField';
 
 const iconStyles = { fontSize: 20, marginLeft: 8, verticalAlign: -4 };
 const visibilities = [
@@ -71,11 +71,6 @@ export default function PostForm({
   const updateField = (e) =>
     setDescription((x) => ({ ...x, [e.target.name]: e.target.value }));
 
-  const isVPsm = useMediaQuery(({ breakpoints }) => breakpoints.down('sm'));
-
-  //don't think it's possible to set this via MUI theme props...
-  const marginSize = isVPsm ? 'dense' : 'normal';
-
   return (
     <form
       className={classes.form}
@@ -95,7 +90,6 @@ export default function PostForm({
         name="location"
         value={description.location}
         onChange={updateField}
-        margin={marginSize}
       />
       <TextField
         label="Write your caption!"
@@ -104,7 +98,6 @@ export default function PostForm({
         onChange={updateField}
         multiline
         rows={3}
-        margin={marginSize}
       />
 
       <TextField
@@ -122,7 +115,6 @@ export default function PostForm({
         }
         multiline
         rows={2}
-        margin={marginSize}
       />
 
       <TextField
@@ -131,8 +123,7 @@ export default function PostForm({
         name="isPrivate"
         value={description.isPrivate}
         onChange={updateField}
-        helperText="Public posts are visible to all users!"
-        margin={marginSize}>
+        helperText="Public posts are visible to all users!">
         {visibilities.map((option) => (
           <MenuItem key={option.value} value={option.value}>
             {option.label}

@@ -1,15 +1,9 @@
-import {
-  SET_IS_CHECKING_USER,
-  SET_FB_AUTH_USER,
-  SET_USER,
-  SET_SIGNUP_NAMES,
-} from './types';
+import { SET_IS_CHECKING_USER, SET_FB_AUTH_USER, SET_USER } from './types';
 
 let initialState = {
   isCheckingUser: true,
   firebaseAuthUser: null,
   user: null,
-  signUpNames: [],
 };
 
 export default (state = initialState, action) => {
@@ -20,9 +14,6 @@ export default (state = initialState, action) => {
       return { ...state, firebaseAuthUser: action.payload };
     case SET_USER:
       return { ...state, user: action.payload };
-    case SET_SIGNUP_NAMES:
-      return { ...state, signUpNames: action.payload };
-
     default:
       return state;
   }

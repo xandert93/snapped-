@@ -9,4 +9,11 @@ export default makeStyles((theme) => ({
       },
     },
   },
+
+  actionButtons: {
+    marginTop: theme.spacing(3),
+    [theme.breakpoints.down('xs')]: {
+      marginTop: theme.spacing(2),
+    },
+  },
 }));

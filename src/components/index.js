@@ -8,5 +8,6 @@ export { FollowButton } from './FollowButton';
 export { ProfileHeader } from './ProfileHeader';
 export { PostForm } from './PostForm';
 export { SlidingModal } from './SlidingModal';
+export { TextField } from './TextField';
 export { ThemeSwitch } from './ThemeSwitch';
 export { UploadAvatar } from './UploadAvatar';

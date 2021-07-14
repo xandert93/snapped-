@@ -17,7 +17,7 @@ export default function Snackbar() {
       className={classes.snackbar}
       open={isOpen}
       anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-      autoHideDuration={6000}
+      autoHideDuration={5000}
       onClose={() => dispatch(removeSnackbar())}
       TransitionComponent={Grow}>
       <Alert

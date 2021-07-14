@@ -32,7 +32,7 @@ const AuthProvider = ({ children }) => {
     );
   else
     return (
-      <authContext.Provider value={{ signUpNamesRef }}>
+      <authContext.Provider value={signUpNamesRef}>
         {children}
       </authContext.Provider>
     );

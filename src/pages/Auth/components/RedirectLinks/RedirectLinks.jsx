@@ -1,8 +1,8 @@
 import { Box, Typography } from '@material-ui/core';
+import { Link } from '../../../../components';
 import useStyles from './styles';
-import { Link } from 'react-router-dom';
 
-const RedirectLinks = ({ pageName }) => {
+export default function RedirectLinks({ pageName }) {
   const classes = useStyles();
 
   return (
@@ -11,36 +11,23 @@ const RedirectLinks = ({ pageName }) => {
         <>
           <Typography>
             Forgotten Password?{' '}
-            <Link className={classes.redirectLink} to="/auth/password-reset">
-              Reset Password
-            </Link>
+            <Link to="/auth/password-reset">Reset Password</Link>
           </Typography>
           <Typography>
-            No Account?{' '}
-            <Link className={classes.redirectLink} to="/auth/register">
-              Create an Account
-            </Link>
+            No Account? <Link to="/auth/register">Create an Account</Link>
           </Typography>
         </>
       )}
       {pageName === 'password-reset' && (
         <Typography>
-          Remembered Password?{' '}
-          <Link className={classes.redirectLink} to="/auth/login">
-            Log in
-          </Link>
+          Remembered Password? <Link to="/auth/login">Log in</Link>
         </Typography>
       )}
       {pageName === 'register' && (
         <Typography>
-          Already registered?{' '}
-          <Link className={classes.redirectLink} to="/auth/login">
-            Log in
-          </Link>
+          Already registered? <Link to="/auth/login">Log in</Link>
         </Typography>
       )}
     </Box>
   );
-};
-
-export default RedirectLinks;
+}

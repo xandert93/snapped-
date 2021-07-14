@@ -74,6 +74,22 @@ export const base = {
       },
     },
 
+    MuiFormLabel: {
+      root: {
+        '@media (max-width: 576px)': {
+          fontSize: 16, //*1.17rem (slightly too big)
+        },
+      },
+    },
+
+    MuiInputBase: {
+      root: {
+        '@media (max-width: 576px)': {
+          fontSize: 16, //*1.17rem (slightly too big)
+        },
+      },
+    },
+
     MuiAvatar: {
       root: {
         '@media (min-width: 576px)': {

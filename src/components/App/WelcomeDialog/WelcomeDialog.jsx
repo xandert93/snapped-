@@ -7,13 +7,13 @@ import {
   DialogTitle,
   DialogContentText,
   Button,
-  TextField,
   Avatar,
 } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import { UploadAvatar } from '../../UploadAvatar';
 import { useMediaQuery } from '@material-ui/core';
 import { userSelector } from '../../../state/selectors';
+import { TextField } from '../../TextField';
 
 export default function WelcomeDialog() {
   const classes = useStyles();
@@ -54,7 +54,6 @@ export default function WelcomeDialog() {
           What's the purpose of your account:
         </DialogContentText>
         <TextField
-          margin="dense"
           id=""
           label="Account type (DD)"
           required={false}
@@ -65,14 +64,12 @@ export default function WelcomeDialog() {
           Tell other users more about yourself:
         </DialogContentText>
         <TextField
-          margin="dense"
           id=""
           label="Pronouns (DD)"
           helperText="helper text"
           multiline
         />
         <TextField
-          margin="dense"
           id=""
           label="Biography"
           helperText="helper text"
@@ -80,13 +77,7 @@ export default function WelcomeDialog() {
           rows={5}
           fullWidth
         />
-        <TextField
-          margin="dense"
-          id=""
-          label="Website"
-          helperText="helper text"
-          multiline
-        />
+        <TextField id="" label="Website" helperText="helper text" multiline />
       </DialogContent>
       <DialogActions>
         <Button onClick={close} color="primary">
