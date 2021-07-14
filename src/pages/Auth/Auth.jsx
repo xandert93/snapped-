@@ -1,4 +1,3 @@
-import React from 'react';
 import AuthFormsProvider from '../../contexts/4.authForms/AuthFormsProvider';
 import { Box, Paper } from '@material-ui/core';
 import useStyles from './styles';

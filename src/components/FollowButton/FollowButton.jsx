@@ -1,8 +1,10 @@
 import { Button } from '@material-ui/core';
-import React, { useContext, useState } from 'react';
-import { authContext } from '../../contexts/1.auth/authContext';
+import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { updateFollow } from '../../services/firebase';
+import { updateFollow } from '../../services/firebase/firestore';
+import { setUser } from '../../state/auth/actions';
+import { userSelector } from '../../state/selectors';
 import useStyles from './styles';
 
 const buttons = {
@@ -14,7 +16,8 @@ const buttons = {
 export default function FollowButton({ altUser, setAltUser }) {
   const classes = useStyles();
 
-  const { user, setUser } = useContext(authContext);
+  const user = useSelector(userSelector);
+  const dispatch = useDispatch();
 
   const initialIsFollowed = user.following.includes(altUser.username);
 
@@ -27,12 +30,14 @@ export default function FollowButton({ altUser, setAltUser }) {
     setIsFollowed((isFollowed) => !isFollowed);
     await updateFollow(user, altUser, isFollowed);
 
-    setUser((x) => ({
-      ...x,
-      following: !isFollowed //concat + filter return new arrays
-        ? x.following.concat(altUser.username)
-        : x.following.filter((username) => username !== altUser.username),
-    }));
+    dispatch(
+      setUser({
+        ...user,
+        following: !isFollowed //concat + filter return new arrays
+          ? user.following.concat(altUser.username)
+          : user.following.filter((username) => username !== altUser.username),
+      })
+    );
 
     //only passed by AltUser page, because we need UI to reflect follower +/-
     if (setAltUser) {

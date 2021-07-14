@@ -1,10 +1,11 @@
 import { authFormsContext } from './authFormsContext';
-import React, { useCallback, useContext, useEffect } from 'react';
+import { useCallback, useContext, useEffect } from 'react';
 import { authContext } from '../../contexts/1.auth/authContext';
 
-import { checkUsernameTaken } from '../../services/firebase';
+import { checkUsernameTaken } from '../../services/firebase/firestore';
 
 import { useState } from 'react';
+import { login, register, resetPassword } from '../../services/firebase/auth';
 
 const defaultUserDetails = {
   fullName: '',
@@ -15,7 +16,7 @@ const defaultUserDetails = {
 };
 
 const AuthFormsProvider = ({ pageName, children }) => {
-  const { register, login, resetPassword } = useContext(authContext);
+  const { signUpNamesRef } = useContext(authContext);
 
   const [msgData, setMsgData] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -75,7 +76,7 @@ const AuthFormsProvider = ({ pageName, children }) => {
     }
 
     try {
-      await register(email, password, username, fullName);
+      await register(email, password, username, fullName, signUpNamesRef);
     } catch (err) {
       setIsSubmitting(false);
       return setMsgData({ success: false, msg: err.message });

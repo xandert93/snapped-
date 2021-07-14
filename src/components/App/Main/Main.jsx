@@ -1,16 +1,20 @@
-import React, { useContext, useState } from 'react';
-import { Container, Toolbar } from '@material-ui/core';
+import { useContext, useState } from 'react';
+import { Container, Toolbar, useMediaQuery } from '@material-ui/core';
 import { AddToPhotos } from '@material-ui/icons';
 import useStyles from './styles';
-import { authContext } from '../../../contexts/1.auth/authContext';
+import { useDispatch, useSelector } from 'react-redux';
 import { uploadContext } from '../../../contexts/2.upload/uploadContext';
-import { useMediaQuery } from '@material-ui/core';
+import { userSelector } from '../../../state/selectors';
+import { checkFile } from '../../../state/upload/actions';
 
 export default function Main({ children }) {
   const classes = useStyles();
   const isVPsm = useMediaQuery(({ breakpoints }) => breakpoints.down('sm'));
-  const { user } = useContext(authContext);
-  const { validateFile } = useContext(uploadContext);
+
+  const dispatch = useDispatch();
+  const user = useSelector(userSelector);
+
+  const reader = useContext(uploadContext);
 
   const [isDragged, setIsDragged] = useState(false);
 
@@ -27,7 +31,7 @@ export default function Main({ children }) {
   const handleDrop = (e) => {
     e.preventDefault();
     setIsDragged(false);
-    validateFile(e.dataTransfer.files[0]);
+    dispatch(checkFile(e.dataTransfer.files[0], reader));
   };
 
   return (

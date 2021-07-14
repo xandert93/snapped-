@@ -25,18 +25,21 @@ const ImageGrid = ({ posts, clickHandler }) => {
         cellHeight={isVPxs ? 150 : isVPsm ? 200 : isVPmd ? 250 : 300}
         cols={isVPmd ? 3 : 4}
         onClick={clickHandler}>
-        {posts.map(({ id, username, url, likes, comments }, idx) => (
-          <GridListTile key={id} className={classes.tile} cols={1}>
-            <img src={url} alt={`${username}'s post`} data-post-idx={idx} />
-            {!isVPsm && (
-              <TileOverlay
-                idx={idx}
-                noOfLikes={likes.length}
-                noOfComments={comments.length}
-              />
-            )}
-          </GridListTile>
-        ))}
+        {posts.map(
+          ({ id, username, url, likes, comments }, idx) =>
+            idx < noOfPostsShown && (
+              <GridListTile key={id} className={classes.tile} cols={1}>
+                <img src={url} alt={`${username}'s post`} data-post-idx={idx} />
+                {!isVPsm && (
+                  <TileOverlay
+                    idx={idx}
+                    noOfLikes={likes.length}
+                    noOfComments={comments.length}
+                  />
+                )}
+              </GridListTile>
+            )
+        )}
       </GridList>
     </Box>
   );

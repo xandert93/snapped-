@@ -1,11 +1,12 @@
-import { useContext, useEffect, useState } from 'react';
-import { authContext } from '../contexts/1.auth/authContext';
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { bucket, FieldValue } from '../lib/firebase/config';
-import { createPost } from '../services/firebase';
+import { createPost } from '../services/firebase/firestore';
+import { userSelector } from '../state/selectors';
 import { createCompressedFile } from '../utils/helpers';
 
 export function useBucket(file, description) {
-  const { user } = useContext(authContext);
+  const user = useSelector(userSelector);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [firestoreDoc, setFirestoreDoc] = useState(null);
   const [uploadErrMsg, setUploadErrMsg] = useState('');

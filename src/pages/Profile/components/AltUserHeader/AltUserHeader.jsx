@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { ProfileHeader } from '../../../../components';
-import { getUserDocFromDb } from '../../../../services/firebase';
+import { getUserDocFromDb } from '../../../../services/firebase/firestore';
 
 const AltUserHeader = () => {
   const { username } = useParams();

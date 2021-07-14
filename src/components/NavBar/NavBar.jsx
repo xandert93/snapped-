@@ -36,8 +36,8 @@ import {
   Settings,
 } from '@material-ui/icons';
 import { CreatePostFAB } from '../CreatePostFAB';
-import React, { useContext, useState } from 'react';
-import { authContext } from '../../contexts/1.auth/authContext';
+import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import BottomNav from './BottomNav/BottomNav';
 import {
   IconButton,
@@ -50,9 +50,11 @@ import {
 } from '@material-ui/core';
 import { ConfirmationDialog } from '../ConfirmationDialog';
 import { Link } from '../Link';
+import { logout } from '../../services/firebase/auth';
+import { userSelector } from '../../state/selectors';
 
 const NavBar = () => {
-  const { user, logout } = useContext(authContext);
+  const user = useSelector(userSelector);
   const isVPsm = useMediaQuery(({ breakpoints }) => breakpoints.down('sm')); //is viewport width less than 768px
   const isVPmd = useMediaQuery(({ breakpoints }) => breakpoints.down('md'));
   const classes = useStyles({ isVPsm, isVPmd });

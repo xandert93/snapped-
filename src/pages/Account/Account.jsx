@@ -1,17 +1,23 @@
-import { useContext, useRef, useState } from 'react';
-import { authContext } from '../../contexts/1.auth/authContext';
+import { useRef, useState } from 'react';
 import { Button, TextField, Typography, Container } from '@material-ui/core';
 import useStyles from './styles';
 import { useSetDocumentTitle } from '../../custom-hooks';
 import { db } from '../../lib/firebase/config';
+import { useDispatch, useSelector } from 'react-redux';
+import { setUser } from '../../state/auth/actions';
+import { userSelector } from '../../state/selectors';
 
-// import { updatePostsUsername } from '../../../../services/firebase';
+// import { updatePostsUsername } from '../../../../services/firebase/firestore';
 
 export default function Account() {
   const classes = useStyles();
   useSetDocumentTitle('My Account');
-  const { user, setUser, updateEmail, updatePassword, updateProfileData } =
-    useContext(authContext);
+
+  const firebaseAuthUser = useSelector((state) => state.auth.firebaseAuthUser);
+  const user = useSelector(userSelector);
+  const dispatch = useDispatch();
+
+  // const { updateProfileData } = useContext(authContext);
 
   const [errMsg, setErrMsg] = useState('');
   //inefficient - make into a single message
@@ -40,12 +46,14 @@ export default function Account() {
     //REFACTOR:
     const promises = [];
     if (
-      fullName !== user.fullName
+      fullName !== user.fullName ||
+      email !== user.email
       // || username !== user.username
     ) {
       promises.push(
         db.collection('Users').doc(user.id).update({
-          fullName /*, username */,
+          fullName,
+          email /*, username */,
         })
       );
     }
@@ -55,9 +63,10 @@ export default function Account() {
     //   promises.push(updatePostsUsername(user.username, username));
     // }
 
-    if (email !== user.email) promises.push(updateEmail(email));
+    if (email !== user.email)
+      promises.push(firebaseAuthUser.updateEmail(email));
     if (password && password !== user.password)
-      promises.push(updatePassword(password));
+      promises.push(firebaseAuthUser.updatePassword(password));
 
     if (!promises.length)
       return setErrMsg('Please update your account details before submitting.');
@@ -66,7 +75,9 @@ export default function Account() {
       setIsUpdating(true);
       //first need to update Auth user, DB user and current propagated user
       await Promise.all(promises)
-        .then(() => setUser((x) => ({ ...x, fullName, /*username,*/ email })))
+        .then(() =>
+          dispatch(setUser({ ...user, fullName, /*username,*/ email }))
+        )
         .finally(() => setIsUpdating(false));
       setSuccessMsg('Your account details have been updated.');
     } catch (err) {
@@ -110,6 +121,7 @@ export default function Account() {
           variant="outlined"
           label="Password"
           type="password"
+          required={false}
           helperText="Please leave blank to keep the same."
         />
         <TextField
@@ -118,6 +130,7 @@ export default function Account() {
           variant="outlined"
           label="Password"
           type="password"
+          required={false}
           helperText="Please leave blank to keep the same."
         />
         {errMsg && <Typography color="error">{errMsg}</Typography>}

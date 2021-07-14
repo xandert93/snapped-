@@ -1,9 +1,10 @@
-import { useContext, useEffect, useState } from 'react';
-import { authContext } from '../contexts/1.auth/authContext';
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { db } from '../lib/firebase/config';
+import { userSelector } from '../state/selectors';
 
 export const usePostsCollection = (username = '', tag = '') => {
-  const { user } = useContext(authContext);
+  const user = useSelector(userSelector);
 
   const [docs, setDocs] = useState([]);
 

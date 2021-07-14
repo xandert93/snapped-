@@ -8,11 +8,15 @@ import {
   IconButton,
   MenuItem,
   TextField,
+  useMediaQuery,
 } from '@material-ui/core';
 import { Lock, Public } from '@material-ui/icons';
 import _ from 'lodash';
 
 import { formatTagsToArr } from '../../utils/helpers';
+import { useDispatch, useSelector } from 'react-redux';
+import { isSubmittingSelector } from '../../state/selectors';
+import { setIsSubmitting } from '../../state/app/actions';
 
 const iconStyles = { fontSize: 20, marginLeft: 8, verticalAlign: -4 };
 const visibilities = [
@@ -43,9 +47,15 @@ const defaultDescription = {
   isPrivate: false,
 };
 
-const PostForm = ({ imageURL, post, submitIcon, submitHandler }) => {
+export default function PostForm({
+  imageURL,
+  post,
+  submitIcon,
+  submitHandler,
+}) {
   const classes = useStyles();
-  const { isSubmitting, setIsSubmitting } = useContext(appContext);
+  const isSubmitting = useSelector(isSubmittingSelector);
+  const dispatch = useDispatch();
 
   const existingDescription = post?.description && {
     ...post.description,
@@ -55,18 +65,23 @@ const PostForm = ({ imageURL, post, submitIcon, submitHandler }) => {
   const [description, setDescription] = useState(
     existingDescription || defaultDescription
   );
-  console.log(formatTagsToArr(description.tags));
+
   const [areTagsInvalid, setAreTagsInvalid] = useState(false);
 
   const updateField = (e) =>
     setDescription((x) => ({ ...x, [e.target.name]: e.target.value }));
+
+  const isVPsm = useMediaQuery(({ breakpoints }) => breakpoints.down('sm'));
+
+  //don't think it's possible to set this via MUI theme props...
+  const marginSize = isVPsm ? 'dense' : 'normal';
 
   return (
     <form
       className={classes.form}
       onSubmit={(e) => {
         e.preventDefault();
-        setIsSubmitting(true);
+        dispatch(setIsSubmitting(true));
         submitHandler({
           ...description,
           tags: formatTagsToArr(description.tags),
@@ -80,6 +95,7 @@ const PostForm = ({ imageURL, post, submitIcon, submitHandler }) => {
         name="location"
         value={description.location}
         onChange={updateField}
+        margin={marginSize}
       />
       <TextField
         label="Write your caption!"
@@ -88,6 +104,7 @@ const PostForm = ({ imageURL, post, submitIcon, submitHandler }) => {
         onChange={updateField}
         multiline
         rows={3}
+        margin={marginSize}
       />
 
       <TextField
@@ -105,6 +122,7 @@ const PostForm = ({ imageURL, post, submitIcon, submitHandler }) => {
         }
         multiline
         rows={2}
+        margin={marginSize}
       />
 
       <TextField
@@ -113,7 +131,8 @@ const PostForm = ({ imageURL, post, submitIcon, submitHandler }) => {
         name="isPrivate"
         value={description.isPrivate}
         onChange={updateField}
-        helperText="Public posts are visible to all users!">
+        helperText="Public posts are visible to all users!"
+        margin={marginSize}>
         {visibilities.map((option) => (
           <MenuItem key={option.value} value={option.value}>
             {option.label}
@@ -141,6 +160,4 @@ const PostForm = ({ imageURL, post, submitIcon, submitHandler }) => {
       </Box>
     </form>
   );
-};
-
-export default PostForm;
+}

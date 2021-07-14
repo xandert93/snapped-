@@ -1,4 +1,5 @@
-import { bucket, db, FieldValue } from '../lib/firebase/config';
+import { bucket, db, FieldValue } from '../../lib/firebase/config';
+import { createCompressedFile } from '../../utils/helpers';
 
 /*USERS COLLECTION*/
 const users = db.collection('Users');
@@ -37,13 +38,20 @@ export const getUserDocFromDb = async (uid, username) => {
   return { ...docRef.data(), id: docRef.id };
 };
 
-export const updateUserProfilePic = async (docId, url) => {
+export async function uploadProfilePicture(user, file) {
+  const imageRef = bucket.ref(`pfp-${user.username}`);
+  const compressedFile = await createCompressedFile(file);
+  await imageRef.put(compressedFile);
+  const url = await imageRef.getDownloadURL();
+  await updateUserProfilePicture(user.id, url);
+  return url;
+}
+
+export async function updateUserProfilePicture(docId, url) {
   await users.doc(docId).update({
     profilePicURL: url,
   });
-
-  return;
-};
+}
 
 export const getSuggestedUserDocs = async (username, following) => {
   const { docs: docRefs } = await users
@@ -93,13 +101,11 @@ export const createPost = async (newPost) => {
 
 export const updatePostDescription = async (docId, description) => {
   await posts.doc(docId).update({ description });
-  return;
 };
 
 export const deletePost = async (docId, fileName) => {
   await posts.doc(docId).delete();
   await bucket.ref(fileName).delete();
-  return;
 };
 
 export const getNumOfUserPosts = async (username) => {
@@ -123,7 +129,6 @@ export const updateFollow = async (
       ? FieldValue.arrayUnion(user.username)
       : FieldValue.arrayRemove(user.username),
   });
-  return;
 };
 
 export const updatePostLikes = async (docId, username, wasLiked) => {
@@ -132,7 +137,6 @@ export const updatePostLikes = async (docId, username, wasLiked) => {
       ? FieldValue.arrayUnion(username)
       : FieldValue.arrayRemove(username),
   });
-  return;
 };
 
 export const createPostComment = async (docId, comment) => {
@@ -155,6 +159,4 @@ export const updatePostsUsername = async (username, newUsername) => {
   });
 
   await Promise.all(updatePromisesArr);
-
-  return;
 };

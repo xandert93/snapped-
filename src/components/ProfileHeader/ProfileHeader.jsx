@@ -16,19 +16,15 @@ import {
 import { Lock, Publish } from '@material-ui/icons';
 import { useEffect } from 'react';
 import { forwardRef, useContext, useState } from 'react';
-import { authContext } from '../../contexts/1.auth/authContext';
+import { useSelector } from 'react-redux';
 import { profileContext } from '../../contexts/5.profile/profileContext';
-import { appContext } from '../../contexts/3.app/appContext';
-import { bucket } from '../../lib/firebase/config';
-import {
-  createFollowUsersLookup,
-  updateUserProfilePic,
-} from '../../services/firebase';
-import { createCompressedFile } from '../../utils/helpers';
+import { createFollowUsersLookup } from '../../services/firebase/firestore';
 import { FollowButton } from '../FollowButton';
 import { Link } from '../Link';
 
 import useStyles from './styles';
+import UploadAvatar from '../UploadAvatar/UploadAvatar';
+import { userSelector } from '../../state/selectors';
 
 const Transition = forwardRef((props, ref) => (
   <Slide direction="up" ref={ref} {...props} />
@@ -38,8 +34,7 @@ export default function ProfileHeader({ profile, setProfile }) {
   const classes = useStyles();
 
   const { username, fullName, followers, following } = profile;
-  const { user, setUser } = useContext(authContext);
-  const { setSnackbar } = useContext(appContext);
+  const user = useSelector(userSelector);
   const { noOfPosts } = useContext(profileContext);
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -58,27 +53,9 @@ export default function ProfileHeader({ profile, setProfile }) {
 
   const [followUsersLookup, setFollowUsersLookup] = useState(null);
   useEffect(() => {
-    createFollowUsersLookup(followers, following).then(setFollowUsersLookup);
+    if (followers.length + following.length !== 0)
+      createFollowUsersLookup(followers, following).then(setFollowUsersLookup);
   }, [selectedTab]);
-
-  const [file, setFile] = useState(null);
-  useEffect(() => {
-    if (file) uploadPfp();
-
-    async function uploadPfp() {
-      const imageRef = bucket.ref(`pfp-${user.username}`);
-      const compressedFile = await createCompressedFile(file);
-      await imageRef.put(compressedFile);
-      const url = await imageRef.getDownloadURL();
-      await updateUserProfilePic(user.id, url);
-      setSnackbar({
-        isOpen: true,
-        isSuccess: true,
-        message: 'Profile photo updated.',
-      });
-      setUser((x) => ({ ...x, profilePicURL: url }));
-    }
-  }, [file]);
 
   return (
     <>
@@ -110,23 +87,8 @@ export default function ProfileHeader({ profile, setProfile }) {
           </Grid>
           <Grid item xs={3}>
             <Avatar
-              component={({ children }) => (
-                <Avatar className={classes.avatar}>
-                  {isUsersPage ? (
-                    <label style={{ cursor: 'pointer' }}>
-                      {children}
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) => setFile(e.target.files[0])}
-                        hidden
-                      />
-                    </label>
-                  ) : (
-                    children
-                  )}
-                </Avatar>
-              )}
+              className={classes.avatar}
+              component={isUsersPage ? UploadAvatar : Box}
               alt={fullName}
               src={profile.profilePicURL}
             />

@@ -1,6 +1,6 @@
 import { Box, Typography } from '@material-ui/core';
 import { FavoriteBorder, MessageOutlined } from '@material-ui/icons';
-import React from 'react';
+
 import useStyles from './styles';
 
 const TileOverlay = ({ idx, noOfLikes, noOfComments }) => {

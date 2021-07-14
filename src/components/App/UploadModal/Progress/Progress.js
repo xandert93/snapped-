@@ -1,21 +1,20 @@
-import React, { useContext, useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { useBucket } from '../../../../custom-hooks';
 import { ProgressCircle } from '../ProgressCircle';
 import { useHistory, useLocation } from 'react-router-dom';
-import { uploadContext } from '../../../../contexts/2.upload/uploadContext';
 import { ROUTES } from '../../../../constants/routes';
-import { authContext } from '../../../../contexts/1.auth/authContext';
+import { useDispatch, useSelector } from 'react-redux';
 import { appContext } from '../../../../contexts/3.app/appContext';
+import { userSelector } from '../../../../state/selectors';
+import { clearForm } from '../../../../state/upload/actions';
 
 const Progress = () => {
   const { pathname } = useLocation();
   const history = useHistory();
 
-  const {
-    user: { username },
-  } = useContext(authContext);
-
-  const { file, description, resetForm } = useContext(uploadContext);
+  const dispatch = useDispatch();
+  const { username } = useSelector(userSelector);
+  const { file, description } = useSelector((state) => state.upload);
 
   const { uploadProgress, firestoreDoc, uploadErrMsg } = useBucket(
     file,
@@ -28,7 +27,8 @@ const Progress = () => {
     if (!firestoreDoc) return;
     //must add firestore doc to state; it contains docId (!) we can use to perform CRUD.
     setHomePosts((x) => [firestoreDoc, ...x]); //must be inserted first (newest --> oldest)
-    resetForm();
+    dispatch(clearForm());
+
     if (pathname !== ROUTES.HOME && !description.isPrivate)
       return history.push(ROUTES.HOME);
     if (pathname === ROUTES.HOME && !description.isPrivate)

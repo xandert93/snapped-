@@ -10,7 +10,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import { ArrowDownward, ArrowUpward } from '@material-ui/icons';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useContext } from 'react';
 import { authFormsContext } from '../../../../contexts/4.authForms/authFormsContext';
 import useStyles from './styles';

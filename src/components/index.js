@@ -9,3 +9,4 @@ export { ProfileHeader } from './ProfileHeader';
 export { PostForm } from './PostForm';
 export { SlidingModal } from './SlidingModal';
 export { ThemeSwitch } from './ThemeSwitch';
+export { UploadAvatar } from './UploadAvatar';

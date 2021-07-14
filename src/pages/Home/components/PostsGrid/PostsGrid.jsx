@@ -9,12 +9,12 @@ import {
   useTheme,
 } from '@material-ui/core';
 import { useGridScroll, useUsersCollection } from '../../../../custom-hooks';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { isCardMedia } from '../../../../utils/helpers';
 import Masonry from 'react-masonry-css';
 import { ConfirmationDialog, SlidingModal } from '../../../../components';
 import { UpdatePostForm } from '../../../Profile/components';
-import { deletePost } from '../../../../services/firebase';
+import { deletePost } from '../../../../services/firebase/firestore';
 import { Skeleton } from '@material-ui/lab';
 
 const PostsGrid = ({ posts, setPosts, openModal }) => {
@@ -26,7 +26,7 @@ const PostsGrid = ({ posts, setPosts, openModal }) => {
     },
   } = useTheme();
 
-  const usersPfPLookup = useUsersCollection();
+  const profilePicturesLookup = useUsersCollection();
 
   const initialNoOfPostsShown = isVPxs ? 4 : 8;
 
@@ -35,6 +35,21 @@ const PostsGrid = ({ posts, setPosts, openModal }) => {
     posts.length,
     2000
   );
+
+  /*   const linkClickHandler = () =>
+    sessionStorage.setItem('scrollPosition', window.pageYOffset); */
+
+  //sorta got this working, but as with other stackoverflow posts,
+  //when user goes back, pageYOffset starts at 0 then scrolls down to new position
+  //looks shit.
+
+  /*   useEffect(() => {
+    const prevScrollPosition = sessionStorage.getItem('scrollPosition');
+    if (prevScrollPosition) {
+      window.scrollTo(0, +prevScrollPosition);
+      // sessionStorage.removeItem("scrollPosition");
+    }
+  }); */
 
   const publicPosts = posts.filter((post) => !post.description.isPrivate);
 
@@ -46,7 +61,7 @@ const PostsGrid = ({ posts, setPosts, openModal }) => {
   // const mouseOverHandler = (e) =>
   //   isCardMedia(e.target) && setHoveredCardIdx(+e.target.dataset.postsIdx);
 
-  const clickHandler = ({ target: { dataset } }) => {
+  const moreIconClickHandler = ({ target: { dataset } }) => {
     if (dataset.role) {
       setPostToUpdate(publicPosts[dataset.postsIdx]);
       if (dataset.role === 'Delete Post') {
@@ -69,7 +84,7 @@ const PostsGrid = ({ posts, setPosts, openModal }) => {
         // onMouseOver={isVPxs ? null : mouseOverHandler}
         // onMouseOut={() => setHoveredCardIdx(-1)}
         // onClick={isVPxs ? null : openModal}
-        onClick={clickHandler}>
+        onClick={moreIconClickHandler}>
         {!posts.length //0 while fetch is happening
           ? Array.from(new Array(initialNoOfPostsShown)).map((_, idx) => (
               <Card key={idx}>
@@ -117,8 +132,10 @@ const PostsGrid = ({ posts, setPosts, openModal }) => {
                       {...{
                         post,
                         idx,
-                        pfpURL: usersPfPLookup?.[post.username].profilePicURL,
+                        pfpURL:
+                          profilePicturesLookup?.[post.username].profilePicURL,
                         isVPxs,
+                        // linkClickHandler,
                         // isCardMediaHovered: hoveredCardIdx === idx ? true : false,
                       }}
                     />

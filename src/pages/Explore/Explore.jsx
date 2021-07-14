@@ -1,4 +1,3 @@
-import React from 'react';
 import { useParams } from 'react-router-dom';
 import { usePostsCollection } from '../../custom-hooks';
 import { ImageGrid } from '../../components/ImageGrid';

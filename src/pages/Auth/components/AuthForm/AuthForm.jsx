@@ -1,5 +1,5 @@
 import { Box, Typography } from '@material-ui/core';
-import React from 'react';
+
 import { useContext } from 'react';
 import { authFormsContext } from '../../../../contexts/4.authForms/authFormsContext';
 import useStyles from './styles';

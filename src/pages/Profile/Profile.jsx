@@ -1,8 +1,7 @@
-import React, { useContext } from 'react';
-import { authContext } from '../../contexts/1.auth/authContext';
 import ProfileProvider from '../../contexts/5.profile/ProfileProvider';
 import { useSetDocumentTitle } from '../../custom-hooks';
 import { useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 import {
   UserHeader,
@@ -13,11 +12,12 @@ import {
   AltImageGrid,
 } from './components';
 import { Container } from '@material-ui/core';
+import { userSelector } from '../../state/selectors';
 
 export default function Profile() {
   const { username } = useParams();
   useSetDocumentTitle(username);
-  const { user } = useContext(authContext);
+  const user = useSelector(userSelector);
   const isUsersProfile = user.username === username;
 
   return (

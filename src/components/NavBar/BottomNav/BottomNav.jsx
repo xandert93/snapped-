@@ -2,15 +2,16 @@ import { Avatar } from '@material-ui/core';
 import { BottomNavigationAction } from '@material-ui/core';
 import { BottomNavigation } from '@material-ui/core';
 import { Search, Timeline, AccountCircle } from '@material-ui/icons';
-import React, { useContext, useState } from 'react';
+import { useState } from 'react';
 import { ROUTES } from '../../../constants/routes';
-import { authContext } from '../../../contexts/1.auth/authContext';
+import { useSelector } from 'react-redux';
 import { Link } from '../../Link';
 import useStyles from './styles';
+import { userSelector } from '../../../state/selectors';
 
 export default function BottomNav() {
   const classes = useStyles();
-  const { user } = useContext(authContext);
+  const user = useSelector(userSelector);
   const [tab, setTab] = useState('Timeline');
 
   const handleChange = (e, newTab) => {

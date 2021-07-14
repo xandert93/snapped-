@@ -1,13 +1,21 @@
 import { useContext } from 'react';
 import { appContext } from '../../../../contexts/3.app/appContext';
-import { updatePostDescription } from '../../../../services/firebase';
+import { updatePostDescription } from '../../../../services/firebase/firestore';
 import { Check } from '@material-ui/icons';
 import { PostForm } from '../../../../components';
 import { profileContext } from '../../../../contexts/5.profile/profileContext';
+import { useDispatch } from 'react-redux';
+import {
+  setIsSubmitting,
+  setSuccessSnackbar,
+  setFailureSnackbar,
+} from '../../../../state/app/actions';
 
 const UpdatePostForm = ({ postToUpdate, imageURL, closeModal }) => {
-  const { setSnackbar, setIsSubmitting, setHomePosts } = useContext(appContext);
+  const { setHomePosts } = useContext(appContext);
   const { setPosts } = useContext(profileContext);
+
+  const dispatch = useDispatch();
 
   const updateHandler = async (newDescription) => {
     try {
@@ -31,19 +39,15 @@ const UpdatePostForm = ({ postToUpdate, imageURL, closeModal }) => {
         );
       }
 
-      setSnackbar({
-        isOpen: true,
-        isSuccess: true,
-        message: 'Your post has been updated.',
-      });
+      dispatch(setSuccessSnackbar('Your post has been updated.'));
 
       setTimeout(() => {
         closeModal();
-        setIsSubmitting(false);
+        dispatch(setIsSubmitting(false));
       }, 1800);
     } catch (err) {
-      // setSnackbar({isOpen: true, isSuccess: false, message: err.message });
-      // setIsSubmitting(false);
+      // dispatch(setFailureSnackbar(err.message));
+      // dispatch(setIsSubmitting(false))
     } finally {
     }
   };

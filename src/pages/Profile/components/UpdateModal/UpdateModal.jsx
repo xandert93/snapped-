@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import { profileContext } from '../../../../contexts/5.profile/profileContext';
 
 import { SlidingModal } from '../../../../components/SlidingModal';

@@ -1,5 +1,5 @@
 import { Box } from '@material-ui/core';
-import React from 'react';
+
 import useStyles from './styles';
 
 const ImageModal = ({ closeModal, url }) => {

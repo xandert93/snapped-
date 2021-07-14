@@ -1,28 +1,22 @@
 import { CloudUpload } from '@material-ui/icons';
-import { useContext } from 'react';
-import { uploadContext } from '../../../../contexts/2.upload/uploadContext';
-import { appContext } from '../../../../contexts/3.app/appContext';
+import { useDispatch, useSelector } from 'react-redux';
+import { createPost } from '../../../../state/upload/actions';
 
 import { PostForm } from '../../../PostForm';
 
 const CreatePostForm = () => {
-  const { fileData, dataURL, setPostDescription, setConfirmedFile } =
-    useContext(uploadContext);
+  const dispatch = useDispatch();
+  const { fileData, dataURL } = useSelector((state) => state.upload);
 
-  const { setIsSubmitting } = useContext(appContext);
-
-  const createPost = (description) => {
-    setPostDescription(description);
-    setConfirmedFile(fileData.file);
-    setIsSubmitting(false);
-    //!file ? <PostForm/> (now unmounts) : <Progress/> (now mounts)
-  };
+  //when createPost called --> !file ? <PostForm/> (now unmounts) : <Progress/> (now mounts)
 
   return (
     <PostForm
       imageURL={dataURL}
       submitIcon={<CloudUpload color="inherit" />}
-      submitHandler={createPost}
+      submitHandler={(description) =>
+        dispatch(createPost(description, fileData.file))
+      }
     />
   );
 };

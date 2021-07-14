@@ -1,13 +1,13 @@
 import { Grid } from '@material-ui/core';
-import React, { useContext, useEffect, useState } from 'react';
-import { authContext } from '../../../../contexts/1.auth/authContext';
-import { getSuggestedUserDocs } from '../../../../services/firebase';
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { getSuggestedUserDocs } from '../../../../services/firebase/firestore';
+import { userSelector } from '../../../../state/selectors';
 import SuggestedProfile from './SuggestedProfile';
 
 export default function SuggestedProfiles() {
-  const {
-    user: { username, following },
-  } = useContext(authContext);
+  const { username, following } = useSelector(userSelector);
+
   const [altUsers, setAltUsers] = useState([]);
 
   useEffect(() => {

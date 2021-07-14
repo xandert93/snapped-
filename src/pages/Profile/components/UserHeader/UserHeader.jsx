@@ -1,9 +1,10 @@
-import React, { useContext } from 'react';
 import { ProfileHeader } from '../../../../components';
-import { authContext } from '../../../../contexts/1.auth/authContext';
+
+import { useSelector } from 'react-redux';
+import { userSelector } from '../../../../state/selectors';
 
 const UserHeader = () => {
-  const { user } = useContext(authContext);
+  const user = useSelector(userSelector);
 
   return <ProfileHeader profile={user} />;
 };

@@ -1,70 +1,22 @@
 import { CircularProgress } from '@material-ui/core';
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useEffect, useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { auth } from '../../lib/firebase/config';
-import { addUserToDb, getUserDocFromDb } from '../../services/firebase';
+import { authenticateUserRecord } from '../../state/auth/actions';
 import { authContext } from './authContext';
 
 const AuthProvider = ({ children }) => {
-  const [isCheckingUser, setIsCheckingUser] = useState(true);
-  const [firebaseAuthUser, setFirebaseAuthUser] = useState(null); //FB Auth user
-  const [user, setUser] = useState(null); //FB FS userDoc
+  const dispatch = useDispatch();
+  const isCheckingUser = useSelector((state) => state.auth.isCheckingUser);
 
-  const signUpNames = useRef();
+  const signUpNamesRef = useRef();
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(async (userRecord) => {
-      setFirebaseAuthUser(userRecord);
-
-      if (userRecord) {
-        if (!userRecord.displayName) {
-          const [username, fullName] = signUpNames.current;
-          await userRecord.updateProfile({ displayName: username }); //*see notes
-          await addUserToDb(userRecord, username, fullName);
-        }
-        setUser(await getUserDocFromDb(userRecord.uid));
-      }
-
-      if (!userRecord) setUser(null);
-
-      setIsCheckingUser(false);
-    });
-
+    const unsubscribe = auth.onAuthStateChanged((userRecord) =>
+      dispatch(authenticateUserRecord(userRecord, signUpNamesRef.current))
+    );
     return unsubscribe;
   }, []);
-
-  const register = useCallback(async (email, password, username, fullName) => {
-    signUpNames.current = [username, fullName]; //must happen first!
-    await auth.createUserWithEmailAndPassword(email, password);
-    // history.push('/');
-  }, []);
-
-  const login = useCallback(async (email, password) => {
-    await auth.signInWithEmailAndPassword(email, password);
-    // history.push('/');
-  }, []);
-
-  const logout = useCallback(async () => {
-    await auth.signOut();
-    // history.push('/auth/login');
-  });
-
-  const resetPassword = useCallback(
-    (email) => auth.sendPasswordResetEmail(email),
-    []
-  );
-
-  const updateEmail = useCallback(
-    (email) => firebaseAuthUser.updateEmail(email),
-    [firebaseAuthUser]
-  );
-  const updatePassword = useCallback(
-    (password) => firebaseAuthUser.updatePassword(password),
-    [firebaseAuthUser]
-  );
-  const updateProfileData = useCallback(
-    (obj) => firebaseAuthUser.updateProfile(obj),
-    [firebaseAuthUser]
-  );
 
   if (isCheckingUser)
     return (
@@ -78,24 +30,12 @@ const AuthProvider = ({ children }) => {
         />
       </div>
     );
-
-  return (
-    <authContext.Provider
-      value={{
-        firebaseAuthUser,
-        user,
-        setUser,
-        register,
-        login,
-        resetPassword,
-        updateEmail,
-        updatePassword,
-        updateProfileData,
-        logout,
-      }}>
-      {children}
-    </authContext.Provider>
-  );
+  else
+    return (
+      <authContext.Provider value={{ signUpNamesRef }}>
+        {children}
+      </authContext.Provider>
+    );
 };
 
 export default AuthProvider;

@@ -1,18 +1,18 @@
-import { useContext } from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import { PublicRoute, ProtectedRoute } from '../../utils';
 import { ROUTES } from '../../constants/routes';
-
-import { authContext } from '../../contexts/1.auth/authContext';
 
 import { Auth, Home, Profile, Account, Explore } from '../../pages';
 import { NavBar } from '../NavBar';
 import { Main } from './Main';
 import { UploadModal } from './UploadModal';
 import { Snackbar } from './Snackbar';
+import WelcomeDialog from './WelcomeDialog/WelcomeDialog';
+import { useSelector } from 'react-redux';
+import { userSelector } from '../../state/selectors';
 
 export default function App() {
-  const { user } = useContext(authContext);
+  const user = useSelector(userSelector);
 
   return (
     <>
@@ -38,6 +38,7 @@ export default function App() {
       </Main>
       <Snackbar />
       <UploadModal />
+      {user && <WelcomeDialog />}
     </>
   );
 }

@@ -1,8 +1,8 @@
 import {
-  SET_FILE_SUCCESS,
+  SET_SELECTED_FILE,
   SET_FILE_FAIL,
   SET_DATA_URL,
-  RESET_FORM,
+  CLEAR_FORM,
   SET_POST_DESCRIPTION,
   SET_CONFIRMED_FILE,
 } from './actions';
@@ -17,7 +17,7 @@ export const defaultState = {
 
 export const uploadReducer = (state, { type, payload }) => {
   switch (type) {
-    case SET_FILE_SUCCESS:
+    case SET_SELECTED_FILE:
       return { ...state, msgData: null, fileData: { file: payload } };
     case SET_FILE_FAIL:
       return {
@@ -29,7 +29,7 @@ export const uploadReducer = (state, { type, payload }) => {
       };
     case SET_DATA_URL:
       return { ...state, dataURL: payload };
-    case RESET_FORM:
+    case CLEAR_FORM:
       return defaultState;
     case SET_POST_DESCRIPTION:
       return { ...state, description: payload };

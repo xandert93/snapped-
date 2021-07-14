@@ -1,8 +1,10 @@
-import React, { useMemo, useState } from 'react';
-import { useContext } from 'react';
+import { useMemo, useState } from 'react';
+
+import { useDispatch } from 'react-redux';
+import { removeSnackbar, setIsSubmitting } from '../../state/app/actions';
 import { useHistory, useParams } from 'react-router-dom';
 import { usePostsCollection } from '../../custom-hooks';
-import { appContext } from '../3.app/appContext';
+
 import { profileContext } from './profileContext';
 
 const idxToTabName = {
@@ -19,7 +21,8 @@ const tabNameToIdx = {
 const ProfileProvider = ({ children }) => {
   const { push } = useHistory();
   const { username, tabName } = useParams();
-  const { resetSnackbar, setIsSubmitting } = useContext(appContext);
+
+  const dispatch = useDispatch();
 
   //For both user's and altUser's pages:
   const [posts, setPosts] = usePostsCollection(username);
@@ -53,8 +56,8 @@ const ProfileProvider = ({ children }) => {
 
   const resetPostToUpdate = () => {
     setPostToUpdate(null);
-    resetSnackbar();
-    setIsSubmitting(false);
+    dispatch(removeSnackbar());
+    dispatch(setIsSubmitting(false));
   };
 
   return (

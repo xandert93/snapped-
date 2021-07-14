@@ -1,5 +1,5 @@
 import { Box, CircularProgress, Typography } from '@material-ui/core';
-import React from 'react';
+
 import useStyles from './styles';
 
 const ProgressCircle = ({ uploadProgress }) => {

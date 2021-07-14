@@ -24,6 +24,11 @@ export default makeStyles((theme) => ({
       },
     },
 
+    //put on classes.popper instead
+    '& [role="tooltip"]': {
+      zIndex: 1,
+    },
+
     // background: fade(
     //   theme.palette.background.paper,
     //   isCardMediaHovered ? 0.4 : 0.8
@@ -60,6 +65,10 @@ export default makeStyles((theme) => ({
     },
   },
 
+  cardMediaBox: {
+    position: 'relative',
+  },
+
   cardMedia: {
     height: 0,
     paddingBottom: '120%', //1.2x card width
@@ -70,6 +79,26 @@ export default makeStyles((theme) => ({
     [theme.breakpoints.up('sm')]: {
       paddingBottom: '100%',
       cursor: 'pointer',
+    },
+  },
+
+  heartBox: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+
+    '& svg': {
+      fill: theme.palette.secondary.dark,
+      stroke: theme.palette.background.default,
+      fontSize: theme.spacing(20),
+      [theme.breakpoints.only('sm')]: {
+        fontSize: theme.spacing(30),
+      },
     },
   },
 

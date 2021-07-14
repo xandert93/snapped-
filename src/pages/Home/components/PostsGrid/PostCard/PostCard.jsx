@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { ConfirmationDialog, Link } from '../../../../../components';
 import {
   Avatar,
@@ -34,13 +34,14 @@ import {
 } from '@material-ui/icons';
 import useStyles from './styles';
 import moment from 'moment';
-import { authContext } from '../../../../../contexts/1.auth/authContext';
 import {
   createPostComment,
   deletePostComment,
   updatePostLikes,
-} from '../../../../../services/firebase';
+} from '../../../../../services/firebase/firestore';
 import { Pagination } from '@material-ui/lab';
+import { useSelector } from 'react-redux';
+import { userSelector } from '../../../../../state/selectors';
 
 let wasTouchedTwice = false;
 
@@ -60,7 +61,7 @@ const PostCard = ({
   isVPxs,
   // isCardMediaHovered,
 }) => {
-  const { user } = useContext(authContext);
+  const user = useSelector(userSelector);
   const classes = useStyles(); // <-- { isCardMediaHovered }
 
   const [liked, setLiked] = useState(isLikedByUser);
@@ -98,6 +99,8 @@ const PostCard = ({
       return setTimeout(() => (wasTouchedTwice = false), 300);
     }
     likeHandler();
+    setShowHeart(true);
+    setTimeout(setShowHeart, 600, false);
   };
 
   const [pageNo, setPageNo] = useState(1);
@@ -111,13 +114,15 @@ const PostCard = ({
 
   const anchorRef = useRef();
 
-  const commentDoubleClickHandler = async (e) => {
-    const commentIdx = +e.target.dataset.commentIdx;
-    const comment = currentComments[commentIdx];
-    await deletePostComment(id, comment);
-    setCurrentComments((x) => x.filter((_, idx) => idx !== commentIdx));
+  const commentDoubleClickHandler = async (commentToDelete) => {
+    await deletePostComment(id, commentToDelete);
+    setCurrentComments((x) =>
+      x.filter((comment) => comment !== commentToDelete)
+    );
     pageChangeHandler(null, Math.ceil((currentComments.length - 1) / 3));
   };
+
+  const [showHeart, setShowHeart] = useState(false);
 
   const isUserCard = username === user.username;
 
@@ -194,13 +199,20 @@ const PostCard = ({
       />
 
       <Fade in timeout={4000}>
-        <CardMedia
-          className={classes.cardMedia}
-          data-posts-idx={idx}
-          image={url}
-          title={`Photo by ${username} @ ${location} with taggedPerson.`}
-          onTouchStart={touchHandler}
-        />
+        <Box className={classes.cardMediaBox}>
+          <CardMedia
+            className={classes.cardMedia}
+            data-posts-idx={idx}
+            image={url}
+            title={`Photo by ${username} @ ${location} with taggedPerson.`}
+            onTouchStart={touchHandler}
+          />
+          <Grow in={showHeart} timeout={1000} unmountOnExit>
+            <Box className={classes.heartBox}>
+              <Favorite />
+            </Box>
+          </Grow>
+        </Box>
       </Fade>
 
       <CardContent>
@@ -254,7 +266,7 @@ const PostCard = ({
               <Typography
                 onDoubleClick={
                   comment.username === user.username
-                    ? commentDoubleClickHandler
+                    ? (e) => commentDoubleClickHandler(comment)
                     : null
                 }
                 variant="body2"

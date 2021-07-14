@@ -12,8 +12,9 @@ import {
   useMediaQuery,
 } from '@material-ui/core';
 import { ArrowBack } from '@material-ui/icons';
-import { useContext } from 'react';
-import { appContext } from '../../contexts/3.app/appContext';
+
+import { isSubmittingSelector } from '../../state/selectors';
+import { useSelector } from 'react-redux';
 
 const CustomSlide = forwardRef((props, ref) => (
   <Slide direction="left" ref={ref} {...props} />
@@ -22,7 +23,8 @@ const CustomSlide = forwardRef((props, ref) => (
 const SlidingModal = ({ isOpen, close, title, children }) => {
   const classes = useStyles();
   const isVPxs = useMediaQuery(({ breakpoints }) => breakpoints.only('xs'));
-  const { isSubmitting } = useContext(appContext);
+
+  const isSubmitting = useSelector(isSubmittingSelector);
 
   return (
     <Dialog
