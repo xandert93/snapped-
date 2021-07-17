@@ -5,7 +5,7 @@ import { AccountCircle, CameraRoll, ExitToApp } from '@material-ui/icons';
 
 import { ROUTES } from '../../../constants/routes';
 import { useSelector } from 'react-redux';
-import { logout } from '../../../services/firebase/auth';
+import { fbLogout } from '../../../services/firebase/auth';
 import { userSelector } from '../../../state/selectors';
 
 const NavButtons = ({ isVPsm, toggleDrawer }) => {
@@ -36,7 +36,7 @@ const NavButtons = ({ isVPsm, toggleDrawer }) => {
       <Button
         variant="contained"
         color="secondary"
-        onClick={logout}
+        onClick={fbLogout}
         startIcon={<ExitToApp />}>
         Logout
       </Button>

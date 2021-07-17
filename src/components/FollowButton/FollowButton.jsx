@@ -2,8 +2,11 @@ import { Button } from '@material-ui/core';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { updateFollow } from '../../services/firebase/firestore';
-import { setUser } from '../../state/auth/actions';
+import {
+  fbUpdateAltUserFollowers,
+  fbUpdateUserFollowing,
+} from '../../services/firebase/firestore';
+import { updateUserFollowing } from '../../state/auth/actions';
 import { userSelector } from '../../state/selectors';
 import useStyles from './styles';
 
@@ -19,37 +22,37 @@ export default function FollowButton({ altUser, setAltUser }) {
   const user = useSelector(userSelector);
   const dispatch = useDispatch();
 
-  const initialIsFollowed = user.following.includes(altUser.username);
+  const initialIsAltUserFollowed = user.following.includes(altUser.username);
 
-  const [isFollowed, setIsFollowed] = useState(initialIsFollowed);
+  const [isAltUserFollowed, setIsAltUserFollowed] = useState(
+    initialIsAltUserFollowed
+  );
   const [buttonData, setButtonData] = useState(
-    initialIsFollowed ? buttons.following : buttons.follow
+    initialIsAltUserFollowed ? buttons.following : buttons.follow
   );
 
   const clickHandler = async () => {
-    setIsFollowed((isFollowed) => !isFollowed);
-    await updateFollow(user, altUser, isFollowed);
-
-    dispatch(
-      setUser({
-        ...user,
-        following: !isFollowed //concat + filter return new arrays
-          ? user.following.concat(altUser.username)
-          : user.following.filter((username) => username !== altUser.username),
-      })
+    await fbUpdateUserFollowing(user.id, altUser.username, isAltUserFollowed);
+    await fbUpdateAltUserFollowers(
+      altUser.id,
+      user.username,
+      isAltUserFollowed
     );
+
+    setIsAltUserFollowed((isAltUserFollowed) => !isAltUserFollowed);
+    dispatch(updateUserFollowing(altUser.username, isAltUserFollowed));
 
     //only passed by AltUser page, because we need UI to reflect follower +/-
     if (setAltUser) {
       setAltUser((x) => ({
         ...x,
-        followers: !isFollowed //concat + filter return new arrays
+        followers: !isAltUserFollowed //concat + filter return new arrays
           ? x.followers.concat(user.username)
           : x.followers.filter((username) => username !== user.username),
       }));
     }
 
-    setButtonData(!isFollowed ? buttons.following : buttons.follow);
+    setButtonData(!isAltUserFollowed ? buttons.following : buttons.follow);
   };
 
   return (
@@ -58,8 +61,12 @@ export default function FollowButton({ altUser, setAltUser }) {
         className={classes.followBtn}
         size="small"
         onClick={clickHandler}
-        onMouseEnter={() => isFollowed && setButtonData(buttons.unfollow)}
-        onMouseLeave={() => isFollowed && setButtonData(buttons.following)}
+        onMouseEnter={() =>
+          isAltUserFollowed && setButtonData(buttons.unfollow)
+        }
+        onMouseLeave={() =>
+          isAltUserFollowed && setButtonData(buttons.following)
+        }
         variant="contained"
         color={buttonData[1]}>
         {buttonData[0]}

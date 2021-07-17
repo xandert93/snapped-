@@ -1,9 +1,12 @@
 import { Avatar } from '@material-ui/core';
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setUser } from '../../state/auth/actions';
+import { updateUserProfilePicture } from '../../state/auth/actions';
 import { setSuccessSnackbar } from '../../state/app/actions';
-import { uploadProfilePicture } from '../../services/firebase/firestore';
+import {
+  fbUploadProfilePicture,
+  fbUpdateUserProfilePicture,
+} from '../../services/firebase/firestore';
 import useStyles from './styles';
 import { userSelector } from '../../state/selectors';
 
@@ -19,10 +22,12 @@ export default function UploadAvatar({ children }) {
   useEffect(() => {
     if (!file) return;
 
-    uploadProfilePicture(user, file).then((url) => {
+    (async () => {
+      const url = await fbUploadProfilePicture(user, file);
+      await fbUpdateUserProfilePicture(user.id, url);
+      dispatch(updateUserProfilePicture(url));
       dispatch(setSuccessSnackbar('Your profile picture has been updated.'));
-      dispatch(setUser({ ...user, profilePicURL: url }));
-    });
+    })();
   }, [file]);
 
   return (

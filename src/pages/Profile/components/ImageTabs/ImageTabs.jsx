@@ -1,19 +1,37 @@
-import { useContext } from 'react';
+import { useState } from 'react';
+import { useHistory, useParams } from 'react-router-dom';
+import useStyles from './styles';
 import { AppBar, Tab, Tabs } from '@material-ui/core';
 import { Lock, PhotoLibrary, Public } from '@material-ui/icons';
-import useStyles from './styles';
-import { profileContext } from '../../../../contexts/5.profile/profileContext';
 
-const ImageTabs = () => {
+const idxLookup = {
+  public: 0,
+  private: 1,
+  all: 2,
+};
+const tabNameLookup = {
+  0: 'public',
+  1: 'private',
+  2: 'all',
+};
+
+export default function ImageTabs() {
   const classes = useStyles();
+  const { username, tabName } = useParams();
+  const { push } = useHistory();
 
-  const { selectedTab, tabChangeHandler } = useContext(profileContext);
+  const [selectedTab, setSelectedTab] = useState(idxLookup[tabName]);
+
+  const tabChangeHandler = (e, tabIdx) => {
+    push(`/p/${username}/${tabNameLookup[tabIdx]}`);
+    setSelectedTab(tabIdx);
+  };
 
   return (
     <AppBar component="div" position="static" className={classes.appBar}>
       <Tabs
-        textColor="secondary"
-        indicatorColor="primary"
+        textColor="primary"
+        indicatorColor="secondary"
         variant="fullWidth"
         value={selectedTab}
         onChange={tabChangeHandler}>
@@ -23,6 +41,4 @@ const ImageTabs = () => {
       </Tabs>
     </AppBar>
   );
-};
-
-export default ImageTabs;
+}

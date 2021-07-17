@@ -3,11 +3,11 @@ import { FavoriteBorder, MessageOutlined } from '@material-ui/icons';
 
 import useStyles from './styles';
 
-const TileOverlay = ({ idx, noOfLikes, noOfComments }) => {
+export default function TileOverlay({ noOfLikes, noOfComments }) {
   const classes = useStyles();
 
   return (
-    <Box className={classes.overlay} data-post-idx={idx}>
+    <Box className={classes.overlay}>
       <FavoriteBorder className={classes.overlayIcon} />
       <Typography variant="h5" component="span">
         {noOfLikes}
@@ -18,9 +18,8 @@ const TileOverlay = ({ idx, noOfLikes, noOfComments }) => {
       </Typography>
     </Box>
   );
-};
+}
 
-export default TileOverlay;
-
+//if using event delegation:
 //for non-mobile devices, since overlay will block original image,
-//"data-index={idx}" is needed for their div, enabling modal opening
+//"data-index={idx}" was previously needed for their div, enabling modal opening

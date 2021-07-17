@@ -1,0 +1,10 @@
+export const SET_TIMELINE_POSTS = 'SET_TIMELINE_POSTS';
+export const SET_USER_POSTS = 'SET_USER_POSTS';
+export const SET_ALT_USER_POSTS = 'SET_ALT_USER_POSTS';
+export const SET_EXPLORE_POSTS = 'SET_EXPLORE_POSTS';
+
+export const CREATE_POST = 'CREATE_POST';
+export const SET_POST_TO_EDIT = 'SET_POST_TO_EDIT';
+export const UPDATE_POST = 'UPDATE_POST';
+export const CLEAR_POST_TO_EDIT = 'CLEAR_POST_TO_EDIT';
+export const DELETE_POST = 'DELETE_POST';

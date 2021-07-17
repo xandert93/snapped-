@@ -25,12 +25,13 @@ export default function WelcomeDialog() {
   // const isUserNew = !profilePicURL || !bio || !followers.length
   const isUserNew = true;
 
+  //not sure how to apply this with redux since initial state is different from all other dialog state
   const [isDialogOpen, setIsDialogOpen] = useState(isUserNew);
 
   const close = () => setIsDialogOpen(false);
 
   return (
-    <Dialog fullScreen={isVPxs} open={isDialogOpen}>
+    <Dialog fullScreen={isVPxs} open={isDialogOpen} onClose={close}>
       <DialogTitle>
         Welcome to "snapped!", {fullName.split(' ')[0]}!
       </DialogTitle>

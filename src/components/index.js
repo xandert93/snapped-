@@ -1,13 +1,12 @@
 export { App } from './App';
-export { CreatePostFAB } from './CreatePostFAB';
-export { ConfirmationDialog } from './ConfirmationDialog';
 export { Link } from './Link';
 export { NavBar } from './NavBar';
 export { ImageGrid } from './ImageGrid';
 export { FollowButton } from './FollowButton';
 export { ProfileHeader } from './ProfileHeader';
+export { PostCreationFAB } from './PostCreationFAB';
 export { PostForm } from './PostForm';
-export { SlidingModal } from './SlidingModal';
+export { PostDialog } from './PostDialog';
 export { TextField } from './TextField';
 export { ThemeSwitch } from './ThemeSwitch';
 export { UploadAvatar } from './UploadAvatar';

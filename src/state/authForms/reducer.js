@@ -3,7 +3,7 @@ import {
   SET_SUCCESS_MESSAGE,
   SET_FAILURE_MESSAGE,
   REMOVE_MESSAGE,
-  CLEAR_FORM,
+  CLEAR_AUTH_FORM,
 } from './types';
 
 const initialUserDetails = {
@@ -47,7 +47,7 @@ export default (state = initialState, { type, payload }) => {
         ...state,
         messageData: { ...state.messageData, showMessage: false },
       };
-    case CLEAR_FORM:
+    case CLEAR_AUTH_FORM:
       return {
         ...state,
         userDetails: initialUserDetails,

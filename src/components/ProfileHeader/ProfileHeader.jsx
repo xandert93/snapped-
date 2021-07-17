@@ -15,9 +15,8 @@ import {
 } from '@material-ui/core';
 import { Lock, Publish } from '@material-ui/icons';
 import { useEffect } from 'react';
-import { forwardRef, useContext, useState } from 'react';
+import { forwardRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { profileContext } from '../../contexts/5.profile/profileContext';
 import { createFollowUsersLookup } from '../../services/firebase/firestore';
 import { FollowButton } from '../FollowButton';
 import { Link } from '../Link';
@@ -35,7 +34,6 @@ export default function ProfileHeader({ profile, setProfile }) {
 
   const { username, fullName, followers, following } = profile;
   const user = useSelector(userSelector);
-  const { noOfPosts } = useContext(profileContext);
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -94,7 +92,7 @@ export default function ProfileHeader({ profile, setProfile }) {
             />
           </Grid>
           <Grid item xs={4}>
-            <Typography variant="body2">{noOfPosts} posts</Typography>
+            <Typography variant="body2">posts.length posts</Typography>
             {!isUsersPage && (
               <FollowButton altUser={profile} setAltUser={setProfile} />
             )}
@@ -161,7 +159,7 @@ export default function ProfileHeader({ profile, setProfile }) {
           )}
         </Typography>
         <ButtonGroup variant="outlined" size="small">
-          <Button>{noOfPosts} Posts</Button>
+          <Button>posts.length Posts</Button>
           <Button onClick={() => setIsDialogOpen(true)}>
             {followers.length} Follower
             {followers.length !== 1 && 's'}

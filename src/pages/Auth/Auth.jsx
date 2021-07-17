@@ -18,49 +18,39 @@ import {
   attemptLogin,
   attemptPasswordReset,
   attemptRegister,
-  clearForm,
+  clearAuthForm,
 } from '../../state/authForms/actions';
-import { useContext } from 'react';
-import { authContext } from '../../contexts/1.auth/authContext';
+
+const authLookup = {
+  register: {
+    FormControls: Register,
+    submitHandler: attemptRegister,
+    submitText: 'Create Account',
+  },
+  login: {
+    FormControls: Login,
+    submitHandler: attemptLogin,
+    submitText: 'Login',
+  },
+  'password-reset': {
+    FormControls: ResetPassword,
+    submitHandler: attemptPasswordReset,
+    submitText: 'Reset Password',
+  },
+};
 
 export default function Auth() {
   const classes = useStyles();
   const { pageName } = useParams();
-  const signUpNamesRef = useContext(authContext);
+
+  const { FormControls, submitHandler, submitText } = authLookup[pageName];
 
   const dispatch = useDispatch();
   const { showMessage, isSuccess, message } = useSelector(
     (state) => state.authForms.messageData
   );
 
-  useEffect(() => dispatch(clearForm()), [pageName]);
-
-  const submitAuthDetails =
-    pageName === 'register'
-      ? () => attemptRegister(signUpNamesRef)
-      : pageName === 'login'
-      ? attemptLogin
-      : pageName === 'password-reset'
-      ? attemptPasswordReset
-      : null;
-
-  const FormControls =
-    pageName === 'register'
-      ? Register
-      : pageName === 'login'
-      ? Login
-      : pageName === 'password-reset'
-      ? ResetPassword
-      : null;
-
-  const submitButtonText =
-    pageName === 'register'
-      ? 'Create Account'
-      : pageName === 'login'
-      ? 'Login'
-      : pageName === 'password-reset'
-      ? 'Reset Password'
-      : null;
+  useEffect(() => dispatch(clearAuthForm()), [pageName]);
 
   /* Create Account button disabled=...
       {isSubmitting || activeStep !== steps.length - 1} */
@@ -68,12 +58,12 @@ export default function Auth() {
   return (
     <Box className={classes.root}>
       <Paper className={classes.formPaper} elevation={10}>
-        <AuthForm submitAuthDetails={submitAuthDetails}>
+        <AuthForm submitHandler={submitHandler}>
           <FormControls />
           {showMessage && (
             <AuthMessage isSuccess={isSuccess}>{message}</AuthMessage>
           )}
-          <SubmitButton>{submitButtonText}</SubmitButton>
+          <SubmitButton>{submitText}</SubmitButton>
         </AuthForm>
         <RedirectLinks pageName={pageName} />
         <Box className={classes.themeSwitchBox}>

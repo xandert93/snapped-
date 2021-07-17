@@ -1,5 +1,5 @@
 import { CircularProgress } from '@material-ui/core';
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { auth } from '../../lib/firebase/config';
 import { authenticateUserRecord } from '../../state/auth/actions';
@@ -9,11 +9,9 @@ const AuthProvider = ({ children }) => {
   const dispatch = useDispatch();
   const isCheckingUser = useSelector((state) => state.auth.isCheckingUser);
 
-  const signUpNamesRef = useRef();
-
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((userRecord) =>
-      dispatch(authenticateUserRecord(userRecord, signUpNamesRef.current))
+      dispatch(authenticateUserRecord(userRecord))
     );
     return unsubscribe;
   }, []);
@@ -31,11 +29,7 @@ const AuthProvider = ({ children }) => {
       </div>
     );
   else
-    return (
-      <authContext.Provider value={signUpNamesRef}>
-        {children}
-      </authContext.Provider>
-    );
+    return <authContext.Provider value={''}>{children}</authContext.Provider>;
 };
 
 export default AuthProvider;

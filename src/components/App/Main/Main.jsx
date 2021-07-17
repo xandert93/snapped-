@@ -5,7 +5,7 @@ import useStyles from './styles';
 import { useDispatch, useSelector } from 'react-redux';
 import { uploadContext } from '../../../contexts/2.upload/uploadContext';
 import { userSelector } from '../../../state/selectors';
-import { checkFile } from '../../../state/upload/actions';
+import { checkInitialFile } from '../../../state/upload/actions';
 
 export default function Main({ children }) {
   const classes = useStyles();
@@ -31,7 +31,7 @@ export default function Main({ children }) {
   const handleDrop = (e) => {
     e.preventDefault();
     setIsDragged(false);
-    dispatch(checkFile(e.dataTransfer.files[0], reader));
+    dispatch(checkInitialFile(e.dataTransfer.files[0], reader));
   };
 
   return (

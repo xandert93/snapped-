@@ -35,9 +35,9 @@ import {
   Search,
   Settings,
 } from '@material-ui/icons';
-import { CreatePostFAB } from '../CreatePostFAB';
+import { PostCreationFAB } from '../PostCreationFAB';
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import BottomNav from './BottomNav/BottomNav';
 import {
   IconButton,
@@ -48,10 +48,18 @@ import {
   Badge,
   Divider,
 } from '@material-ui/core';
-import { ConfirmationDialog } from '../ConfirmationDialog';
 import { Link } from '../Link';
-import { logout } from '../../services/firebase/auth';
+import { fbLogout } from '../../services/firebase/auth';
 import { userSelector } from '../../state/selectors';
+import { setConfirmationDialog } from '../../state/app/actions';
+
+const logoutDialogData = {
+  isOpen: true,
+  title: 'logout?',
+  content: 'You will not be missed.',
+  choices: ['hola!', 'adios'],
+  confirmHandler: fbLogout,
+};
 
 const NavBar = () => {
   const user = useSelector(userSelector);
@@ -60,11 +68,15 @@ const NavBar = () => {
   const classes = useStyles({ isVPsm, isVPmd });
 
   const isScrolledDown = useScrollTrigger({ target: window, threshold: 100 });
-
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
   const toggleDrawer = (newState) => () => setIsDrawerOpen(newState);
 
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const dispatch = useDispatch();
+
+  const logoutClickHandler = () =>
+    dispatch(setConfirmationDialog(logoutDialogData));
+
   //refactor into [].map()
   function zeList() {
     return (
@@ -94,7 +106,7 @@ const NavBar = () => {
             />
           </ListItem>
           <Divider />
-          <ListItem button onClick={() => setIsDialogOpen(true)}>
+          <ListItem button onClick={logoutClickHandler}>
             <ListItemIcon>
               <ExitToApp color="secondary" />
             </ListItemIcon>
@@ -178,7 +190,7 @@ const NavBar = () => {
                 <IconButton
                   edge="end"
                   color="secondary"
-                  onClick={() => setIsDialogOpen(true)}>
+                  onClick={logoutClickHandler}>
                   <ExitToApp />
                 </IconButton>
               )}
@@ -195,18 +207,9 @@ const NavBar = () => {
       <Toolbar />
 
       {!isVPsm && <BackToTopFAB isScrolledDown={isScrolledDown} />}
-      <CreatePostFAB isScrolledDown={isScrolledDown} />
+      <PostCreationFAB isScrolledDown={isScrolledDown} />
 
       {isVPsm && <BottomNav />}
-
-      <ConfirmationDialog
-        isOpen={isDialogOpen}
-        close={() => setIsDialogOpen(false)}
-        title="logout?"
-        content="RUUUUUUUDE"
-        choices={['hola!', 'adios']}
-        clickHandler={logout}
-      />
     </>
   );
 };

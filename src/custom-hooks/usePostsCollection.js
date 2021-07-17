@@ -1,20 +1,28 @@
-import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { db } from '../lib/firebase/config';
+import { extractPosts } from '../services/firebase/firestore';
+import {
+  setAltUserPosts,
+  setExplorePosts,
+  setTimelinePosts,
+  setUserPosts,
+} from '../state/posts/actions';
 import { userSelector } from '../state/selectors';
 
+const posts = db.collection('Posts').orderBy('createdAt', 'desc');
+
 export const usePostsCollection = (username = '', tag = '') => {
+  const dispatch = useDispatch();
   const user = useSelector(userSelector);
-
-  const [docs, setDocs] = useState([]);
-
-  const posts = db.collection('Posts').orderBy('createdAt', 'desc');
+  const { timeline: currentTimelinePosts, user: currentUserPosts } =
+    useSelector((state) => state.posts);
 
   let allPublicPosts,
     allPublicTagPosts,
     allUserPosts,
-    onlyUserPublicPosts,
-    userFollowedDocsRef;
+    altUserPublicPosts,
+    userFollowingPosts;
 
   //if there is a user, prepare the references to query the database
   if (user) {
@@ -28,70 +36,67 @@ export const usePostsCollection = (username = '', tag = '') => {
 
     allUserPosts = posts.where('username', '==', username);
 
-    onlyUserPublicPosts = allUserPosts.where(
+    altUserPublicPosts = allUserPosts.where(
       'description.isPrivate',
       '==',
       false
     );
 
-    userFollowedDocsRef = posts.where(
-      'username',
-      'in',
-      user.following.concat(user.username) //so user can see their own posts on timeline
-    );
-  }
-
-  function extractPosts({ docs: docRefs }) {
-    let retrievedDocs = [];
-    for (let i = 0; i < docRefs.length; i++) {
-      retrievedDocs.push({
-        ...docRefs[i].data(),
-        isLikedByUser: docRefs[i].data().likes.includes(user.username),
-        id: docRefs[i].id,
-      });
-    }
-    setDocs(retrievedDocs);
+    userFollowingPosts = posts
+      .where(
+        'username',
+        'in',
+        user.following.concat(user.username) //so user can see their own posts on timeline
+      )
+      .where('description.isPrivate', '==', false); //only public posts from users shown on timeline
   }
 
   useEffect(() => {
     if (!user) return;
     //"Home"
     if (!username && !tag) {
-      userFollowedDocsRef.get().then(extractPosts);
+      if (!currentTimelinePosts.length) {
+        //if first visit to "Home" page. Following visits don't require database call --> posts in Redux Store
+        (async () => {
+          const { docs: docRefs } = await userFollowingPosts.get();
+          const posts = extractPosts(docRefs, user.username);
+          dispatch(setTimelinePosts(posts));
+        })();
+      }
       return;
     }
 
     //authenticated user's "MyProfile" or "AltProfile"
     if (username) {
-      let collectionToQuery =
-        username === user.username ? allUserPosts : onlyUserPublicPosts;
-
-      collectionToQuery.get().then(extractPosts);
-      return;
+      if (username === user.username) {
+        if (!currentUserPosts.length) {
+          //if first visit to "MyProfile" page...
+          (async () => {
+            const { docs: docRefs } = await allUserPosts.get();
+            const posts = extractPosts(docRefs, user.username);
+            dispatch(setUserPosts(posts));
+          })();
+        }
+        return;
+      } else {
+        //must be visiting "AltProfile" page
+        (async () => {
+          const { docs: docRefs } = await altUserPublicPosts.get();
+          const posts = extractPosts(docRefs, user.username);
+          dispatch(setAltUserPosts(posts));
+        })();
+        return;
+      }
     }
 
     //"Explore" with params tag
     if (tag) {
-      allPublicTagPosts.get().then(extractPosts);
+      (async () => {
+        const { docs: docRefs } = await allPublicTagPosts.get();
+        const posts = extractPosts(docRefs, user.username);
+        dispatch(setExplorePosts(posts));
+      })();
       return;
     }
   }, [user]);
-
-  return [docs, setDocs];
 };
-
-//when a image uploaded, doc is added, but when onSnapshot initially fires
-//timestamp has not been inserted on "createdAt"
-//our UI expects to use "createdAt" as soon as docs returned
-//thus, cancel first snapshot call if the added document doesn't have "createdAt":
-//if (!allDocRefs[0].data().createdAt) return;
-
-//array of LIGHTER docRefs called "docs" destructured from querySnapshot obj
-//ideally, i'd just like to add/remove the new/deleted doc to/from the existing docs
-//rather than set the docs completely again whenever the database senses a change
-//also, when img uploaded and document added to database, onsnapshot here runs
-//snapshot returns with new imgdoc - old last (5th) img doc removed from DOM
-//also, whilst this is more succicnt than for loop above, for loop might be faster
-//could have easily used maps above too, but wanted to use for loop for practice
-
-//extractPosts called with snapshot passed into it. Therefore docRefs destructured from it

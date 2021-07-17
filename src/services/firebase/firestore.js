@@ -38,16 +38,15 @@ export const getUserDocFromDb = async (uid, username) => {
   return { ...docRef.data(), id: docRef.id };
 };
 
-export async function uploadProfilePicture(user, file) {
+export async function fbUploadProfilePicture(user, file) {
   const imageRef = bucket.ref(`pfp-${user.username}`);
   const compressedFile = await createCompressedFile(file);
   await imageRef.put(compressedFile);
   const url = await imageRef.getDownloadURL();
-  await updateUserProfilePicture(user.id, url);
   return url;
 }
 
-export async function updateUserProfilePicture(docId, url) {
+export async function fbUpdateUserProfilePicture(docId, url) {
   await users.doc(docId).update({
     profilePicURL: url,
   });
@@ -91,7 +90,19 @@ export const createFollowUsersLookup = async (followers, following) => {
 /*POSTS COLLECTION*/
 const posts = db.collection('Posts');
 
-export const createPost = async (newPost) => {
+export function extractPosts(docRefs, username) {
+  let retrievedPosts = [];
+  for (let i = 0; i < docRefs.length; i++) {
+    retrievedPosts.push({
+      ...docRefs[i].data(),
+      isLikedByUser: docRefs[i].data().likes.includes(username),
+      id: docRefs[i].id,
+    });
+  }
+  return retrievedPosts;
+}
+
+export const fbCreatePost = async (newPost) => {
   const docRef = await posts.add(newPost);
   //this ^ doesn't have createdAt value, so let's  get actual inserted doc from firestore:
   const docRefWithTimeStamp = await posts.doc(docRef.id).get();
@@ -99,11 +110,11 @@ export const createPost = async (newPost) => {
   return { ...docRefWithTimeStamp.data(), id: docRef.id };
 };
 
-export const updatePostDescription = async (docId, description) => {
+export const fbUpdatePost = async (docId, description) => {
   await posts.doc(docId).update({ description });
 };
 
-export const deletePost = async (docId, fileName) => {
+export const fbDeletePost = async (docId, fileName) => {
   await posts.doc(docId).delete();
   await bucket.ref(fileName).delete();
 };
@@ -113,23 +124,27 @@ export const getNumOfUserPosts = async (username) => {
   return docRefs.length;
 };
 
-export const updateFollow = async (
-  user,
-  altUser,
-  isAlreadyFollowing = false //will be useful on AltUser page to toggle follow/unfollow
-) => {
-  await users.doc(user.id).update({
-    following: !isAlreadyFollowing
-      ? FieldValue.arrayUnion(altUser.username)
-      : FieldValue.arrayRemove(altUser.username),
+export const fbUpdateUserFollowing = async (
+  userDocId,
+  altUserUsername,
+  isAltUserFollowed
+) =>
+  await users.doc(userDocId).update({
+    following: isAltUserFollowed
+      ? FieldValue.arrayRemove(altUserUsername)
+      : FieldValue.arrayUnion(altUserUsername),
   });
 
-  await users.doc(altUser.id).update({
-    followers: !isAlreadyFollowing
-      ? FieldValue.arrayUnion(user.username)
-      : FieldValue.arrayRemove(user.username),
+export const fbUpdateAltUserFollowers = async (
+  altUserDocId,
+  userUsername,
+  isAltUserFollowed
+) =>
+  await users.doc(altUserDocId).update({
+    followers: isAltUserFollowed
+      ? FieldValue.arrayRemove(userUsername)
+      : FieldValue.arrayUnion(userUsername),
   });
-};
 
 export const updatePostLikes = async (docId, username, wasLiked) => {
   await posts.doc(docId).update({

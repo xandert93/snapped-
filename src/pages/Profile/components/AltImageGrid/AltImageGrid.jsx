@@ -1,11 +1,8 @@
-import { useContext } from 'react';
+import { useSelector } from 'react-redux';
 import { ImageGrid } from '../../../../components';
-import { profileContext } from '../../../../contexts/5.profile/profileContext';
 
-const AltImageGrid = () => {
-  const { posts } = useContext(profileContext);
+export default function AltImageGrid() {
+  const altUserPosts = useSelector((state) => state.posts.altUser);
 
-  return <ImageGrid posts={posts} />;
-};
-
-export default AltImageGrid;
+  return <ImageGrid posts={altUserPosts} clickHandler={() => {}} />;
+}

@@ -1,33 +1,27 @@
-import { useState } from 'react';
-import {
-  usePostsCollection,
-  useSetDocumentTitle,
-  useUsersCollection,
-} from '../../custom-hooks';
-import { SuggestedProfiles, PostsGrid, ImageModal } from './components';
-import { Fade, Grid, Grow, Zoom } from '@material-ui/core';
+import { useSetDocumentTitle } from '../../custom-hooks';
+import { Timeline } from './components';
+import { Grid } from '@material-ui/core';
 
 import useStyles from './styles';
-import { CreatePostFAB, SlidingModal } from '../../components';
-import { isCardMedia } from '../../utils/helpers';
-import { UpdatePostForm } from '../Profile/components';
-import { useContext } from 'react';
-import { appContext } from '../../contexts/3.app/appContext';
 
-const Home = () => {
+export default function Home() {
   const classes = useStyles();
   useSetDocumentTitle('Home');
 
-  const { homePosts, setHomePosts } = useContext(appContext);
+  return (
+    <Grid container>
+      <Timeline />
+    </Grid>
+  );
 
   // const openModal = (e) => {
   //   if (isCardMedia(e.target)) {
-  //     setPostToUpdate(homePosts[e.target.dataset.postsIdx]);
+  //     setPostToEdit(homePosts[e.target.dataset.postsIdx]);
   //     setShowModal(true);
   //   }
   // };
 
-  // const closeModal = (e) =>
+  // const closeDialog = (e) =>
   //   !e.target.className.includes('modalImg') && setShowModal(false);
 
   return (
@@ -35,17 +29,14 @@ const Home = () => {
       {/* <SuggestedProfiles /> */}
       {/* changes user doc when altuser followed. usepostscoll fires again, returns new docs */}
 
-      <PostsGrid
-        posts={homePosts}
-        setPosts={setHomePosts}
-        // openModal={openModal}
+      <Timeline
+
+      // openModal={openModal}
       />
 
       {/* {showModal && (
-          <ImageModal url={postToUpdate.url} closeModal={closeModal} />
+          <ImageModal url={postToEdit.url} closeDialog={closeDialog} />
         )} */}
     </Grid>
   );
-};
-
-export default Home;
+}

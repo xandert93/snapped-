@@ -1,11 +1,14 @@
 import { useParams } from 'react-router-dom';
 import { usePostsCollection } from '../../custom-hooks';
 import { ImageGrid } from '../../components/ImageGrid';
+import { useSelector } from 'react-redux';
 
 const Explore = () => {
   const { tag } = useParams();
 
-  const [posts] = usePostsCollection(null, tag);
+  usePostsCollection(null, tag);
+
+  const posts = useSelector((state) => state.posts.explore);
 
   return (
     <>

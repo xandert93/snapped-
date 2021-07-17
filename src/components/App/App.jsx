@@ -1,21 +1,32 @@
+import { useSelector } from 'react-redux';
+import { isDarkModeSelector, userSelector } from '../../state/selectors';
+
+import { dark, light } from '../../styles/themes';
+import { ThemeProvider, CssBaseline } from '@material-ui/core';
+
 import { Redirect, Route, Switch } from 'react-router-dom';
 import { PublicRoute, ProtectedRoute } from '../../utils';
 import { ROUTES } from '../../constants/routes';
 
-import { Auth, Home, Profile, Account, Explore } from '../../pages';
 import { NavBar } from '../NavBar';
 import { Main } from './Main';
-import { UploadModal } from './UploadModal';
+
+import { Auth, Home, Profile, Account, Explore } from '../../pages';
+
+import { WelcomeDialog } from './WelcomeDialog';
+import { PostUploadDialog } from './PostUploadDialog';
+import { PostClickDialog } from './PostClickDialog';
+import { PostEditDialog } from './PostEditDialog';
+import { ConfirmationDialog } from './ConfirmationDialog';
 import { Snackbar } from './Snackbar';
-import WelcomeDialog from './WelcomeDialog/WelcomeDialog';
-import { useSelector } from 'react-redux';
-import { userSelector } from '../../state/selectors';
 
 export default function App() {
   const user = useSelector(userSelector);
+  const isDarkMode = useSelector(isDarkModeSelector);
 
   return (
-    <>
+    <ThemeProvider theme={isDarkMode ? dark : light}>
+      <CssBaseline />
       {user && <NavBar />}
       <Main>
         <Switch>
@@ -36,10 +47,14 @@ export default function App() {
           <Route path={ROUTES.NOT_FOUND} render={() => <h5>404 RNF</h5>} />
         </Switch>
       </Main>
-      <Snackbar />
-      <UploadModal />
+
       {user && <WelcomeDialog />}
-    </>
+      <PostUploadDialog />
+      <PostClickDialog />
+      <PostEditDialog />
+      <ConfirmationDialog />
+      <Snackbar />
+    </ThemeProvider>
   );
 }
 

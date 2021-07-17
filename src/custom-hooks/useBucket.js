@@ -1,15 +1,17 @@
 import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { bucket, FieldValue } from '../lib/firebase/config';
-import { createPost } from '../services/firebase/firestore';
+import { fbCreatePost } from '../services/firebase/firestore';
+import { setFailureSnackbar } from '../state/app/actions';
 import { userSelector } from '../state/selectors';
 import { createCompressedFile } from '../utils/helpers';
 
 export function useBucket(file, description) {
+  const dispatch = useDispatch();
   const user = useSelector(userSelector);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [firestoreDoc, setFirestoreDoc] = useState(null);
-  const [uploadErrMsg, setUploadErrMsg] = useState('');
 
   useEffect(() => {
     if (!file) return;
@@ -23,7 +25,7 @@ export function useBucket(file, description) {
         'state_changed',
         ({ bytesTransferred, totalBytes }) =>
           setUploadProgress((bytesTransferred / totalBytes) * 100),
-        (err) => setUploadErrMsg(err.message),
+        (err) => dispatch(setFailureSnackbar(err.message)),
         async () => {
           const url = await imageRef.getDownloadURL();
 
@@ -38,7 +40,7 @@ export function useBucket(file, description) {
             createdAt: FieldValue.serverTimestamp(),
           };
 
-          setFirestoreDoc(await createPost(newPost));
+          setFirestoreDoc(await fbCreatePost(newPost));
         }
       );
     };
@@ -46,7 +48,7 @@ export function useBucket(file, description) {
     uploadAndCreatePost();
   }, [file]);
 
-  return { uploadProgress, firestoreDoc, uploadErrMsg };
+  return { uploadProgress, firestoreDoc };
 }
 
 /*When image is compressed, it is stripped of its EXIF data. This is problematic because the EXIF

@@ -13,9 +13,9 @@ ReactDOM.render(
     <BrowserRouter>
       <AuthProvider>
         <UploadProvider>
-          <AppProvider>
-            <App />
-          </AppProvider>
+          {/* <AppProvider> */}
+          <App />
+          {/* </AppProvider> */}
         </UploadProvider>
       </AuthProvider>
     </BrowserRouter>

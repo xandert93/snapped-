@@ -5,20 +5,24 @@ import { useDispatch } from 'react-redux';
 import { removeMessage } from '../../../../state/authForms/actions';
 import { setIsSubmitting } from '../../../../state/app/actions';
 
-export default function AuthForm({ submitAuthDetails, children }) {
+export default function AuthForm({ submitHandler, children }) {
   const classes = useStyles();
 
   const dispatch = useDispatch();
 
-  const submitHandler = (e) => {
+  const preSubmitHandler = (e) => {
     e.preventDefault();
     dispatch(removeMessage());
     dispatch(setIsSubmitting(true));
-    dispatch(submitAuthDetails());
   };
 
   return (
-    <form className={classes.form} onSubmit={submitHandler}>
+    <form
+      className={classes.form}
+      onSubmit={(e) => {
+        preSubmitHandler(e);
+        dispatch(submitHandler());
+      }}>
       <Box>
         <img src={logo} alt="snapped!" className={classes.logoImg} />
       </Box>
