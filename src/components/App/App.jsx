@@ -1,5 +1,12 @@
-import { useSelector } from 'react-redux';
-import { isDarkModeSelector, userSelector } from '../../state/selectors';
+import { useEffect, useRef } from 'react';
+import { auth } from '../../lib/firebase/config';
+
+import { useDispatch, useSelector } from 'react-redux';
+import { isDarkModeSelector } from '../../state/app/selectors';
+import { userSelector } from '../../state/auth/selectors';
+import { authenticateUserRecord } from '../../state/auth/actions';
+import { setDataURL } from '../../state/upload/actions';
+import { openPostUploadDialog } from '../../state/app/actions';
 
 import { dark, light } from '../../styles/themes';
 import { ThemeProvider, CssBaseline } from '@material-ui/core';
@@ -9,53 +16,90 @@ import { PublicRoute, ProtectedRoute } from '../../utils';
 import { ROUTES } from '../../constants/routes';
 
 import { NavBar } from '../NavBar';
-import { Main } from './Main';
 
-import { Auth, Home, Profile, Account, Explore } from '../../pages';
+import { Auth, Home, Profile, Account, Explore, SinglePost, Search } from '../../pages';
 
-import { WelcomeDialog } from './WelcomeDialog';
-import { PostUploadDialog } from './PostUploadDialog';
-import { PostClickDialog } from './PostClickDialog';
-import { PostEditDialog } from './PostEditDialog';
-import { ConfirmationDialog } from './ConfirmationDialog';
-import { Snackbar } from './Snackbar';
+import {
+  PreLoader,
+  Main,
+  WelcomeDialog,
+  PostUploadDialog,
+  PostClickDialog,
+  PostEditDialog,
+  ConfirmationDialog,
+  Snackbar,
+} from './components';
 
 export default function App() {
-  const user = useSelector(userSelector);
+  const dispatch = useDispatch();
   const isDarkMode = useSelector(isDarkModeSelector);
+  const isCheckingUser = useSelector((state) => state.auth.isCheckingUser);
+  const user = useSelector(userSelector);
+  //because we're selecting user, everytime user state updates, whole app will re-render :(
+  //user updates when we add/remove following, change pfp etc.
 
-  return (
-    <ThemeProvider theme={isDarkMode ? dark : light}>
-      <CssBaseline />
-      {user && <NavBar />}
-      <Main>
-        <Switch>
-          <PublicRoute path={ROUTES.AUTH} component={Auth} />
-          <ProtectedRoute exact path={ROUTES.HOME} component={Home} />
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((userRecord) =>
+      dispatch(authenticateUserRecord(userRecord))
+    );
+    return unsubscribe;
+  }, []);
 
-          <Redirect
-            exact
-            from={`/p/${user?.username}`}
-            to={`/p/${user?.username}/public`}
-          />
+  const readerRef = useRef(new FileReader());
+  useEffect(() => {
+    readerRef.current.onload = (e) => {
+      //fires when picked or dragged file pass type/size tests --> reader.readAsDataURL(file)
+      dispatch(setDataURL(e.target.result));
+      dispatch(openPostUploadDialog());
+    };
+  }, [readerRef]);
 
-          <ProtectedRoute path={ROUTES.PROFILE} component={Profile} />
-          <ProtectedRoute path={ROUTES.EXPLORE} component={Explore} />
-          <ProtectedRoute path={ROUTES.ACCOUNT} component={Account} />
+  if (isCheckingUser)
+    return (
+      <ThemeProvider theme={isDarkMode ? dark : light}>
+        <CssBaseline />
+        <PreLoader />
+      </ThemeProvider>
+    );
+  else
+    return (
+      <ThemeProvider theme={isDarkMode ? dark : light}>
+        <CssBaseline />
+        {user && <NavBar reader={readerRef.current} />}
+        <Main reader={readerRef.current}>
+          <Switch>
+            <PublicRoute path={ROUTES.AUTH} component={Auth} />
 
-          {/* <Route render={() => <h5>Not Found 404</h5>} /> */}
-          <Route path={ROUTES.NOT_FOUND} render={() => <h5>404 RNF</h5>} />
-        </Switch>
-      </Main>
+            <Redirect exact from={'/'} to={ROUTES.HOME} />
+            <ProtectedRoute exact path={ROUTES.HOME} component={Home} />
 
-      {user && <WelcomeDialog />}
-      <PostUploadDialog />
-      <PostClickDialog />
-      <PostEditDialog />
-      <ConfirmationDialog />
-      <Snackbar />
-    </ThemeProvider>
-  );
+            <Redirect
+              exact
+              from={`/profiles/${user?.username}`}
+              to={`/profiles/${user?.username}/public`}
+            />
+
+            <ProtectedRoute exact path={ROUTES.USER_PROFILE} component={Profile} />
+            <ProtectedRoute exact path={ROUTES.ALT_PROFILE} component={Profile} />
+
+            <ProtectedRoute exact path={ROUTES.EXPLORE} component={Explore} />
+            <ProtectedRoute exact path={ROUTES.SINGLE_POST} component={SinglePost} />
+            <ProtectedRoute exact path={ROUTES.SEARCH} component={Search} />
+            <ProtectedRoute exact path={ROUTES.ACCOUNT} component={Account} />
+
+            {/* <Redirect to={ROUTES.NOT_FOUND} />  */}
+            <Route render={() => <h5>404 RNF</h5>} />
+          </Switch>
+        </Main>
+
+        {user && <WelcomeDialog />}
+        <PostUploadDialog />
+        <PostClickDialog />
+        <PostEditDialog />
+        <ConfirmationDialog />
+        <Snackbar />
+      </ThemeProvider>
+    );
 }
 
 //NOTES:

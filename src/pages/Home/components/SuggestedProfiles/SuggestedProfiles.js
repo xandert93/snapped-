@@ -1,18 +1,21 @@
 import { Grid } from '@material-ui/core';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { getSuggestedUserDocs } from '../../../../services/firebase/firestore';
-import { userSelector } from '../../../../state/selectors';
+import { fbGetSuggestedAltUsers } from '../../../../services/firebase/firestore/users';
+import {
+  userFollowingSelector,
+  userUsernameSelector,
+} from '../../../../state/auth/selectors';
 import SuggestedProfile from './SuggestedProfile';
 
 export default function SuggestedProfiles() {
-  const { username, following } = useSelector(userSelector);
+  const userUsername = useSelector(userUsernameSelector);
+  const userFollowing = useSelector(userFollowingSelector);
 
   const [altUsers, setAltUsers] = useState([]);
 
   useEffect(() => {
-    //used .then because using async/await would require creation of another function here
-    getSuggestedUserDocs(username, following).then(setAltUsers);
+    fbGetSuggestedAltUsers(userUsername, userFollowing).then(setAltUsers);
   }, []);
 
   return (

@@ -1,102 +1,81 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { db } from '../lib/firebase/config';
-import { extractPosts } from '../services/firebase/firestore';
+import { updatePrevUserFollowing } from '../state/auth/actions';
+import { createProfilePicsLookup } from '../state/lookups/actions';
 import {
+  setIsLoading,
   setAltUserPosts,
   setExplorePosts,
+  setSinglePost,
   setTimelinePosts,
   setUserPosts,
 } from '../state/posts/actions';
-import { userSelector } from '../state/selectors';
 
-const posts = db.collection('Posts').orderBy('createdAt', 'desc');
+import { useParams, useRouteMatch } from 'react-router-dom';
+import { ROUTES } from '../constants/routes';
 
-export const usePostsCollection = (username = '', tag = '') => {
+export const usePostsCollection = () => {
   const dispatch = useDispatch();
-  const user = useSelector(userSelector);
-  const { timeline: currentTimelinePosts, user: currentUserPosts } =
-    useSelector((state) => state.posts);
+  const { path } = useRouteMatch();
+  const { username, tag, postId } = useParams();
 
-  let allPublicPosts,
-    allPublicTagPosts,
-    allUserPosts,
-    altUserPublicPosts,
-    userFollowingPosts;
+  const lookup = useSelector((state) => state.lookups.profilePics);
+  useEffect(() => {
+    if (!lookup) dispatch(createProfilePicsLookup());
+  }, []);
 
-  //if there is a user, prepare the references to query the database
-  if (user) {
-    allPublicPosts = posts.where('description.isPrivate', '==', false);
-
-    allPublicTagPosts = allPublicPosts.where(
-      'description.tags',
-      'array-contains',
-      tag
-    );
-
-    allUserPosts = posts.where('username', '==', username);
-
-    altUserPublicPosts = allUserPosts.where(
-      'description.isPrivate',
-      '==',
-      false
-    );
-
-    userFollowingPosts = posts
-      .where(
-        'username',
-        'in',
-        user.following.concat(user.username) //so user can see their own posts on timeline
-      )
-      .where('description.isPrivate', '==', false); //only public posts from users shown on timeline
-  }
+  const timelinePostsExist = useSelector((state) => !!state.posts.timeline.length);
+  const userPostsExist = useSelector((state) => !!state.posts.user.length);
+  const isUserFollowingChanged = useSelector((state) => state.auth.user.following !== state.auth.user.prevFollowing);
 
   useEffect(() => {
-    if (!user) return;
-    //"Home"
-    if (!username && !tag) {
-      if (!currentTimelinePosts.length) {
-        //if first visit to "Home" page. Following visits don't require database call --> posts in Redux Store
-        (async () => {
-          const { docs: docRefs } = await userFollowingPosts.get();
-          const posts = extractPosts(docRefs, user.username);
-          dispatch(setTimelinePosts(posts));
-        })();
-      }
-      return;
-    }
+    (async () => {
+      dispatch(setIsLoading(true));
+      //NB - user's username passed into database call to populate an ad-hoc field of "isLikedByUser" on each post doc
+      switch (path) {
+        case ROUTES.HOME:
+          if (!timelinePostsExist || isUserFollowingChanged) {
+            //if first visit to "Home" page || user has un/followed another user
+            dispatch(updatePrevUserFollowing());
+            dispatch(setTimelinePosts());
+          }
+          if (!userPostsExist) dispatch(setUserPosts());
+          else return dispatch(setIsLoading(false));
 
-    //authenticated user's "MyProfile" or "AltProfile"
-    if (username) {
-      if (username === user.username) {
-        if (!currentUserPosts.length) {
-          //if first visit to "MyProfile" page...
-          (async () => {
-            const { docs: docRefs } = await allUserPosts.get();
-            const posts = extractPosts(docRefs, user.username);
-            dispatch(setUserPosts(posts));
-          })();
-        }
-        return;
-      } else {
-        //must be visiting "AltProfile" page
-        (async () => {
-          const { docs: docRefs } = await altUserPublicPosts.get();
-          const posts = extractPosts(docRefs, user.username);
-          dispatch(setAltUserPosts(posts));
-        })();
-        return;
-      }
-    }
+        case ROUTES.SINGLE_POST:
+          return dispatch(setSinglePost(postId));
 
-    //"Explore" with params tag
-    if (tag) {
-      (async () => {
-        const { docs: docRefs } = await allPublicTagPosts.get();
-        const posts = extractPosts(docRefs, user.username);
-        dispatch(setExplorePosts(posts));
-      })();
-      return;
-    }
-  }, [user]);
+        case ROUTES.USER_PROFILE:
+          //if first visit to "Profile" page...
+          if (!userPostsExist) return dispatch(setUserPosts());
+          else return dispatch(setIsLoading(false));
+
+        case ROUTES.ALT_PROFILE:
+          return dispatch(setAltUserPosts(username));
+
+        case ROUTES.EXPLORE:
+          return dispatch(setExplorePosts(tag));
+
+        // case ROUTES.SEARCH: {
+        // }
+      }
+    })();
+  }, []);
 };
+
+/* When user logs in, they are redirected to "Home" page. Here, I MUST have both their "timelinePosts" + "userPosts" arrays. 
+This is because, both the "Home" and "Profile" pages offer CRUD (update || delete) on the users own posts. 
+
+Any attempt to perform Redux Store CRUD (following easy Firebase CRUD) on either page will need to rely on a single source of truth for the posts state i.e.:
+
+case SET_POST_TO_EDIT: state.____.find(id)
+
+In our app, given that all user posts are guaranteed to be .find()-able in their "userPosts" array, we should set it to that i.e.:
+
+case SET_POST_TO_EDIT: state.user.find(id), where "state.user" is the "userPosts" array. 
+
+Despite temptation, we should not do:
+
+case SET_POST_TO_EDIT: state.timeline.find(id), because, if the user is on their "Profile" page, and attempts to delete their oldest e.g. 200th post,
+there is no guarantee that the timeline state will contain it. 
+*/

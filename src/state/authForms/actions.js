@@ -12,7 +12,7 @@ import {
   fbRegister,
   fbResetPassword,
 } from '../../services/firebase/auth';
-import { checkUsernameTaken } from '../../services/firebase/firestore';
+import { checkUsernameTaken } from '../../services/firebase/firestore/users';
 
 /**/
 export const setUserDetails = (detailObj) => ({

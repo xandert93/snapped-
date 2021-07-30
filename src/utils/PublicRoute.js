@@ -1,16 +1,17 @@
 import { useSelector } from 'react-redux';
 import { Redirect, Route } from 'react-router-dom';
-import { userSelector } from '../state/selectors';
+import { ROUTES } from '../constants/routes';
+import { userSelector } from '../state/auth/selectors';
 
-const PublicRoute = ({ component: Component, ...rest }) => {
+export default function PublicRoute({ component: Component, ...rest }) {
   const user = useSelector(userSelector);
 
   return (
     <Route
       {...rest}
-      render={() => (!user ? <Component {...rest} /> : <Redirect to="/" />)}
+      render={() =>
+        !user ? <Component {...rest} /> : <Redirect to={ROUTES.HOME} />
+      }
     />
   );
-};
-
-export default PublicRoute;
+}

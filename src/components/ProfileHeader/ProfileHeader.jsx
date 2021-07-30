@@ -16,44 +16,56 @@ import {
 import { Lock, Publish } from '@material-ui/icons';
 import { useEffect } from 'react';
 import { forwardRef, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { createFollowUsersLookup } from '../../services/firebase/firestore';
+import { useDispatch, useSelector } from 'react-redux';
+import { fbCreateFollowUsersLookup } from '../../services/firebase/firestore/users';
 import { FollowButton } from '../FollowButton';
 import { Link } from '../Link';
 
 import useStyles from './styles';
 import UploadAvatar from '../UploadAvatar/UploadAvatar';
-import { userSelector } from '../../state/selectors';
+import {
+  userFollowingSelector,
+  userUsernameSelector,
+} from '../../state/auth/selectors';
+import { createFollowUsersLookup } from '../../state/lookups/actions';
+import { buildProfilePath } from '../../constants/routes';
 
 const Transition = forwardRef((props, ref) => (
   <Slide direction="up" ref={ref} {...props} />
 ));
 
-export default function ProfileHeader({ profile, setProfile }) {
+export default function ProfileHeader({ profile, setProfile, postCount }) {
   const classes = useStyles();
 
   const { username, fullName, followers, following } = profile;
-  const user = useSelector(userSelector);
+
+  const lookup = useSelector((state) => state.lookups.followUsers);
+
+  useEffect(() => {
+    if (followerCount + followingCount)
+      dispatch(createFollowUsersLookup(followers, following));
+  }, []);
+
+  const followerCount = followers.length;
+  const followingCount = following.length;
+
+  const dispatch = useDispatch();
+  const userUsername = useSelector(userUsernameSelector);
+  const userFollowing = useSelector(userFollowingSelector);
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   //e.g. people that altUser is followed by, that user also follows
-  const mutualFollow = followers.filter((f) => user.following.includes(f));
+  const mutualFollow = followers.filter((f) => userFollowing.includes(f));
 
-  const isUsersPage = user.username === username;
+  const isUsersPage = userUsername === username;
 
   const [selectedTab, setSelectedTab] = useState(0);
 
   const tabChangeHandler = (e, tabIdx) => {
-    // push(`/p/${username}/${tabNameToIdx[tabIdx]}`);
+    // push(`/${username}/${tabNameToIdx[tabIdx]}`);
     setSelectedTab(tabIdx);
   };
-
-  const [followUsersLookup, setFollowUsersLookup] = useState(null);
-  useEffect(() => {
-    if (followers.length + following.length !== 0)
-      createFollowUsersLookup(followers, following).then(setFollowUsersLookup);
-  }, [selectedTab]);
 
   return (
     <>
@@ -64,25 +76,31 @@ export default function ProfileHeader({ profile, setProfile }) {
               <strong>{username}</strong>
             </Typography>
           </Grid>
-          <Grid item xs={4}>
-            <Button
-              variant="outlined"
-              onClick={() => {
-                setIsDialogOpen(true);
-                setSelectedTab(1);
-              }}>
-              {following.length} following
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={() => {
-                setIsDialogOpen(true);
-                setSelectedTab(0);
-              }}>
-              {followers.length} follower
-              {followers.length !== 1 && 's'}
-            </Button>
-          </Grid>
+
+          {!lookup ? (
+            <span>OTW, my G.</span>
+          ) : (
+            <Grid item xs={4}>
+              <Button
+                variant="outlined"
+                onClick={() => {
+                  setIsDialogOpen(true);
+                  setSelectedTab(1);
+                }}>
+                {followingCount} following
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={() => {
+                  setIsDialogOpen(true);
+                  setSelectedTab(0);
+                }}>
+                {followerCount} follower
+                {followerCount !== 1 && 's'}
+              </Button>{' '}
+            </Grid>
+          )}
+
           <Grid item xs={3}>
             <Avatar
               className={classes.avatar}
@@ -92,7 +110,7 @@ export default function ProfileHeader({ profile, setProfile }) {
             />
           </Grid>
           <Grid item xs={4}>
-            <Typography variant="body2">posts.length posts</Typography>
+            <Typography variant="body2">{postCount} posts</Typography>
             {!isUsersPage && (
               <FollowButton altUser={profile} setAltUser={setProfile} />
             )}
@@ -107,41 +125,43 @@ export default function ProfileHeader({ profile, setProfile }) {
         </Grid>
       </Paper>
 
-      <Dialog
-        open={isDialogOpen}
-        TransitionComponent={Transition}
-        onClose={() => setIsDialogOpen(false)}>
-        <AppBar component="div" position="static" className={classes.appBar}>
-          <Tabs
-            textColor="secondary"
-            indicatorColor="primary"
-            variant="fullWidth"
-            value={selectedTab}
-            onChange={tabChangeHandler}>
-            <Tab icon={<Publish />} disabled={false} />
-            <Tab icon={<Lock />} disabled={false} />
-          </Tabs>
-        </AppBar>
+      {lookup && (
+        <Dialog
+          open={isDialogOpen}
+          TransitionComponent={Transition}
+          onClose={() => setIsDialogOpen(false)}>
+          <AppBar component="div" position="static" className={classes.appBar}>
+            <Tabs
+              textColor="secondary"
+              indicatorColor="primary"
+              variant="fullWidth"
+              value={selectedTab}
+              onChange={tabChangeHandler}>
+              <Tab icon={<Publish />} disabled={false} />
+              <Tab icon={<Lock />} disabled={false} />
+            </Tabs>
+          </AppBar>
 
-        {selectedTab === 0 &&
-          //  <DialogTitle>Followers</DialogTitle>
+          {selectedTab === 0 &&
+            //  <DialogTitle>Followers</DialogTitle>
 
-          followers.map((username) => (
-            <Box key={username}>
-              <Link to={`/p/${username}`}>{username}</Link>
-              <FollowButton altUser={followUsersLookup?.[username]} />
-            </Box>
-          ))}
+            followers.map((username) => (
+              <Box key={username}>
+                <Link to={buildProfilePath(username)}>{username}</Link>
+                <FollowButton altUser={lookup[username]} />
+              </Box>
+            ))}
 
-        {selectedTab === 1 &&
-          // {<DialogTitle>Following</DialogTitle>
-          following.map((username) => (
-            <Box key={username}>
-              <Link to={`/p/${username}`}>{username}</Link>
-              <FollowButton altUser={followUsersLookup?.[username]} />
-            </Box>
-          ))}
-      </Dialog>
+          {selectedTab === 1 &&
+            // {<DialogTitle>Following</DialogTitle>
+            following.map((username) => (
+              <Box key={username}>
+                <Link to={buildProfilePath(username)}>{username}</Link>
+                <FollowButton altUser={lookup[username]} />
+              </Box>
+            ))}
+        </Dialog>
+      )}
     </>
   );
 
@@ -161,11 +181,11 @@ export default function ProfileHeader({ profile, setProfile }) {
         <ButtonGroup variant="outlined" size="small">
           <Button>posts.length Posts</Button>
           <Button onClick={() => setIsDialogOpen(true)}>
-            {followers.length} Follower
-            {followers.length !== 1 && 's'}
+            {followerCount} Follower
+            {followerCount !== 1 && 's'}
           </Button>
           <Button onClick={() => setIsDialogOpen(true)}>
-            {following.length} Following
+            {followingCount} Following
           </Button>
         </ButtonGroup>
       </Grid>

@@ -3,16 +3,18 @@ import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateUserProfilePicture } from '../../state/auth/actions';
 import { setSuccessSnackbar } from '../../state/app/actions';
-import {
-  fbUploadProfilePicture,
-  fbUpdateUserProfilePicture,
-} from '../../services/firebase/firestore';
+import { fbUploadProfilePic } from '../../services/firebase/storage/users';
+import { fbUpdateUserProfilePic } from '../../services/firebase/firestore/users';
 import useStyles from './styles';
-import { userSelector } from '../../state/selectors';
+import {
+  userIdSelector,
+  userUsernameSelector,
+} from '../../state/auth/selectors';
 
 export default function UploadAvatar({ children }) {
   const classes = useStyles();
-  const user = useSelector(userSelector);
+  const userId = useSelector(userIdSelector);
+  const userUsername = useSelector(userUsernameSelector);
   const dispatch = useDispatch();
 
   const [file, setFile] = useState(null);
@@ -23,8 +25,8 @@ export default function UploadAvatar({ children }) {
     if (!file) return;
 
     (async () => {
-      const url = await fbUploadProfilePicture(user, file);
-      await fbUpdateUserProfilePicture(user.id, url);
+      const url = await fbUploadProfilePic(userUsername, file);
+      await fbUpdateUserProfilePic(userId, url);
       dispatch(updateUserProfilePicture(url));
       dispatch(setSuccessSnackbar('Your profile picture has been updated.'));
     })();

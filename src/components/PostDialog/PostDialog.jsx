@@ -13,7 +13,7 @@ import {
 } from '@material-ui/core';
 import { ArrowBack } from '@material-ui/icons';
 
-import { isSubmittingSelector } from '../../state/selectors';
+import { isSubmittingSelector } from '../../state/app/selectors';
 import { useSelector } from 'react-redux';
 
 const CustomSlide = forwardRef((props, ref) => (

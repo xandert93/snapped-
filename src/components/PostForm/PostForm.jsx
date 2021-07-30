@@ -1,5 +1,4 @@
-import { useContext, useState } from 'react';
-import { appContext } from '../../contexts/3.app/appContext';
+import { useState } from 'react';
 import useStyles from './styles';
 
 import {
@@ -12,11 +11,12 @@ import {
 import { Lock, Public } from '@material-ui/icons';
 import _ from 'lodash';
 
-import { formatTagsToArr } from '../../utils/helpers';
+import { formatTags } from '../../utils/helpers';
 import { useDispatch, useSelector } from 'react-redux';
-import { isSubmittingSelector } from '../../state/selectors';
+import { isSubmittingSelector } from '../../state/app/selectors';
 import { setIsSubmitting } from '../../state/app/actions';
 import { TextField } from '../TextField';
+import ChipInput from 'material-ui-chip-input';
 
 const iconStyles = { fontSize: 20, marginLeft: 8, verticalAlign: -4 };
 const visibilities = [
@@ -43,7 +43,7 @@ const visibilities = [
 const defaultDescription = {
   location: '',
   caption: '',
-  tags: '',
+  tags: [],
   isPrivate: false,
 };
 
@@ -57,19 +57,34 @@ export default function PostForm({
   const isSubmitting = useSelector(isSubmittingSelector);
   const dispatch = useDispatch();
 
-  const existingDescription = post?.description && {
-    ...post.description,
-    tags: post.description.tags.join(', '),
-  };
+  // const existingDescription = post?.description && {
+  //   ...post.description,
+  //   tags: post.description.tags.join(', '),
+  // };
+
+  const existingDescription = post?.description;
 
   const [description, setDescription] = useState(
     existingDescription || defaultDescription
   );
 
-  const [areTagsInvalid, setAreTagsInvalid] = useState(false);
-
   const updateField = (e) =>
     setDescription((x) => ({ ...x, [e.target.name]: e.target.value }));
+
+  const [areTagsInvalid, setAreTagsInvalid] = useState(false);
+
+  const checkIfTagsAreInvalid = (e) =>
+    setAreTagsInvalid(/[^#\w, ]/.test(e.target.value));
+
+  const handleCreateChip = (tag) => {
+    setDescription((x) => ({ ...x, tags: [...x.tags, tag] }));
+  };
+  const handleDeleteChip = (tagToDelete) => {
+    setDescription((x) => ({
+      ...x,
+      tags: x.tags.filter((tag) => tag !== tagToDelete),
+    }));
+  };
 
   return (
     <form
@@ -79,7 +94,7 @@ export default function PostForm({
         dispatch(setIsSubmitting(true));
         submitHandler({
           ...description,
-          tags: formatTagsToArr(description.tags),
+          tags: formatTags(description.tags),
         });
       }}>
       <Box className={classes.imageBox} style={{ position: 'relative' }}>
@@ -100,7 +115,7 @@ export default function PostForm({
         rows={3}
       />
 
-      <TextField
+      {/* <TextField
         required={false}
         label="Give it some tags!"
         name="tags"
@@ -115,6 +130,22 @@ export default function PostForm({
         }
         multiline
         rows={2}
+      /> */}
+
+      <ChipInput
+        variant="outlined"
+        fullWidth
+        label="Give it some tags!"
+        name="tags"
+        value={description.tags}
+        newChipKeyCodes={[32]}
+        onUpdateInput={checkIfTagsAreInvalid}
+        helperText={
+          areTagsInvalid ? 'You cannot include special characters.' : null
+        }
+        FormHelperTextProps={{ className: classes.chipInputHelperText }}
+        onAdd={handleCreateChip}
+        onDelete={handleDeleteChip}
       />
 
       <TextField
@@ -141,8 +172,7 @@ export default function PostForm({
             disabled={
               _.isEqual(description, existingDescription) || areTagsInvalid
             }
-            variant="contained"
-            fullWidth>
+            variant="contained">
             {submitIcon}
           </IconButton>
         ) : (

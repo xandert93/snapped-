@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { isSubmittingSelector } from '../../../../state/selectors';
+import { isSubmittingSelector } from '../../../../state/app/selectors';
 import { Button } from '@material-ui/core';
 import useStyles from './styles';
 

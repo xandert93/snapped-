@@ -25,18 +25,3 @@ export const setNewPost = (description, file) => ({
 
 export const clearUploadForm = () => ({ type: CLEAR_UPLOAD_FORM });
 /**/
-
-export const checkInitialFile = (selectedFile, reader) => (dispatch) => {
-  if (selectedFile) {
-    if (['image/png', 'image/jpeg'].includes(selectedFile.type)) {
-      dispatch(setSelectedFile(selectedFile));
-      reader.readAsDataURL(selectedFile);
-      return;
-    } else {
-      dispatch(
-        setFailureSnackbar('Please choose an image file (.png or .jpeg)')
-      );
-      return;
-    }
-  } else return;
-};

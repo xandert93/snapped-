@@ -4,12 +4,13 @@ import {
   SET_USER,
   UPDATE_USER_PROFILE_PICTURE,
   UPDATE_USER_FOLLOWING,
+  UPDATE_PREV_USER_FOLLOWING,
 } from './types';
 
 import {
   addUserToDb,
-  getUserDocFromDb,
-} from '../../services/firebase/firestore';
+  fbGetUser,
+} from '../../services/firebase/firestore/users';
 
 import { setIsSubmitting, setSuccessSnackbar } from '../app/actions';
 
@@ -19,9 +20,9 @@ export const setIsCheckingUser = (bool) => ({
   payload: bool,
 });
 
-export const setFbAuthUser = (fbAuthUserRecord) => ({
+export const setFbAuthUser = (fbAuthUser) => ({
   type: SET_FB_AUTH_USER,
-  payload: fbAuthUserRecord,
+  payload: fbAuthUser,
 });
 
 export const setUser = (user) => ({ type: SET_USER, payload: user });
@@ -36,29 +37,33 @@ export const updateUserFollowing = (altUserUsername, isAltUserFollowed) => ({
   payload: { altUserUsername, isAltUserFollowed },
 });
 
+export const updatePrevUserFollowing = () => ({
+  type: UPDATE_PREV_USER_FOLLOWING,
+});
+
 /**/
 
-export function authenticateUserRecord(fbAuthUserRecord) {
+export function authenticateUserRecord(fbAuthUser) {
   return async (dispatch, getState) => {
-    dispatch(setFbAuthUser(fbAuthUserRecord));
+    dispatch(setFbAuthUser(fbAuthUser));
 
     /* if user has signed in: */
-    if (fbAuthUserRecord) {
+    if (fbAuthUser) {
       /* if user has just created account (as cannot have display name yet),
          create actual user on Firestore "Users" collection: */
-      if (!fbAuthUserRecord.displayName) {
+      if (!fbAuthUser.displayName) {
         const { username, fullName } = getState().authForms.userDetails;
-        await fbAuthUserRecord.updateProfile({ displayName: username });
-        await addUserToDb(fbAuthUserRecord, username, fullName);
+        await fbAuthUser.updateProfile({ displayName: username });
+        await addUserToDb(fbAuthUser, username, fullName);
         dispatch(setSuccessSnackbar('Account successfully created.'));
       }
       /*either way, then get the user doc from Firestore "Users" collection:*/
-      const retrievedUserDoc = await getUserDocFromDb(fbAuthUserRecord.uid);
+      const retrievedUserDoc = await fbGetUser(fbAuthUser.uid);
       dispatch(setUser(retrievedUserDoc));
     }
 
     /*if user has just signed out, clear "user" state*/
-    if (!fbAuthUserRecord) dispatch(setUser(null));
+    if (!fbAuthUser) dispatch(setUser(null));
 
     dispatch(setIsCheckingUser(false));
     dispatch(setIsSubmitting(false));

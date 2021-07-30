@@ -5,9 +5,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   fbUpdateAltUserFollowers,
   fbUpdateUserFollowing,
-} from '../../services/firebase/firestore';
+} from '../../services/firebase/firestore/users';
 import { updateUserFollowing } from '../../state/auth/actions';
-import { userSelector } from '../../state/selectors';
+import {
+  userFollowingSelector,
+  userIdSelector,
+  userUsernameSelector,
+} from '../../state/auth/selectors';
 import useStyles from './styles';
 
 const buttons = {
@@ -19,10 +23,12 @@ const buttons = {
 export default function FollowButton({ altUser, setAltUser }) {
   const classes = useStyles();
 
-  const user = useSelector(userSelector);
   const dispatch = useDispatch();
+  const userId = useSelector(userIdSelector);
+  const userUsername = useSelector(userUsernameSelector);
+  const userFollowing = useSelector(userFollowingSelector);
 
-  const initialIsAltUserFollowed = user.following.includes(altUser.username);
+  const initialIsAltUserFollowed = userFollowing.includes(altUser.username);
 
   const [isAltUserFollowed, setIsAltUserFollowed] = useState(
     initialIsAltUserFollowed
@@ -32,12 +38,8 @@ export default function FollowButton({ altUser, setAltUser }) {
   );
 
   const clickHandler = async () => {
-    await fbUpdateUserFollowing(user.id, altUser.username, isAltUserFollowed);
-    await fbUpdateAltUserFollowers(
-      altUser.id,
-      user.username,
-      isAltUserFollowed
-    );
+    await fbUpdateUserFollowing(userId, altUser.username, isAltUserFollowed);
+    await fbUpdateAltUserFollowers(altUser.id, userUsername, isAltUserFollowed);
 
     setIsAltUserFollowed((isAltUserFollowed) => !isAltUserFollowed);
     dispatch(updateUserFollowing(altUser.username, isAltUserFollowed));
@@ -47,8 +49,8 @@ export default function FollowButton({ altUser, setAltUser }) {
       setAltUser((x) => ({
         ...x,
         followers: !isAltUserFollowed //concat + filter return new arrays
-          ? x.followers.concat(user.username)
-          : x.followers.filter((username) => username !== user.username),
+          ? x.followers.concat(userUsername)
+          : x.followers.filter((username) => username !== userUsername),
       }));
     }
 
@@ -56,7 +58,7 @@ export default function FollowButton({ altUser, setAltUser }) {
   };
 
   return (
-    user.username !== altUser.username && (
+    userUsername !== altUser.username && (
       <Button
         className={classes.followBtn}
         size="small"

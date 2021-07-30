@@ -1,24 +1,24 @@
-import { useParams } from 'react-router-dom';
-import { usePostsCollection } from '../../custom-hooks';
+import { usePostsCollection, useSetDocumentTitle } from '../../custom-hooks';
 import { ImageGrid } from '../../components/ImageGrid';
 import { useSelector } from 'react-redux';
+import { isLoadingSelector } from '../../state/posts/selectors';
+import { CircularProgress } from '@material-ui/core';
 
-const Explore = () => {
-  const { tag } = useParams();
+export default function Explore() {
+  useSetDocumentTitle('Explore');
 
-  usePostsCollection(null, tag);
+  usePostsCollection();
 
+  const isLoading = useSelector(isLoadingSelector);
   const posts = useSelector((state) => state.posts.explore);
 
   return (
     <>
-      <h1>Explore #{tag}</h1>
+      <h1>Explore #tag</h1>
       <h3>
         {posts.length} post{posts.length !== 1 && 's'}
       </h3>
-      <ImageGrid posts={posts} />
+      {isLoading ? <CircularProgress size="20vh" /> : <ImageGrid posts={posts} />}
     </>
   );
-};
-
-export default Explore;
+}

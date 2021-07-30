@@ -20,11 +20,11 @@ export default function ImageTabs() {
   const { username, tabName } = useParams();
   const { push } = useHistory();
 
-  const [selectedTab, setSelectedTab] = useState(idxLookup[tabName]);
+  const [selectedTabIdx, setSelectedTabIdx] = useState(idxLookup[tabName]);
 
   const tabChangeHandler = (e, tabIdx) => {
-    push(`/p/${username}/${tabNameLookup[tabIdx]}`);
-    setSelectedTab(tabIdx);
+    push(`/profiles/${username}/${tabNameLookup[tabIdx]}`);
+    setSelectedTabIdx(tabIdx);
   };
 
   return (
@@ -33,7 +33,7 @@ export default function ImageTabs() {
         textColor="primary"
         indicatorColor="secondary"
         variant="fullWidth"
-        value={selectedTab}
+        value={selectedTabIdx}
         onChange={tabChangeHandler}>
         <Tab icon={<Public />} disabled={false} />
         <Tab icon={<Lock />} disabled={false} />

@@ -145,6 +145,7 @@ export const base = {
           padding: '8px 12px',
         },
         '&:last-child': {
+          paddingTop: 0,
           paddingBottom: '10px', //24px* (massive)
         },
       },

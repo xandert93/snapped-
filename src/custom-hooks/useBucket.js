@@ -2,14 +2,15 @@ import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { bucket, FieldValue } from '../lib/firebase/config';
-import { fbCreatePost } from '../services/firebase/firestore';
+import { fbCreatePost } from '../services/firebase/firestore/posts';
 import { setFailureSnackbar } from '../state/app/actions';
-import { userSelector } from '../state/selectors';
+import { userIdSelector, userUsernameSelector } from '../state/auth/selectors';
 import { createCompressedFile } from '../utils/helpers';
 
 export function useBucket(file, description) {
   const dispatch = useDispatch();
-  const user = useSelector(userSelector);
+  const username = useSelector(userUsernameSelector);
+  const userId = useSelector(userIdSelector);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [firestoreDoc, setFirestoreDoc] = useState(null);
 
@@ -17,7 +18,7 @@ export function useBucket(file, description) {
     if (!file) return;
 
     const uploadAndCreatePost = async () => {
-      const imageRef = bucket.ref(user.username + '--' + file.name);
+      const imageRef = bucket.ref(username + '--' + file.name);
 
       const compressedFile = await createCompressedFile(file);
 
@@ -30,8 +31,8 @@ export function useBucket(file, description) {
           const url = await imageRef.getDownloadURL();
 
           const newPost = {
-            userId: user.userId,
-            username: user.username,
+            userId,
+            username,
             description,
             likes: [],
             comments: [],

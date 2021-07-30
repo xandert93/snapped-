@@ -2,8 +2,8 @@ import { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { ImageGrid } from '../../../../components';
+import { openPostEditDialog } from '../../../../state/app/actions';
 import { setPostToEdit } from '../../../../state/posts/actions';
-import { ImageTabs } from '../ImageTabs';
 
 export default function UserImageGrid() {
   const dispatch = useDispatch();
@@ -26,9 +26,10 @@ export default function UserImageGrid() {
     }
   }, [tabName, userPosts]);
 
-  const userImageClickHandler = (idx) => {
-    //don't think I want this long term;broken at moment anyway -
-    // dispatch(setPostToEdit(idx))
+  const userImageClickHandler = (id) => {
+    //don't think I want this long term
+    dispatch(setPostToEdit(id));
+    dispatch(openPostEditDialog());
   };
 
   return <ImageGrid posts={tabbedPosts} clickHandler={userImageClickHandler} />;

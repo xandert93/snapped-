@@ -3,15 +3,19 @@ import { BottomNavigationAction } from '@material-ui/core';
 import { BottomNavigation } from '@material-ui/core';
 import { Search, Timeline, AccountCircle } from '@material-ui/icons';
 import { useState } from 'react';
-import { ROUTES } from '../../../constants/routes';
+import { buildProfilePath, ROUTES } from '../../../constants/routes';
 import { useSelector } from 'react-redux';
 import { Link } from '../../Link';
 import useStyles from './styles';
-import { userSelector } from '../../../state/selectors';
+import {
+  userProfilePicURLSelector,
+  userUsernameSelector,
+} from '../../../state/auth/selectors';
 
 export default function BottomNav() {
   const classes = useStyles();
-  const user = useSelector(userSelector);
+  const userUsername = useSelector(userUsernameSelector);
+  const userProfilePicURL = useSelector(userProfilePicURLSelector);
   const [tab, setTab] = useState('Timeline');
 
   const handleChange = (e, newTab) => {
@@ -35,8 +39,8 @@ export default function BottomNav() {
       <BottomNavigationAction
         value="My Profile"
         icon={
-          <Link to={`/p/${user.username}`}>
-            <Avatar src={user.profilePicURL} className={classes.avatar}>
+          <Link to={buildProfilePath(userUsername)}>
+            <Avatar src={userProfilePicURL} className={classes.avatar}>
               <AccountCircle />
             </Avatar>
           </Link>

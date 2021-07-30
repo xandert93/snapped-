@@ -1,17 +1,26 @@
 import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { ProfileHeader } from '../../../../components';
-import { getUserDocFromDb } from '../../../../services/firebase/firestore';
+import { fbGetUser } from '../../../../services/firebase/firestore/users';
 
-const AltUserHeader = () => {
+export default function AltUserHeader() {
   const { username } = useParams();
 
   const [altUser, setAltUser] = useState(null);
   useEffect(() => {
-    getUserDocFromDb(null, username).then(setAltUser);
+    fbGetUser(null, username).then(setAltUser);
   }, []);
 
-  return altUser && <ProfileHeader profile={altUser} setProfile={setAltUser} />;
-};
+  const postCount = useSelector((state) => state.posts.altUser.length);
 
-export default AltUserHeader;
+  return (
+    altUser && (
+      <ProfileHeader
+        profile={altUser}
+        setProfile={setAltUser}
+        postCount={postCount}
+      />
+    )
+  );
+}

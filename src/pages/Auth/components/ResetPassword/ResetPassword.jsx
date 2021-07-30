@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { userDetailsSelector } from '../../../../state/selectors';
+import { userDetailsSelector } from '../../../../state/authForms/selectors';
 import AuthTextField from '../AuthTextField';
 
 export default function ResetPassword() {

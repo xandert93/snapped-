@@ -9,7 +9,7 @@ import {
 import { ArrowDownward, ArrowUpward } from '@material-ui/icons';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { userDetailsSelector } from '../../../../state/selectors';
+import { userDetailsSelector } from '../../../../state/authForms/selectors';
 import AuthTextField from '../AuthTextField';
 import useStyles from './styles';
 

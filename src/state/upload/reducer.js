@@ -6,8 +6,8 @@ import {
 } from './types';
 
 let initialState = {
-  fileData: { file: null, path: '' },
-  file: null,
+  selectedFile: null,
+  confirmedFile: null,
   dataURL: '',
   description: null,
 };
@@ -15,11 +15,18 @@ let initialState = {
 export default (state = initialState, { type, payload }) => {
   switch (type) {
     case SET_SELECTED_FILE:
-      return { ...state, fileData: { file: payload } };
+      return {
+        ...state,
+        selectedFile: payload,
+      };
     case SET_DATA_URL:
       return { ...state, dataURL: payload };
     case SET_NEW_POST:
-      return { ...state, file: payload.file, description: payload.description };
+      return {
+        ...state,
+        confirmedFile: payload.file,
+        description: payload.description,
+      };
     case CLEAR_UPLOAD_FORM:
       return initialState;
     default:

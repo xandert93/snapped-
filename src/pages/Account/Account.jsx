@@ -5,7 +5,7 @@ import { useSetDocumentTitle } from '../../custom-hooks';
 import { db } from '../../lib/firebase/config';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUser } from '../../state/auth/actions';
-import { userSelector } from '../../state/selectors';
+import { fbAuthUserSelector, userSelector } from '../../state/auth/selectors';
 import { TextField } from '../../components';
 
 // import { updatePostsUsername } from '../../../../services/firebase/firestore';
@@ -14,7 +14,7 @@ export default function Account() {
   const classes = useStyles();
   useSetDocumentTitle('My Account');
 
-  const firebaseAuthUser = useSelector((state) => state.auth.firebaseAuthUser);
+  const fbAuthUser = useSelector(fbAuthUserSelector);
   const user = useSelector(userSelector);
   const dispatch = useDispatch();
 
@@ -64,10 +64,9 @@ export default function Account() {
     //   promises.push(updatePostsUsername(user.username, username));
     // }
 
-    if (email !== user.email)
-      promises.push(firebaseAuthUser.updateEmail(email));
+    if (email !== user.email) promises.push(fbAuthUser.updateEmail(email));
     if (password && password !== user.password)
-      promises.push(firebaseAuthUser.updatePassword(password));
+      promises.push(fbAuthUser.updatePassword(password));
 
     if (!promises.length)
       return setErrMsg('Please update your account details before submitting.');

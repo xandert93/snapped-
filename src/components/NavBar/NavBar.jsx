@@ -17,7 +17,7 @@ import {
 } from '@material-ui/core';
 import logo from '../../assets/images/snapped.ico';
 
-import { ROUTES } from '../../constants/routes';
+import { buildProfilePath, ROUTES } from '../../constants/routes';
 import { ThemeSwitch } from '../ThemeSwitch';
 import BackToTopFAB from './BackToTopFAB/BackToTopFAB';
 import {
@@ -38,7 +38,8 @@ import {
 import { PostCreationFAB } from '../PostCreationFAB';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import BottomNav from './BottomNav/BottomNav';
+import { BottomNav } from './BottomNav';
+import { SearchBar } from './SearchBar';
 import {
   IconButton,
   SwipeableDrawer,
@@ -50,7 +51,10 @@ import {
 } from '@material-ui/core';
 import { Link } from '../Link';
 import { fbLogout } from '../../services/firebase/auth';
-import { userSelector } from '../../state/selectors';
+import {
+  userProfilePicURLSelector,
+  userUsernameSelector,
+} from '../../state/auth/selectors';
 import { setConfirmationDialog } from '../../state/app/actions';
 
 const logoutDialogData = {
@@ -61,8 +65,9 @@ const logoutDialogData = {
   confirmHandler: fbLogout,
 };
 
-const NavBar = () => {
-  const user = useSelector(userSelector);
+const NavBar = ({ reader }) => {
+  const userUsername = useSelector(userUsernameSelector);
+  const userProfilePicURL = useSelector(userProfilePicURLSelector);
   const isVPsm = useMediaQuery(({ breakpoints }) => breakpoints.down('sm')); //is viewport width less than 768px
   const isVPmd = useMediaQuery(({ breakpoints }) => breakpoints.down('md'));
   const classes = useStyles({ isVPsm, isVPmd });
@@ -140,25 +145,17 @@ const NavBar = () => {
               <Button component={RouterLink} to={ROUTES.HOME}>
                 <img src={logo} alt="snapped!" className={classes.logoImg} />
                 {!isVPmd && (
-                  <Typography variant="h4" component="h1">
+                  <Typography
+                    variant="h4"
+                    component="h1"
+                    className={classes.headingPrimary}>
                     snapped!
                   </Typography>
                 )}
               </Button>
             </Box>
 
-            {!isVPsm && (
-              <Box className={classes.searchBox}>
-                <InputBase
-                  classes={{
-                    root: classes.inputBaseRoot,
-                    input: classes.input,
-                  }}
-                  placeholder={`🔍 Search users & topics!`}
-                  fullWidth
-                />
-              </Box>
-            )}
+            {!isVPsm && <SearchBar />}
 
             <Box className={classes.actionsBox}>
               <IconButton className={classes.notificationButton}>
@@ -171,8 +168,8 @@ const NavBar = () => {
               </IconButton>
               {!isVPsm && (
                 <IconButton>
-                  <Link to={`/p/${user.username}`}>
-                    <Avatar src={user.profilePicURL} className={classes.avatar}>
+                  <Link to={buildProfilePath(userUsername)}>
+                    <Avatar src={userProfilePicURL} className={classes.avatar}>
                       <AccountCircle />
                     </Avatar>
                   </Link>
@@ -207,7 +204,7 @@ const NavBar = () => {
       <Toolbar />
 
       {!isVPsm && <BackToTopFAB isScrolledDown={isScrolledDown} />}
-      <PostCreationFAB isScrolledDown={isScrolledDown} />
+      <PostCreationFAB reader={reader} isScrolledDown={isScrolledDown} />
 
       {isVPsm && <BottomNav />}
     </>

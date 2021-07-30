@@ -1,14 +1,22 @@
 import exifr from 'exifr';
 import imageCompression from 'browser-image-compression';
 
-export const formatTagsToArr = (str) =>
-  str
-    .replace(/[#,.]/g, ' ') //remove all hashtags/commas/periods from String, for ""
-    .trim() //remove any " " at start or end
-    .split(/[ ,]+/); //split into array, using whitespace+ or comma+ as delimiter
+export const isFileImage = (file) => {
+  return ['image/png', 'image/jpeg'].includes(file.type);
+};
 
-export const isCardMedia = (node) =>
-  typeof node.className === 'string' && node.className.includes('MuiCardMedia');
+export const isFileSizeSmall = (file) => {
+  return file.size < 6291456;
+};
+
+export const formatTags = (arr) =>
+  !arr.length
+    ? arr
+    : arr
+        .join(',')
+        .replace(/[#,.]/g, ' ') //remove all hashtags/commas/periods from String, for ""
+        .trim() //remove any " " at start or end
+        .split(/[ ,]+/); //split into array, using whitespace+ or comma+ as delimiter
 
 export const createCompressedFile = async (file) => {
   const exifOrientation = await exifr.orientation(file);
@@ -20,4 +28,10 @@ export const createCompressedFile = async (file) => {
   });
 
   return compressedFile;
+};
+
+export const areArraysDifferent = (arr1, arr2) => {
+  if (arr1.length !== arr2.length) return true;
+  if (JSON.stringify(arr1.sort()) !== JSON.stringify(arr2.sort())) return true;
+  else return false;
 };

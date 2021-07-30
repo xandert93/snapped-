@@ -3,14 +3,14 @@ import useStyles from '../styles';
 import { Box, Button, Divider } from '@material-ui/core';
 import { AccountCircle, CameraRoll, ExitToApp } from '@material-ui/icons';
 
-import { ROUTES } from '../../../constants/routes';
+import { buildProfilePath, ROUTES } from '../../../constants/routes';
 import { useSelector } from 'react-redux';
 import { fbLogout } from '../../../services/firebase/auth';
-import { userSelector } from '../../../state/selectors';
+import { userUsernameSelector } from '../../../state/auth/selectors';
 
 const NavButtons = ({ isVPsm, toggleDrawer }) => {
   const classes = useStyles();
-  const user = useSelector(userSelector);
+  const userUsername = useSelector(userUsernameSelector);
 
   return (
     <Box
@@ -21,7 +21,7 @@ const NavButtons = ({ isVPsm, toggleDrawer }) => {
       }}>
       <Button
         component={RouterLink}
-        to={`/p/${user.username}`}
+        to={buildProfilePath(userUsername)}
         startIcon={<CameraRoll />}>
         My Profile
       </Button>

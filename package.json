@@ -13,6 +13,7 @@
     "exifr": "^7.0.0",
     "firebase": "^8.4.2",
     "lodash": "^4.17.21",
+    "material-ui-chip-input": "^1.1.0",
     "moment": "^2.29.1",
     "netlify-cli": "^3.37.37",
     "react": "^17.0.2",
