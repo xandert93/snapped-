@@ -1,22 +1,12 @@
 import PostCard from './PostCard';
 import useStyles from './styles';
-import {
-  Box,
-  Card,
-  CardContent,
-  CardHeader,
-  useMediaQuery,
-  useTheme,
-} from '@material-ui/core';
+import { Box, Card, CardContent, CardHeader, useMediaQuery, useTheme } from '@material-ui/core';
 import { useGridScroll, usePostsCollection } from '../../../../custom-hooks';
 import Masonry from 'react-masonry-css';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { deletePost, setPostToEdit } from '../../../../state/posts/actions';
-import {
-  openPostEditDialog,
-  setConfirmationDialog,
-} from '../../../../state/app/actions';
+import { openPostEditDialog, setConfirmationDialog } from '../../../../state/app/actions';
 import { PostCardSkeleton } from './PostCardSkeleton/PostCardSkeleton';
 
 export default function Timeline({ openModal }) {
@@ -36,11 +26,7 @@ export default function Timeline({ openModal }) {
 
   const initialNoOfPostsShown = isVPxs ? 4 : 8;
 
-  const noOfPostsShown = useGridScroll(
-    initialNoOfPostsShown,
-    posts.length,
-    2000
-  );
+  const noOfPostsShown = useGridScroll(initialNoOfPostsShown, posts.length, 2000);
 
   const postDeletionDialogData = {
     isOpen: true,
@@ -71,8 +57,8 @@ export default function Timeline({ openModal }) {
   // const mouseOverHandler = (e) =>
   //   isCardMedia(e.target) && setHoveredCardIdx(+e.target.dataset.postsIdx);
 
-  const clickHandlers = {
-    moreIcon: (id) => {
+  const reduxHandlers = {
+    moreIconClick: (id) => {
       dispatch(setPostToEdit(id));
     },
     editIconClickHandler: () => {
@@ -95,20 +81,13 @@ export default function Timeline({ openModal }) {
         // onClick={moreIconClickHandler}
       >
         {!posts.length && lookup //0 + null while fetch is happening
-          ? Array.from(new Array(initialNoOfPostsShown)).map((_, idx) => (
-              <PostCardSkeleton key={idx} />
-            ))
+          ? Array.from(new Array(initialNoOfPostsShown)).map((_, idx) => <PostCardSkeleton key={idx} />)
           : posts.map((post, idx) => {
               if (idx < noOfPostsShown) {
                 let profilePicURL = lookup[post.username].profilePicURL;
                 return (
                   <div key={post.id} className={classes.gridItem}>
-                    <PostCard
-                      post={post}
-                      profilePicURL={profilePicURL}
-                      clickHandlers={clickHandlers}
-                      isVPxs={isVPxs}
-                    />
+                    <PostCard post={post} profilePicURL={profilePicURL} reduxHandlers={reduxHandlers} isVPxs={isVPxs} />
                   </div>
                 );
               }

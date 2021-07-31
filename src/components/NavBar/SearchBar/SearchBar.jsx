@@ -5,6 +5,10 @@ import useStyles from './styles';
 import { useHistory, useLocation } from 'react-router-dom';
 import { buildSearchPath, ROUTES } from '../../../constants/routes';
 
+//THINGS TO ADD:
+//search bar should be able to find user by fullname
+//trim the users accidental whitespace server side e.g. "banana   cream  pie" --> "banana cream pie". In UI, should show exactly what they typed in - see twitter
+
 export default function SearchBar() {
   const classes = useStyles();
   const { pathname } = useLocation();

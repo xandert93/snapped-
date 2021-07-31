@@ -7,10 +7,9 @@ import { useQuery, useSetDocumentTitle } from '../../custom-hooks';
 import { fbGetAltUsersBySearch } from '../../services/firebase/firestore/users';
 import { userUsernameSelector } from '../../state/auth/selectors';
 import useStyles from './styles';
-import { Link } from '../../components';
+import { Link, PostCard } from '../../components';
 import { db } from '../../lib/firebase/config';
 import { fbGetPosts } from '../../services/firebase/firestore/posts';
-import PostCard from '../Home/components/Timeline/PostCard';
 
 export default function Search() {
   const classes = useStyles();
@@ -55,9 +54,7 @@ export default function Search() {
         {!!posts.length && (
           <Box>
             <h3>Posts</h3>
-            {posts.map(
-              (post, idx) => idx < 3 && <PostCard key={post.id} post={post} />
-            )}
+            {posts.map((post, idx) => idx < 3 && <PostCard key={post.id} post={post} />)}
           </Box>
         )}
         {!!!altUsers.length && !!!posts.length && <h6>Diddly Squat found</h6>}

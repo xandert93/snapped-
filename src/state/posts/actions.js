@@ -30,12 +30,12 @@ import {
   UPDATE_POST_LIKES,
 } from './types';
 
+import { getUserUsername } from './helpers';
+
 export const setIsLoading = (bool) => ({
   type: SET_IS_LOADING,
   payload: bool,
 });
-
-const getUserUsername = (getState) => getState().auth.user.username;
 
 export const setTimelinePosts = () => async (dispatch, getState) => {
   let userUsername = getUserUsername(getState);
@@ -99,19 +99,24 @@ export const deletePost = () => async (dispatch, getState) => {
   dispatch(setSuccessSnackbar('Your post was successfully deleted. #RIP'));
 };
 
-export const updatePostLikes = (id, userUsername, wasLiked) => {
-  return async (dispatch) => {
+export const updatePostLikes = (id, wasLiked) => {
+  return async (dispatch, getState) => {
+    let userUsername = getUserUsername(getState);
+
     await fbUpdatePostLikes(id, userUsername, wasLiked);
     dispatch({ type: UPDATE_POST_LIKES, payload: { id, userUsername, wasLiked } });
   };
 };
 
-export const createPostComment = (id, comment) => async (dispatch) => {
-  await fbCreatePostComment(id, comment);
-  dispatch({ type: CREATE_POST_COMMENT, payload: { id, comment } });
+export const createPostComment = (id, commentText) => async (dispatch, getState) => {
+  let userUsername = getUserUsername(getState);
+  let newComment = { username: userUsername, text: commentText };
+
+  await fbCreatePostComment(id, newComment);
+  dispatch({ type: CREATE_POST_COMMENT, payload: { id, newComment } });
 };
 
-export const deletePostComment = (id, comment) => async (dispatch) => {
-  await fbDeletePostComment(id, comment);
-  dispatch({ type: DELETE_POST_COMMENT, payload: { id, comment } });
+export const deletePostComment = (id, commentToDelete) => async (dispatch) => {
+  await fbDeletePostComment(id, commentToDelete);
+  dispatch({ type: DELETE_POST_COMMENT, payload: { id, commentToDelete } });
 };

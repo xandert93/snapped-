@@ -41,10 +41,12 @@ export default (state = initialState, { type, payload }) => {
       return { ...state, singlePost: payload, isLoading: false };
 
     case CREATE_POST:
+      let newPost = payload;
+      let { isPrivate } = newPost.description;
       return {
         ...state,
-        timeline: [payload, ...state.timeline], //must be inserted first (newest --> oldest)
-        user: [payload, ...state.user],
+        timeline: !isPrivate ? [newPost, ...state.timeline] : state.timeline, //must be inserted first (newest --> oldest)
+        user: [newPost, ...state.user],
       };
 
     case SET_POST_TO_EDIT:
@@ -56,10 +58,7 @@ export default (state = initialState, { type, payload }) => {
     case UPDATE_POST:
       const { newDescription, newIsPrivate } = payload;
 
-      const mapCB0 = (post) =>
-        post.id === state.postToEdit.id
-          ? { ...post, description: newDescription }
-          : post;
+      const mapCB0 = (post) => (post.id === state.postToEdit.id ? { ...post, description: newDescription } : post);
 
       return {
         ...state,
@@ -70,10 +69,7 @@ export default (state = initialState, { type, payload }) => {
             : newIsPrivate === false
             ? state.timeline
                 .concat(state.postToEdit)
-                .sort(
-                  (post1, post2) =>
-                    post2.createdAt.seconds - post1.createdAt.seconds
-                )
+                .sort((post1, post2) => post2.createdAt.seconds - post1.createdAt.seconds)
             : state.timeline.map(mapCB0),
 
         //no need to replicated on "Profile" page - "tabbedPosts" recalculated when this state changes:
@@ -116,11 +112,8 @@ export default (state = initialState, { type, payload }) => {
       };
 
     case CREATE_POST_COMMENT: {
-      const { id, comment: newComment } = payload;
-      const mapCB2 = (post) =>
-        post.id === id
-          ? { ...post, comments: [...post.comments, newComment] }
-          : post;
+      const { id, newComment } = payload;
+      const mapCB2 = (post) => (post.id === id ? { ...post, comments: [...post.comments, newComment] } : post);
 
       return {
         ...state,
@@ -130,15 +123,13 @@ export default (state = initialState, { type, payload }) => {
     }
 
     case DELETE_POST_COMMENT: {
-      const { id, comment: commentToDelete } = payload;
+      const { id, commentToDelete } = payload;
 
       const mapCB3 = (post) =>
         post.id === id
           ? {
               ...post,
-              comments: post.comments.filter(
-                (comment) => comment !== commentToDelete
-              ),
+              comments: post.comments.filter((comment) => comment !== commentToDelete),
             }
           : post;
 

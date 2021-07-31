@@ -40,7 +40,7 @@ export const usePostsCollection = () => {
             dispatch(setTimelinePosts());
           }
           if (!userPostsExist) dispatch(setUserPosts());
-          else return dispatch(setIsLoading(false));
+          return dispatch(setIsLoading(false));
 
         case ROUTES.SINGLE_POST:
           return dispatch(setSinglePost(postId));
@@ -48,7 +48,7 @@ export const usePostsCollection = () => {
         case ROUTES.USER_PROFILE:
           //if first visit to "Profile" page...
           if (!userPostsExist) return dispatch(setUserPosts());
-          else return dispatch(setIsLoading(false));
+          return dispatch(setIsLoading(false));
 
         case ROUTES.ALT_PROFILE:
           return dispatch(setAltUserPosts(username));

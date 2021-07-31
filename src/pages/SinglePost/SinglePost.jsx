@@ -1,7 +1,8 @@
 import { usePostsCollection } from '../../custom-hooks';
 import { useSelector } from 'react-redux';
-import PostCard from '../Home/components/Timeline/PostCard';
+
 import { PreLoader } from '../../components/App/components';
+import { PostCard } from '../../components';
 
 export default function SinglePost() {
   usePostsCollection();
