@@ -1,13 +1,7 @@
-import {
-  SET_USER_DETAILS,
-  SET_SUCCESS_MESSAGE,
-  SET_FAILURE_MESSAGE,
-  REMOVE_MESSAGE,
-  CLEAR_AUTH_FORM,
-} from './types';
+import { SET_USER_DETAILS, SET_SUCCESS_MESSAGE, SET_FAILURE_MESSAGE, REMOVE_MESSAGE, CLEAR_AUTH_FORM } from './types';
 
 const initialUserDetails = {
-  fullName: '',
+  name: '',
   username: '',
   email: '',
   password: '',

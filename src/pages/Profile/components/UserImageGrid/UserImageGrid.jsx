@@ -4,10 +4,11 @@ import { useParams } from 'react-router-dom';
 import { ImageGrid } from '../../../../components';
 import { openPostEditDialog } from '../../../../state/app/actions';
 import { setPostToEdit } from '../../../../state/posts/actions';
+import { selectUserPosts } from '../../../../state/posts/selectors';
 
 export default function UserImageGrid() {
   const dispatch = useDispatch();
-  const userPosts = useSelector((state) => state.posts.user);
+  const userPosts = useSelector(selectUserPosts);
 
   const { tabName } = useParams();
 

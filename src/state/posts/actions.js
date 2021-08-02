@@ -28,11 +28,12 @@ import {
   CREATE_POST_COMMENT,
   DELETE_POST_COMMENT,
   UPDATE_POST_LIKES,
+  CLEAR_POSTS_STATE,
 } from './types';
 
 import { getUserUsername } from './helpers';
 
-export const setIsLoading = (bool) => ({
+export const setIsPostsLoading = (bool) => ({
   type: SET_IS_LOADING,
   payload: bool,
 });
@@ -120,3 +121,5 @@ export const deletePostComment = (id, commentToDelete) => async (dispatch) => {
   await fbDeletePostComment(id, commentToDelete);
   dispatch({ type: DELETE_POST_COMMENT, payload: { id, commentToDelete } });
 };
+
+export const clearPostsState = () => ({ type: CLEAR_POSTS_STATE });

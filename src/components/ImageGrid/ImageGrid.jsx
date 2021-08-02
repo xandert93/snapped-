@@ -1,17 +1,10 @@
-import {
-  Box,
-  CircularProgress,
-  Grid,
-  GridList,
-  GridListTile,
-  useMediaQuery,
-} from '@material-ui/core';
+import { Box, CircularProgress, Grid, GridList, GridListTile, useMediaQuery } from '@material-ui/core';
 import { useGridScroll } from '../../custom-hooks';
 
 import { TileOverlay } from './TileOverlay';
 import useStyles from './styles';
 import { useSelector } from 'react-redux';
-import { isLoadingSelector } from '../../state/posts/selectors';
+import { selectIsPostsLoading } from '../../state/posts/selectors';
 
 export default function ImageGrid({ posts, clickHandler }) {
   const classes = useStyles();
@@ -21,11 +14,11 @@ export default function ImageGrid({ posts, clickHandler }) {
 
   const noOfPostsShown = useGridScroll(15, posts.length, 500);
 
-  const isLoading = useSelector(isLoadingSelector);
+  const isPostsLoading = useSelector(selectIsPostsLoading);
 
   return (
     <Box className={classes.root}>
-      {isLoading ? (
+      {isPostsLoading ? (
         <CircularProgress />
       ) : (
         <GridList
@@ -35,18 +28,9 @@ export default function ImageGrid({ posts, clickHandler }) {
           {posts.map(
             ({ id, username, url, likes, comments }, idx) =>
               idx < noOfPostsShown && (
-                <GridListTile
-                  key={id}
-                  className={classes.tile}
-                  cols={1}
-                  onClick={() => clickHandler(id)}>
+                <GridListTile key={id} className={classes.tile} cols={1} onClick={() => clickHandler(id)}>
                   <img src={url} alt={`${username}'s post`} />
-                  {!isVPsm && (
-                    <TileOverlay
-                      noOfLikes={likes.length}
-                      noOfComments={comments.length}
-                    />
-                  )}
+                  {!isVPsm && <TileOverlay noOfLikes={likes.length} noOfComments={comments.length} />}
                 </GridListTile>
               )
           )}
@@ -63,19 +47,8 @@ export default function ImageGrid({ posts, clickHandler }) {
             idx < noOfPostsShown && (
               <Grid key={id} item xs={4} md={3}>
                 <Box className={classes.imageBox}>
-                  <img
-                    src={url}
-                    data-post-idx={idx}
-                    alt={`${username}'s post`}
-                    className={classes.image}
-                  />
-                  {!isVPsm && (
-                    <TileOverlay
-                      idx={idx}
-                      noOfLikes={likes.length}
-                      noOfComments={comments.length}
-                    />
-                  )}
+                  <img src={url} data-post-idx={idx} alt={`${username}'s post`} className={classes.image} />
+                  {!isVPsm && <TileOverlay idx={idx} noOfLikes={likes.length} noOfComments={comments.length} />}
                 </Box>
               </Grid>
             )

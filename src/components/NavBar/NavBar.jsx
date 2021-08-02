@@ -40,21 +40,10 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { BottomNav } from './BottomNav';
 import { SearchBar } from './SearchBar';
-import {
-  IconButton,
-  SwipeableDrawer,
-  List,
-  ListItemIcon,
-  ListItemText,
-  Badge,
-  Divider,
-} from '@material-ui/core';
+import { IconButton, SwipeableDrawer, List, ListItemIcon, ListItemText, Badge, Divider } from '@material-ui/core';
 import { Link } from '../Link';
 import { fbLogout } from '../../services/firebase/auth';
-import {
-  userProfilePicURLSelector,
-  userUsernameSelector,
-} from '../../state/auth/selectors';
+import { userProfilePicURLSelector, userUsernameSelector } from '../../state/auth/selectors';
 import { setConfirmationDialog } from '../../state/app/actions';
 
 const logoutDialogData = {
@@ -62,7 +51,7 @@ const logoutDialogData = {
   title: 'logout?',
   content: 'You will not be missed.',
   choices: ['hola!', 'adios'],
-  confirmHandler: fbLogout,
+  confirmHandler: () => fbLogout(),
 };
 
 const NavBar = ({ reader }) => {
@@ -79,8 +68,7 @@ const NavBar = ({ reader }) => {
 
   const dispatch = useDispatch();
 
-  const logoutClickHandler = () =>
-    dispatch(setConfirmationDialog(logoutDialogData));
+  const handleLogout = () => dispatch(setConfirmationDialog(logoutDialogData));
 
   //refactor into [].map()
   function zeList() {
@@ -105,13 +93,10 @@ const NavBar = ({ reader }) => {
             <ListItemIcon>
               <ContactSupport className={classes.contactSVG} />
             </ListItemIcon>
-            <ListItemText
-              primary="contact us"
-              secondary="tissues for ur issues"
-            />
+            <ListItemText primary="contact us" secondary="tissues for ur issues" />
           </ListItem>
           <Divider />
-          <ListItem button onClick={logoutClickHandler}>
+          <ListItem button onClick={handleLogout}>
             <ListItemIcon>
               <ExitToApp color="secondary" />
             </ListItemIcon>
@@ -145,10 +130,7 @@ const NavBar = ({ reader }) => {
               <Button component={RouterLink} to={ROUTES.HOME}>
                 <img src={logo} alt="snapped!" className={classes.logoImg} />
                 {!isVPmd && (
-                  <Typography
-                    variant="h4"
-                    component="h1"
-                    className={classes.headingPrimary}>
+                  <Typography variant="h4" component="h1" className={classes.headingPrimary}>
                     snapped!
                   </Typography>
                 )}
@@ -184,10 +166,7 @@ const NavBar = ({ reader }) => {
                 </IconButton>
               )}
               {!isVPmd && (
-                <IconButton
-                  edge="end"
-                  color="secondary"
-                  onClick={logoutClickHandler}>
+                <IconButton edge="end" color="secondary" onClick={handleLogout}>
                   <ExitToApp />
                 </IconButton>
               )}

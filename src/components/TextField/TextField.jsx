@@ -4,7 +4,7 @@ import { TextField as MuiTextField, useMediaQuery } from '@material-ui/core';
 export default function TextField(props) {
   const isVPxs = useMediaQuery(({ breakpoints }) => breakpoints.only('xs'));
 
-  const marginSize = isVPxs ? 'dense' : 'none';
+  // const marginSize = isVPxs ? 'dense' : 'none';
 
-  return <MuiTextField margin={marginSize} {...props} />;
+  return <MuiTextField margin={'none'} {...props} />;
 }

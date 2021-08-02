@@ -1,11 +1,4 @@
-import {
-  Box,
-  IconButton,
-  Step,
-  StepContent,
-  StepLabel,
-  Stepper,
-} from '@material-ui/core';
+import { Box, IconButton, Step, StepContent, StepLabel, Stepper } from '@material-ui/core';
 import { ArrowDownward, ArrowUpward } from '@material-ui/icons';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -23,13 +16,12 @@ const steps = [
 export default function Register() {
   const classes = useStyles();
 
-  const { username, fullName, email, password, passwordConfirm } =
-    useSelector(userDetailsSelector);
+  const { username, name, email, password, passwordConfirm } = useSelector(userDetailsSelector);
 
   const [activeStep, setActiveStep] = useState(0);
 
   const stepContent = [
-    { type: 'text', name: 'fullName', label: 'Full Name', value: fullName },
+    { type: 'text', name: 'name', label: 'Full Name', value: name },
     {
       type: 'text',
       name: 'username',
@@ -56,10 +48,7 @@ export default function Register() {
   ];
 
   return (
-    <Stepper
-      activeStep={activeStep}
-      orientation="vertical"
-      className={classes.stepper}>
+    <Stepper activeStep={activeStep} orientation="vertical" className={classes.stepper}>
       {steps.map((stepName, idx) => (
         <Step key={stepName}>
           <StepLabel>{stepName}</StepLabel>
@@ -73,14 +62,10 @@ export default function Register() {
               </Box>
             )}
             <Box className={classes.actionButtons}>
-              <IconButton
-                onClick={() => setActiveStep(activeStep - 1)}
-                disabled={activeStep === 0}>
+              <IconButton onClick={() => setActiveStep(activeStep - 1)} disabled={activeStep === 0}>
                 <ArrowUpward />
               </IconButton>
-              <IconButton
-                onClick={() => setActiveStep(activeStep + 1)}
-                disabled={activeStep === steps.length - 1}>
+              <IconButton onClick={() => setActiveStep(activeStep + 1)} disabled={activeStep === steps.length - 1}>
                 <ArrowDownward />
               </IconButton>
             </Box>

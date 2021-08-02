@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { updatePrevUserFollowing } from '../state/auth/actions';
 import { createProfilePicsLookup } from '../state/lookups/actions';
 import {
-  setIsLoading,
+  setIsPostsLoading,
   setAltUserPosts,
   setExplorePosts,
   setSinglePost,
@@ -13,6 +13,7 @@ import {
 
 import { useParams, useRouteMatch } from 'react-router-dom';
 import { ROUTES } from '../constants/routes';
+import { selectTimelinePosts, selectUserPosts } from '../state/posts/selectors';
 
 export const usePostsCollection = () => {
   const dispatch = useDispatch();
@@ -20,17 +21,16 @@ export const usePostsCollection = () => {
   const { username, tag, postId } = useParams();
 
   const lookup = useSelector((state) => state.lookups.profilePics);
-  useEffect(() => {
-    if (!lookup) dispatch(createProfilePicsLookup());
-  }, []);
-
-  const timelinePostsExist = useSelector((state) => !!state.posts.timeline.length);
-  const userPostsExist = useSelector((state) => !!state.posts.user.length);
+  const timelinePostsExist = !!useSelector(selectTimelinePosts).length;
+  const userPostsExist = !!useSelector(selectUserPosts).length;
   const isUserFollowingChanged = useSelector((state) => state.auth.user.following !== state.auth.user.prevFollowing);
 
   useEffect(() => {
     (async () => {
-      dispatch(setIsLoading(true));
+      dispatch(setIsPostsLoading(true));
+
+      if (!lookup) dispatch(createProfilePicsLookup());
+
       //NB - user's username passed into database call to populate an ad-hoc field of "isLikedByUser" on each post doc
       switch (path) {
         case ROUTES.HOME:
@@ -40,7 +40,8 @@ export const usePostsCollection = () => {
             dispatch(setTimelinePosts());
           }
           if (!userPostsExist) dispatch(setUserPosts());
-          return dispatch(setIsLoading(false));
+          if (timelinePostsExist && !isUserFollowingChanged && userPostsExist) dispatch(setIsPostsLoading(false));
+          return;
 
         case ROUTES.SINGLE_POST:
           return dispatch(setSinglePost(postId));
@@ -48,7 +49,7 @@ export const usePostsCollection = () => {
         case ROUTES.USER_PROFILE:
           //if first visit to "Profile" page...
           if (!userPostsExist) return dispatch(setUserPosts());
-          return dispatch(setIsLoading(false));
+          return dispatch(setIsPostsLoading(false));
 
         case ROUTES.ALT_PROFILE:
           return dispatch(setAltUserPosts(username));

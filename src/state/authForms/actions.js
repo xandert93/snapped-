@@ -1,17 +1,7 @@
-import {
-  SET_USER_DETAILS,
-  SET_SUCCESS_MESSAGE,
-  SET_FAILURE_MESSAGE,
-  REMOVE_MESSAGE,
-  CLEAR_AUTH_FORM,
-} from './types';
+import { SET_USER_DETAILS, SET_SUCCESS_MESSAGE, SET_FAILURE_MESSAGE, REMOVE_MESSAGE, CLEAR_AUTH_FORM } from './types';
 
 import { setIsSubmitting } from '../app/actions';
-import {
-  fbLogin,
-  fbRegister,
-  fbResetPassword,
-} from '../../services/firebase/auth';
+import { fbLogin, fbRegister, fbResetPassword } from '../../services/firebase/auth';
 import { checkUsernameTaken } from '../../services/firebase/firestore/users';
 
 /**/
@@ -40,13 +30,11 @@ export const clearAuthForm = () => (dispatch) => {
 /**/
 
 //do something about this
-export const inputChangeHandler = (e) => (dispatch) =>
-  dispatch(setUserDetails({ [e.target.name]: e.target.value }));
+export const inputChangeHandler = (e) => (dispatch) => dispatch(setUserDetails({ [e.target.name]: e.target.value }));
 
 export function attemptRegister() {
   return async (dispatch, getState) => {
-    const { username, passwordConfirm, email, password } =
-      getState().authForms.userDetails;
+    const { username, passwordConfirm, email, password } = getState().authForms.userDetails;
 
     if (username.length < 5) {
       dispatch(setIsSubmitting(false));
@@ -61,7 +49,7 @@ export function attemptRegister() {
     }
 
     //Wouldn't allow 3 word names
-    // if (!/^[a-zA-Z]+ [a-zA-Z]+$/.test(fullName)) {
+    // if (!/^[a-zA-Z]+ [a-zA-Z]+$/.test(name)) {
     //   dispatch(setIsSubmitting(false));
     //   return dispatch(setFailureMessage())({ isSuccess: false, msg: 'Please enter a valid name.' });
     // }
@@ -100,9 +88,7 @@ export function attemptPasswordReset() {
     const email = getState().authForms.userDetails.email;
     try {
       await fbResetPassword(email);
-      dispatch(
-        setSuccessMessage('Please check your inbox for further instructions.')
-      );
+      dispatch(setSuccessMessage('Please check your inbox for further instructions.'));
     } catch (err) {
       dispatch(setIsSubmitting(false));
       dispatch(setFailureMessage('This email address is not on our database.'));

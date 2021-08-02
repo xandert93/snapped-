@@ -8,12 +8,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { userUsernameSelector } from '../../../../../state/auth/selectors';
 import { clearUploadForm } from '../../../../../state/upload/actions';
 import { createPost } from '../../../../../state/posts/actions';
-import {
-  closePostUploadDialog,
-  setSuccessSnackbar,
-} from '../../../../../state/app/actions';
+import { closePostUploadDialog, setSuccessSnackbar } from '../../../../../state/app/actions';
 
 import { ProgressCircle } from '../ProgressCircle';
+import { selectUserPosts } from '../../../../../state/posts/selectors';
 
 export default function Progress() {
   const { pathname } = useLocation();
@@ -22,12 +20,9 @@ export default function Progress() {
   const dispatch = useDispatch();
   const userUsername = useSelector(userUsernameSelector);
   const { confirmedFile, description } = useSelector((state) => state.upload);
-  const newPostCount = useSelector((state) => state.posts.user.length + 1);
+  const newPostCount = useSelector(selectUserPosts).length + 1;
 
-  const { uploadProgress, firestoreDoc } = useBucket(
-    confirmedFile,
-    description
-  );
+  const { uploadProgress, firestoreDoc } = useBucket(confirmedFile, description);
 
   useEffect(() => {
     if (!firestoreDoc) return;
@@ -35,20 +30,12 @@ export default function Progress() {
     dispatch(createPost(firestoreDoc));
     dispatch(closePostUploadDialog());
     dispatch(clearUploadForm());
-    dispatch(
-      setSuccessSnackbar(
-        `Congratulations. You have now made ${newPostCount} posts!`
-      )
-    );
+    dispatch(setSuccessSnackbar(`Congratulations. You have now made ${newPostCount} posts!`));
 
-    if (pathname !== ROUTES.HOME && !description.isPrivate)
-      return history.push(ROUTES.HOME);
+    if (pathname !== ROUTES.HOME && !description.isPrivate) return history.push(ROUTES.HOME);
     if (pathname === ROUTES.HOME && !description.isPrivate)
       document.body.scrollIntoView({ behavior: 'smooth', block: 'end' }); //doesn't work
-    if (
-      pathname !== `/profiles/${userUsername}/private` &&
-      description.isPrivate
-    )
+    if (pathname !== `/profiles/${userUsername}/private` && description.isPrivate)
       return history.push(`/profiles/${userUsername}/private`);
   }, [firestoreDoc]);
 

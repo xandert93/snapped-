@@ -1,13 +1,7 @@
 import { useState } from 'react';
 import useStyles from './styles';
 
-import {
-  Box,
-  CircularProgress,
-  IconButton,
-  MenuItem,
-  useMediaQuery,
-} from '@material-ui/core';
+import { Box, CircularProgress, IconButton, MenuItem, useMediaQuery } from '@material-ui/core';
 import { Lock, Public } from '@material-ui/icons';
 import _ from 'lodash';
 
@@ -47,12 +41,7 @@ const defaultDescription = {
   isPrivate: false,
 };
 
-export default function PostForm({
-  imageURL,
-  post,
-  submitIcon,
-  submitHandler,
-}) {
+export default function PostForm({ imageURL, post, submitIcon, submitHandler }) {
   const classes = useStyles();
   const isSubmitting = useSelector(isSubmittingSelector);
   const dispatch = useDispatch();
@@ -64,17 +53,13 @@ export default function PostForm({
 
   const existingDescription = post?.description;
 
-  const [description, setDescription] = useState(
-    existingDescription || defaultDescription
-  );
+  const [description, setDescription] = useState(existingDescription || defaultDescription);
 
-  const updateField = (e) =>
-    setDescription((x) => ({ ...x, [e.target.name]: e.target.value }));
+  const handleInputChange = (e) => setDescription((x) => ({ ...x, [e.target.name]: e.target.value }));
 
   const [areTagsInvalid, setAreTagsInvalid] = useState(false);
 
-  const checkIfTagsAreInvalid = (e) =>
-    setAreTagsInvalid(/[^#\w, ]/.test(e.target.value));
+  const checkIfTagsAreInvalid = (e) => setAreTagsInvalid(/[^#\w, ]/.test(e.target.value));
 
   const handleCreateChip = (tag) => {
     setDescription((x) => ({ ...x, tags: [...x.tags, tag] }));
@@ -86,17 +71,16 @@ export default function PostForm({
     }));
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    dispatch(setIsSubmitting(true));
+    submitHandler({ ...description, tags: formatTags(description.tags) });
+  };
+
+  let isDescriptionUnchanged = _.isEqual(description, existingDescription);
+
   return (
-    <form
-      className={classes.form}
-      onSubmit={(e) => {
-        e.preventDefault();
-        dispatch(setIsSubmitting(true));
-        submitHandler({
-          ...description,
-          tags: formatTags(description.tags),
-        });
-      }}>
+    <form className={classes.form} onSubmit={handleSubmit}>
       <Box className={classes.imageBox} style={{ position: 'relative' }}>
         <img className={classes.image} src={imageURL} alt="Image Preview" />
       </Box>
@@ -104,13 +88,13 @@ export default function PostForm({
         label="Where was this taken?"
         name="location"
         value={description.location}
-        onChange={updateField}
+        onChange={handleInputChange}
       />
       <TextField
         label="Write your caption!"
         name="caption"
         value={description.caption}
-        onChange={updateField}
+        onChange={handleInputChange}
         multiline
         rows={3}
       />
@@ -121,7 +105,7 @@ export default function PostForm({
         name="tags"
         value={description.tags}
         onChange={(e) => {
-          updateField(e);
+          handleInputChange(e);
           setAreTagsInvalid(/[^#\w, ]/.test(e.target.value));
         }}
         error={areTagsInvalid}
@@ -140,9 +124,7 @@ export default function PostForm({
         value={description.tags}
         newChipKeyCodes={[32]}
         onUpdateInput={checkIfTagsAreInvalid}
-        helperText={
-          areTagsInvalid ? 'You cannot include special characters.' : null
-        }
+        helperText={areTagsInvalid ? 'You cannot include special characters.' : null}
         FormHelperTextProps={{ className: classes.chipInputHelperText }}
         onAdd={handleCreateChip}
         onDelete={handleDeleteChip}
@@ -153,7 +135,7 @@ export default function PostForm({
         label="Choose post visibility:"
         name="isPrivate"
         value={description.isPrivate}
-        onChange={updateField}
+        onChange={handleInputChange}
         helperText="Public posts are visible to all users!">
         {visibilities.map((option) => (
           <MenuItem key={option.value} value={option.value}>
@@ -169,9 +151,7 @@ export default function PostForm({
           <IconButton
             className={classes.submitButton}
             type="submit"
-            disabled={
-              _.isEqual(description, existingDescription) || areTagsInvalid
-            }
+            disabled={isDescriptionUnchanged || areTagsInvalid}
             variant="contained">
             {submitIcon}
           </IconButton>

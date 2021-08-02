@@ -3,6 +3,7 @@ import {
   SET_FB_AUTH_USER,
   SET_USER,
   UPDATE_USER_PROFILE_PICTURE,
+  UPDATE_USER_DETAILS,
   UPDATE_USER_FOLLOWING,
   UPDATE_PREV_USER_FOLLOWING,
 } from './types';
@@ -24,6 +25,8 @@ export default (state = initialState, { type, payload }) => {
 
     case UPDATE_USER_PROFILE_PICTURE:
       return { ...state, user: { ...state.user, profilePicURL: payload } };
+    case UPDATE_USER_DETAILS:
+      return { ...state, user: { ...state.user, details: payload } };
 
     case UPDATE_USER_FOLLOWING:
       const { altUserUsername, isAltUserFollowed } = payload;

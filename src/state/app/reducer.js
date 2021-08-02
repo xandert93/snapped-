@@ -4,6 +4,8 @@ import {
   SET_SUCCESS_SNACKBAR,
   SET_FAILURE_SNACKBAR,
   REMOVE_SNACKBAR,
+  OPEN_WELCOME_DIALOG,
+  CLOSE_WELCOME_DIALOG,
   OPEN_CLICKED_POST_DIALOG,
   CLOSE_CLICKED_POST_DIALOG,
   OPEN_POST_UPLOAD_DIALOG,
@@ -19,6 +21,7 @@ let initialState = {
   isDarkMode: true,
   isSubmitting: false,
   snackbar: { isOpen: false, isSuccess: true, message: '' },
+  isWelcomeDialogOpen: false,
   isClickedPostDialogOpen: false,
   isPostUploadDialogOpen: false,
   isPostEditDialogOpen: false,
@@ -51,6 +54,11 @@ export default (state = initialState, { type, payload }) => {
       };
     case REMOVE_SNACKBAR:
       return { ...state, snackbar: { ...state.snackbar, isOpen: false } };
+
+    case OPEN_WELCOME_DIALOG:
+      return { ...state, isWelcomeDialogOpen: true };
+    case CLOSE_WELCOME_DIALOG:
+      return { ...state, isWelcomeDialogOpen: false };
 
     case OPEN_CLICKED_POST_DIALOG:
       return { ...state, isClickedPostDialogOpen: true };

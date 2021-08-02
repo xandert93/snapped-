@@ -4,19 +4,17 @@ const users = db.collection('Users');
 
 //Before sign up initiated, check if username taken on FBFS (Needn't be done for email - FSA natively checks this)
 export const checkUsernameTaken = async (username) => {
-  const { docs: leanDocRefs } = await users
-    .where('username', '==', username)
-    .get();
+  const { docs: leanDocRefs } = await users.where('username', '==', username).get();
 
   return !!leanDocRefs.length; //if 1 (true), username already exists and vv.
 };
 
 //FBA user created. Use it to create userDoc on FBFS
-export const addUserToDb = (fbAuthUser, username, fullName) =>
+export const addUserToDb = (fbAuthUser, username, name) =>
   users.add({
     userId: fbAuthUser.uid,
     username: username.toLowerCase(),
-    fullName: fullName.toLowerCase().replace(/\b./g, (a) => a.toUpperCase()),
+    name: name.toLowerCase().replace(/\b./g, (a) => a.toUpperCase()),
     email: fbAuthUser.email,
     following: [],
     followers: [],
@@ -48,42 +46,29 @@ export const fbGetAltUsersBySearch = async (searchTerm, userUsername) => {
 };
 
 export const fbGetSuggestedAltUsers = async (username, following) => {
-  const { docs: docRefs } = await users
-    .where('username', '!=', username)
-    .limit(10)
-    .get();
+  const { docs: docRefs } = await users.where('username', '!=', username).limit(10).get();
 
   return docRefs
     .map((docRef) => ({ ...docRef.data(), id: docRef.id }))
     .filter((altUser) => !following.includes(altUser.username));
 };
 
-export async function fbUpdateUserProfilePic(docId, url) {
-  await users.doc(docId).update({
-    profilePicURL: url,
-  });
+export async function fbUpdateUserProfilePicture(docId, url) {
+  await users.doc(docId).update({ profilePicURL: url });
 }
 
-export const fbUpdateUserFollowing = async (
-  userDocId,
-  altUserUsername,
-  isAltUserFollowed
-) =>
+export async function fbUpdateUserDetails(docId, updateObj) {
+  await users.doc(docId).update({ details: updateObj });
+}
+
+export const fbUpdateUserFollowing = async (userDocId, altUserUsername, isAltUserFollowed) =>
   await users.doc(userDocId).update({
-    following: isAltUserFollowed
-      ? FieldValue.arrayRemove(altUserUsername)
-      : FieldValue.arrayUnion(altUserUsername),
+    following: isAltUserFollowed ? FieldValue.arrayRemove(altUserUsername) : FieldValue.arrayUnion(altUserUsername),
   });
 
-export const fbUpdateAltUserFollowers = async (
-  altUserDocId,
-  userUsername,
-  isAltUserFollowed
-) =>
+export const fbUpdateAltUserFollowers = async (altUserDocId, userUsername, isAltUserFollowed) =>
   await users.doc(altUserDocId).update({
-    followers: isAltUserFollowed
-      ? FieldValue.arrayRemove(userUsername)
-      : FieldValue.arrayUnion(userUsername),
+    followers: isAltUserFollowed ? FieldValue.arrayRemove(userUsername) : FieldValue.arrayUnion(userUsername),
   });
 
 /*lookups*/
@@ -105,9 +90,7 @@ export const fbCreateProfilePicsLookup = async () => {
 export const fbCreateFollowUsersLookup = async (followers, following) => {
   const followUsernames = [...new Set([...followers, ...following])];
 
-  const { docs: docRefs } = await users
-    .where('username', 'in', followUsernames)
-    .get();
+  const { docs: docRefs } = await users.where('username', 'in', followUsernames).get();
 
   //create object lookup e.g.: {zeldie: {username: 'zeldie', id: ""}, chaz: {}}
   return docRefs.reduce((acca, docRef) => {

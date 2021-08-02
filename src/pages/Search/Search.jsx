@@ -1,6 +1,6 @@
 import { Box } from '@material-ui/core';
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Redirect, useLocation } from 'react-router-dom';
 import { buildProfilePath, ROUTES } from '../../constants/routes';
 import { useQuery, useSetDocumentTitle } from '../../custom-hooks';
@@ -10,6 +10,7 @@ import useStyles from './styles';
 import { Link, PostCard } from '../../components';
 import { db } from '../../lib/firebase/config';
 import { fbGetPosts } from '../../services/firebase/firestore/posts';
+import { createProfilePicsLookup } from '../../state/lookups/actions';
 
 export default function Search() {
   const classes = useStyles();
@@ -23,8 +24,13 @@ export default function Search() {
   const [posts, setPosts] = useState([]);
 
   const userUsername = useSelector(userUsernameSelector);
+  const lookup = useSelector((state) => state.lookups.profilePics);
+
+  const dispatch = useDispatch();
+
   useEffect(() => {
     //filter users collection + posts collection
+    if (!lookup) dispatch(createProfilePicsLookup());
 
     fbGetAltUsersBySearch(searchTerm, userUsername).then(setAltUsers);
 

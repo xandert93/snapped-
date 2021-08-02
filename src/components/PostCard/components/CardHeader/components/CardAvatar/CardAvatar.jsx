@@ -1,5 +1,3 @@
-import { useSelector } from 'react-redux';
-import { profilePicURLSelector } from '../../../../../../state/lookups/selectors';
 import { Avatar } from '@material-ui/core';
 
 import useStyles from './styles';
@@ -7,14 +5,12 @@ import useStyles from './styles';
 import { Link } from '../../../../../Link';
 import { buildProfilePath } from '../../../../../../constants/routes';
 
-export default function CardAvatar({ username }) {
+export default function CardAvatar({ url, username }) {
   const classes = useStyles();
-
-  const profilePicURL = useSelector((state) => profilePicURLSelector(state, username));
 
   return (
     <Link to={buildProfilePath(username)}>
-      <Avatar className={classes.cardAvatar} src={profilePicURL}>
+      <Avatar className={classes.cardAvatar} src={url}>
         {username[0].toUpperCase()}
       </Avatar>
     </Link>

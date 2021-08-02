@@ -3,7 +3,7 @@ import { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { userUsernameSelector } from '../../../../state/auth/selectors';
 import { CardContext } from '../../PostCard';
-import { CardAvatar, CardTitle, MoreAction } from './components';
+import { UserCardAvatar, AltUserCardAvatar, CardTitle, MoreAction } from './components';
 import useStyles from './styles';
 
 export default function PostCardHeader({ location }) {
@@ -15,7 +15,7 @@ export default function PostCardHeader({ location }) {
   return (
     <CardHeader
       className={classes.cardHeader}
-      avatar={<CardAvatar username={username} />}
+      avatar={isUserCard ? <UserCardAvatar /> : <AltUserCardAvatar />}
       title={<CardTitle username={username} />}
       titleTypographyProps={{
         variant: 'body1',

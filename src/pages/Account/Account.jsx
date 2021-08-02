@@ -25,7 +25,7 @@ export default function Account() {
   const [successMsg, setSuccessMsg] = useState('');
   const [isUpdating, setIsUpdating] = useState(false);
 
-  const fullNameRef = useRef();
+  const nameRef = useRef();
   // const usernameRef = useRef();
   const emailRef = useRef();
   const passwordRef = useRef();
@@ -35,7 +35,7 @@ export default function Account() {
     e.preventDefault();
     setErrMsg('');
     setSuccessMsg('');
-    const fullName = fullNameRef.current.value;
+    const name = nameRef.current.value;
     // const username = usernameRef.current.value;
     const email = emailRef.current.value;
     const password = passwordRef.current.value;
@@ -47,13 +47,13 @@ export default function Account() {
     //REFACTOR:
     const promises = [];
     if (
-      fullName !== user.fullName ||
+      name !== user.name ||
       email !== user.email
       // || username !== user.username
     ) {
       promises.push(
         db.collection('Users').doc(user.id).update({
-          fullName,
+          name,
           email /*, username */,
         })
       );
@@ -65,19 +65,15 @@ export default function Account() {
     // }
 
     if (email !== user.email) promises.push(fbAuthUser.updateEmail(email));
-    if (password && password !== user.password)
-      promises.push(fbAuthUser.updatePassword(password));
+    if (password && password !== user.password) promises.push(fbAuthUser.updatePassword(password));
 
-    if (!promises.length)
-      return setErrMsg('Please update your account details before submitting.');
+    if (!promises.length) return setErrMsg('Please update your account details before submitting.');
 
     try {
       setIsUpdating(true);
       //first need to update Auth user, DB user and current propagated user
       await Promise.all(promises)
-        .then(() =>
-          dispatch(setUser({ ...user, fullName, /*username,*/ email }))
-        )
+        .then(() => dispatch(setUser({ ...user, name, /*username,*/ email })))
         .finally(() => setIsUpdating(false));
       setSuccessMsg('Your account details have been updated.');
     } catch (err) {
@@ -90,12 +86,7 @@ export default function Account() {
       <form className={classes.form} onSubmit={attemptUpdate}>
         {successMsg && <Typography color="primary">{successMsg}</Typography>}
 
-        <TextField
-          inputRef={fullNameRef}
-          label="Full Name"
-          defaultValue={user.fullName}
-          required
-        />
+        <TextField inputRef={nameRef} label="Full Name" defaultValue={user.name} required />
         {/* <TextField
         
         inputRef={usernameRef}
@@ -104,13 +95,7 @@ export default function Account() {
         defaultValue={user.username}
         required
       /> */}
-        <TextField
-          inputRef={emailRef}
-          label="Email address"
-          defaultValue={user.email}
-          type="email"
-          required
-        />
+        <TextField inputRef={emailRef} label="Email address" defaultValue={user.email} type="email" required />
         <TextField
           inputRef={passwordRef}
           label="Password"
@@ -126,11 +111,7 @@ export default function Account() {
           helperText="Please leave blank to keep the same."
         />
         {errMsg && <Typography color="error">{errMsg}</Typography>}
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          disabled={isUpdating}>
+        <Button type="submit" variant="contained" color="primary" disabled={isUpdating}>
           Update Details
         </Button>
       </form>

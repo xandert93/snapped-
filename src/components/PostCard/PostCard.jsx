@@ -26,7 +26,8 @@ function PostCard({ post }) {
 
   //"likes" is an array of usernames and "comments" is an array of comment objects
 
-  // console.log('rendered', id); --> see if memo functionality working properly
+  // console.log('rendered', id);
+  /* --> see if memo functionality working properly */
 
   const dispatch = useDispatch();
 

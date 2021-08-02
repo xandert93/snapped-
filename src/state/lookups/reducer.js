@@ -9,6 +9,7 @@ export default (state = initialState, { type, payload }) => {
   switch (type) {
     case SET_PROFILE_PICS_LOOKUP:
       return { ...state, profilePics: payload };
+
     case SET_FOLLOW_USERS_LOOKUP:
       return { ...state, followUsers: payload };
     default:

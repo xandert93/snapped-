@@ -6,6 +6,7 @@ import Masonry from 'react-masonry-css';
 import { useSelector } from 'react-redux';
 
 import { PostCard, PostCardSkeleton } from '../../../../components';
+import { selectIsPostsLoading, selectTimelinePosts } from '../../../../state/posts/selectors';
 
 export default function Timeline({ openModal }) {
   const classes = useStyles();
@@ -18,8 +19,8 @@ export default function Timeline({ openModal }) {
 
   usePostsCollection(); //initialises posts + pfpLookup below. However, selects entire post state. When any single post updates e.g. like toggled or comment CRUD, store.posts updates and entire timeline re-renders
 
-  const posts = useSelector((state) => state.posts.timeline);
-  const lookup = useSelector((state) => state.lookups.profilePics);
+  const posts = useSelector(selectTimelinePosts);
+  const isPostsLoading = useSelector(selectIsPostsLoading);
 
   const initialNoOfPostsShown = isVPxs ? 4 : 8;
 
@@ -30,7 +31,7 @@ export default function Timeline({ openModal }) {
       className={classes.masonryContainer}
       columnClassName={classes.masonryColumn}
       breakpointCols={{ default: 4, [xl]: 3, [lg]: 2, [md]: 1 }}>
-      {!posts.length && lookup //0 + null while fetch is happening
+      {isPostsLoading
         ? Array.from(new Array(initialNoOfPostsShown)).map((_, idx) => <PostCardSkeleton key={idx} />)
         : posts.map(
             (post, idx) =>

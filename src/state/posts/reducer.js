@@ -13,10 +13,11 @@ import {
   CREATE_POST_COMMENT,
   DELETE_POST_COMMENT,
   UPDATE_POST_LIKES,
+  CLEAR_POSTS_STATE,
 } from './types';
 
 let initialState = {
-  isLoading: false,
+  isPostsLoading: false,
   timeline: [],
   user: [],
   altUser: [],
@@ -27,18 +28,18 @@ let initialState = {
 export default (state = initialState, { type, payload }) => {
   switch (type) {
     case SET_IS_LOADING:
-      return { ...state, isLoading: payload };
+      return { ...state, isPostsLoading: payload };
 
     case SET_TIMELINE_POSTS:
-      return { ...state, timeline: payload, isLoading: false };
+      return { ...state, timeline: payload, isPostsLoading: false };
     case SET_USER_POSTS:
-      return { ...state, user: payload, isLoading: false };
+      return { ...state, user: payload, isPostsLoading: false };
     case SET_ALT_USER_POSTS:
-      return { ...state, altUser: payload, isLoading: false };
+      return { ...state, altUser: payload, isPostsLoading: false };
     case SET_EXPLORE_POSTS:
-      return { ...state, explore: payload, isLoading: false };
+      return { ...state, explore: payload, isPostsLoading: false };
     case SET_SINGLE_POST:
-      return { ...state, singlePost: payload, isLoading: false };
+      return { ...state, singlePost: payload, isPostsLoading: false };
 
     case CREATE_POST:
       let newPost = payload;
@@ -139,6 +140,9 @@ export default (state = initialState, { type, payload }) => {
         user: state.user.map(mapCB3),
       };
     }
+
+    case CLEAR_POSTS_STATE:
+      return initialState;
 
     default:
       return state;

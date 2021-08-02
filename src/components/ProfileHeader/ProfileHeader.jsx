@@ -23,27 +23,21 @@ import { Link } from '../Link';
 
 import useStyles from './styles';
 import UploadAvatar from '../UploadAvatar/UploadAvatar';
-import {
-  userFollowingSelector,
-  userUsernameSelector,
-} from '../../state/auth/selectors';
+import { userFollowingSelector, userUsernameSelector } from '../../state/auth/selectors';
 import { createFollowUsersLookup } from '../../state/lookups/actions';
 import { buildProfilePath } from '../../constants/routes';
 
-const Transition = forwardRef((props, ref) => (
-  <Slide direction="up" ref={ref} {...props} />
-));
+const Transition = forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
 
 export default function ProfileHeader({ profile, setProfile, postCount }) {
   const classes = useStyles();
 
-  const { username, fullName, followers, following } = profile;
+  const { username, name, followers, following } = profile;
 
   const lookup = useSelector((state) => state.lookups.followUsers);
 
   useEffect(() => {
-    if (followerCount + followingCount)
-      dispatch(createFollowUsersLookup(followers, following));
+    if (followerCount + followingCount) dispatch(createFollowUsersLookup(followers, following));
   }, []);
 
   const followerCount = followers.length;
@@ -105,19 +99,17 @@ export default function ProfileHeader({ profile, setProfile, postCount }) {
             <Avatar
               className={classes.avatar}
               component={isUsersPage ? UploadAvatar : Box}
-              alt={fullName}
+              alt={name}
               src={profile.profilePicURL}
             />
           </Grid>
           <Grid item xs={4}>
             <Typography variant="body2">{postCount} posts</Typography>
-            {!isUsersPage && (
-              <FollowButton altUser={profile} setAltUser={setProfile} />
-            )}
+            {!isUsersPage && <FollowButton altUser={profile} setAltUser={setProfile} />}
           </Grid>
 
           <Grid item xs={12}>
-            <Typography>{fullName}</Typography>
+            <Typography>{name}</Typography>
           </Grid>
           <Grid item xs={12}>
             <Typography variant="body2">Bio</Typography>
@@ -126,10 +118,7 @@ export default function ProfileHeader({ profile, setProfile, postCount }) {
       </Paper>
 
       {lookup && (
-        <Dialog
-          open={isDialogOpen}
-          TransitionComponent={Transition}
-          onClose={() => setIsDialogOpen(false)}>
+        <Dialog open={isDialogOpen} TransitionComponent={Transition} onClose={() => setIsDialogOpen(false)}>
           <AppBar component="div" position="static" className={classes.appBar}>
             <Tabs
               textColor="secondary"
@@ -168,15 +157,12 @@ export default function ProfileHeader({ profile, setProfile, postCount }) {
   return (
     <Grid container>
       <Grid item xs={3}>
-        <Avatar className={classes.avatar} alt={fullName} src={''} />
+        <Avatar className={classes.avatar} alt={name} src={''} />
       </Grid>
 
       <Grid item xs={9}>
         <Typography variant="h5" noWrap>
-          {username}{' '}
-          {!isUsersPage && (
-            <FollowButton altUser={profile} setAltUser={setProfile} />
-          )}
+          {username} {!isUsersPage && <FollowButton altUser={profile} setAltUser={setProfile} />}
         </Typography>
         <ButtonGroup variant="outlined" size="small">
           <Button>posts.length Posts</Button>
@@ -184,15 +170,10 @@ export default function ProfileHeader({ profile, setProfile, postCount }) {
             {followerCount} Follower
             {followerCount !== 1 && 's'}
           </Button>
-          <Button onClick={() => setIsDialogOpen(true)}>
-            {followingCount} Following
-          </Button>
+          <Button onClick={() => setIsDialogOpen(true)}>{followingCount} Following</Button>
         </ButtonGroup>
       </Grid>
-      <Dialog
-        open={isDialogOpen}
-        TransitionComponent={Transition}
-        onClose={() => setIsDialogOpen(false)}>
+      <Dialog open={isDialogOpen} TransitionComponent={Transition} onClose={() => setIsDialogOpen(false)}>
         <DialogTitle>Followers</DialogTitle>
         {followers.map((username) => (
           <Link key={username}>
@@ -211,7 +192,7 @@ export default function ProfileHeader({ profile, setProfile, postCount }) {
 
       <Grid item xs={12}>
         <Typography variant="h6" component="h1">
-          {fullName}
+          {name}
         </Typography>
         <Box>
           <Typography variant="caption">Personal Blog</Typography>

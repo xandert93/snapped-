@@ -4,6 +4,8 @@ import {
   SET_SUCCESS_SNACKBAR,
   SET_FAILURE_SNACKBAR,
   REMOVE_SNACKBAR,
+  OPEN_WELCOME_DIALOG,
+  CLOSE_WELCOME_DIALOG,
   OPEN_CLICKED_POST_DIALOG,
   CLOSE_CLICKED_POST_DIALOG,
   OPEN_POST_UPLOAD_DIALOG,
@@ -36,11 +38,13 @@ export const setFailureSnackbar = (message) => ({
 export const removeSnackbar = () => ({ type: REMOVE_SNACKBAR });
 
 //DIALOGS
+export const openWelcomeDialog = () => ({ type: OPEN_WELCOME_DIALOG });
+
+export const closeWelcomeDialog = () => ({ type: CLOSE_WELCOME_DIALOG });
+
 export const openClickedPostDialog = () => ({ type: OPEN_CLICKED_POST_DIALOG });
 
-export const closeClickedPostDialog = () => ({
-  type: CLOSE_CLICKED_POST_DIALOG,
-});
+export const closeClickedPostDialog = () => ({ type: CLOSE_CLICKED_POST_DIALOG });
 
 export const openPostUploadDialog = () => ({ type: OPEN_POST_UPLOAD_DIALOG });
 
@@ -59,6 +63,4 @@ export const setConfirmationDialog = (dialogData) => ({
 //   type: OPEN_CONFIRMATION_DIALOG,
 // });
 
-export const closeConfirmationDialog = () => ({
-  type: CLOSE_CONFIRMATION_DIALOG,
-});
+export const closeConfirmationDialog = () => ({ type: CLOSE_CONFIRMATION_DIALOG });
