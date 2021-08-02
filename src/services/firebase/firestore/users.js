@@ -10,11 +10,18 @@ export const checkUsernameTaken = async (username) => {
 };
 
 //FBA user created. Use it to create userDoc on FBFS
-export const addUserToDb = (fbAuthUser, username, name) =>
+export const fbCreateUser = (fbAuthUser, username, name) =>
   users.add({
     userId: fbAuthUser.uid,
     username: username.toLowerCase(),
     name: name.toLowerCase().replace(/\b./g, (a) => a.toUpperCase()),
+    details: {
+      dob: '',
+      pronouns: '',
+      bio: '',
+      location: '',
+      websiteURL: '',
+    },
     email: fbAuthUser.email,
     following: [],
     followers: [],

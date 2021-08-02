@@ -1,3 +1,5 @@
+import { Card } from '@material-ui/core';
+
 export const base = {
   overrides: {
     MuiCssBaseline: {
@@ -10,13 +12,13 @@ export const base = {
       },
     },
 
-    MuiToolbar: {
-      gutters: {
-        '@media (max-width: 576px)': {
-          padding: '0 8px', //0 16px*
-        },
-      },
-    },
+    // MuiToolbar: {
+    //   gutters: {
+    //     '@media (max-width: 576px)': {
+    //       padding: '0 8px', //0 16px*
+    //     },
+    //   },
+    // },
 
     MuiContainer: {
       root: {
@@ -214,6 +216,11 @@ export const base = {
     MuiAlert: {
       elevation: 8,
       variant: 'filled',
+    },
+
+    MuiDialog: {
+      PaperComponent: Card, //*Paper
+      //will now use our App's <Card/> instead, which provides 20px border-radius
     },
   },
 

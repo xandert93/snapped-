@@ -1,49 +1,37 @@
 import { forwardRef } from 'react';
-import useStyles from './styles';
-import {
-  AppBar,
-  Container,
-  Dialog,
-  IconButton,
-  Slide,
-  Fade,
-  Toolbar,
-  Typography,
-  useMediaQuery,
-} from '@material-ui/core';
-import { ArrowBack } from '@material-ui/icons';
 
-import { isSubmittingSelector } from '../../state/app/selectors';
 import { useSelector } from 'react-redux';
+import { selectIsSubmitting } from '../../state/app/selectors';
 
-const CustomSlide = forwardRef((props, ref) => (
-  <Slide direction="left" ref={ref} {...props} />
-));
+import { AppBar, Container, Dialog, Slide, Fade, Toolbar, Typography, useMediaQuery } from '@material-ui/core';
+import { DismissButton } from './DismissButton';
+import { SubmitButton } from './SubmitButton';
 
-export default function PostDialog({ isOpen, close, title, children }) {
+import useStyles from './styles';
+import { checkIsVPxs } from '../../styles/mqSelectors';
+
+const CustomSlide = forwardRef((props, ref) => <Slide direction="left" ref={ref} {...props} />);
+
+export default function PostDialog({ isOpen, close, title, SubmitIcon, children }) {
   const classes = useStyles();
-  const isVPxs = useMediaQuery(({ breakpoints }) => breakpoints.only('xs'));
+  const isVPxs = useMediaQuery(checkIsVPxs);
 
-  const isSubmitting = useSelector(isSubmittingSelector);
+  const isSubmitting = useSelector(selectIsSubmitting);
 
   return (
     <Dialog
       open={isOpen}
       onClose={isSubmitting ? null : close}
+      fullWidth={true}
       fullScreen={isVPxs}
       TransitionComponent={isVPxs ? CustomSlide : Fade}>
       <AppBar className={classes.appBar} position="sticky" component="div">
-        <Toolbar>
-          <IconButton
-            className={classes.backButton}
-            color="inherit"
-            disabled={isSubmitting}
-            onClick={close}>
-            <ArrowBack />
-          </IconButton>
-          <Typography color="inherit" variant="h5">
+        <Toolbar className={classes.toolbar}>
+          <DismissButton clickHandler={close} />
+          <Typography color="textPrimary" variant={isVPxs ? 'h6' : 'h5'}>
             {title}
           </Typography>
+          <SubmitButton SubmitIcon={SubmitIcon} />
         </Toolbar>
       </AppBar>
       <Container maxWidth="md">{children}</Container>

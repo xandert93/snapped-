@@ -2,4 +2,4 @@ export const SET_SELECTED_FILE = 'SET_SELECTED_FILE';
 export const SET_DATA_URL = 'SET_DATA_URL';
 export const CANCEL_FILE = 'CANCEL_FILE';
 export const SET_NEW_POST = 'SET_NEW_POST';
-export const CLEAR_UPLOAD_FORM = 'CLEAR_UPLOAD_FORM';
+export const CLEAR_CREATE_FORM = 'CLEAR_CREATE_FORM';

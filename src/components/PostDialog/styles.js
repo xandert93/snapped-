@@ -2,16 +2,15 @@ import { makeStyles } from '@material-ui/core';
 
 export default makeStyles((theme) => ({
   appBar: {
-    backgroundColor: theme.palette.background.paper,
-    color: theme.palette.text.primary,
+    backgroundImage: `linear-gradient(310deg, ${theme.palette.primary.dark}, ${theme.palette.secondary.dark})`,
   },
 
-  backButton: {
-    padding: theme.spacing(0, 1),
-    '& svg': {
-      fontSize: theme.spacing(5),
-      [theme.breakpoints.only('xs')]: {
-        fontSize: theme.spacing(3.5),
+  toolbar: {
+    '& :nth-child(2)': {
+      flexGrow: 1,
+      marginLeft: theme.spacing(4),
+      [theme.breakpoints.down('xs')]: {
+        marginLeft: theme.spacing(3),
       },
     },
   },

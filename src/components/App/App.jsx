@@ -6,7 +6,7 @@ import { isDarkModeSelector } from '../../state/app/selectors';
 import { userSelector } from '../../state/auth/selectors';
 import { authenticateUserRecord } from '../../state/auth/actions';
 import { setDataURL } from '../../state/upload/actions';
-import { openPostUploadDialog } from '../../state/app/actions';
+import { openPostCreateDialog } from '../../state/app/actions';
 
 import { dark, light } from '../../styles/themes';
 import { ThemeProvider, CssBaseline } from '@material-ui/core';
@@ -23,7 +23,7 @@ import {
   PreLoader,
   Main,
   WelcomeDialog,
-  PostUploadDialog,
+  PostCreateDialog,
   PostClickDialog,
   PostEditDialog,
   ConfirmationDialog,
@@ -39,9 +39,7 @@ export default function App() {
   //user updates when we add/remove following, change pfp etc.
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((userRecord) =>
-      dispatch(authenticateUserRecord(userRecord))
-    );
+    const unsubscribe = auth.onAuthStateChanged((userRecord) => dispatch(authenticateUserRecord(userRecord)));
     return unsubscribe;
   }, []);
 
@@ -50,7 +48,7 @@ export default function App() {
     readerRef.current.onload = (e) => {
       //fires when picked or dragged file pass type/size tests --> reader.readAsDataURL(file)
       dispatch(setDataURL(e.target.result));
-      dispatch(openPostUploadDialog());
+      dispatch(openPostCreateDialog());
     };
   }, [readerRef]);
 
@@ -73,11 +71,7 @@ export default function App() {
             <Redirect exact from={'/'} to={ROUTES.HOME} />
             <ProtectedRoute exact path={ROUTES.HOME} component={Home} />
 
-            <Redirect
-              exact
-              from={`/profiles/${user?.username}`}
-              to={`/profiles/${user?.username}/public`}
-            />
+            <Redirect exact from={`/profiles/${user?.username}`} to={`/profiles/${user?.username}/public`} />
 
             <ProtectedRoute exact path={ROUTES.USER_PROFILE} component={Profile} />
             <ProtectedRoute exact path={ROUTES.ALT_PROFILE} component={Profile} />
@@ -93,7 +87,7 @@ export default function App() {
         </Main>
 
         {user && <WelcomeDialog />}
-        <PostUploadDialog />
+        <PostCreateDialog />
         <PostClickDialog />
         <PostEditDialog />
         <ConfirmationDialog />

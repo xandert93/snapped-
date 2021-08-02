@@ -8,8 +8,8 @@ import {
   CLOSE_WELCOME_DIALOG,
   OPEN_CLICKED_POST_DIALOG,
   CLOSE_CLICKED_POST_DIALOG,
-  OPEN_POST_UPLOAD_DIALOG,
-  CLOSE_POST_UPLOAD_DIALOG,
+  OPEN_POST_CREATE_DIALOG,
+  CLOSE_POST_CREATE_DIALOG,
   OPEN_POST_EDIT_DIALOG,
   CLOSE_POST_EDIT_DIALOG,
   // OPEN_CONFIRMATION_DIALOG,
@@ -23,7 +23,7 @@ let initialState = {
   snackbar: { isOpen: false, isSuccess: true, message: '' },
   isWelcomeDialogOpen: false,
   isClickedPostDialogOpen: false,
-  isPostUploadDialogOpen: false,
+  isPostCreateDialogOpen: false,
   isPostEditDialogOpen: false,
   confirmationDialog: {
     isOpen: false,
@@ -65,10 +65,10 @@ export default (state = initialState, { type, payload }) => {
     case CLOSE_CLICKED_POST_DIALOG:
       return { ...state, isClickedPostDialogOpen: false };
 
-    case OPEN_POST_UPLOAD_DIALOG:
-      return { ...state, isPostUploadDialogOpen: true };
-    case CLOSE_POST_UPLOAD_DIALOG:
-      return { ...state, isPostUploadDialogOpen: false };
+    case OPEN_POST_CREATE_DIALOG:
+      return { ...state, isPostCreateDialogOpen: true };
+    case CLOSE_POST_CREATE_DIALOG:
+      return { ...state, isPostCreateDialogOpen: false };
 
     case OPEN_POST_EDIT_DIALOG:
       return { ...state, isPostEditDialogOpen: true };

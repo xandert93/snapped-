@@ -1,11 +1,4 @@
-import { setFailureSnackbar, setIsSubmitting } from '../app/actions';
-
-import {
-  SET_SELECTED_FILE,
-  SET_DATA_URL,
-  SET_NEW_POST,
-  CLEAR_UPLOAD_FORM,
-} from './types';
+import { SET_SELECTED_FILE, SET_DATA_URL, SET_NEW_POST, CLEAR_CREATE_FORM } from './types';
 
 /**/
 export const setSelectedFile = (file) => ({
@@ -23,5 +16,5 @@ export const setNewPost = (description, file) => ({
   payload: { description, file },
 });
 
-export const clearUploadForm = () => ({ type: CLEAR_UPLOAD_FORM });
+export const clearCreateForm = () => ({ type: CLEAR_CREATE_FORM });
 /**/

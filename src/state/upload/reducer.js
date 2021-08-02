@@ -1,9 +1,4 @@
-import {
-  SET_SELECTED_FILE,
-  SET_DATA_URL,
-  CLEAR_UPLOAD_FORM,
-  SET_NEW_POST,
-} from './types';
+import { SET_SELECTED_FILE, SET_DATA_URL, CLEAR_CREATE_FORM, SET_NEW_POST } from './types';
 
 let initialState = {
   selectedFile: null,
@@ -27,7 +22,8 @@ export default (state = initialState, { type, payload }) => {
         confirmedFile: payload.file,
         description: payload.description,
       };
-    case CLEAR_UPLOAD_FORM:
+    case CLEAR_CREATE_FORM:
+      console.log('called');
       return initialState;
     default:
       return state;

@@ -2,7 +2,10 @@ import { makeStyles } from '@material-ui/core';
 
 export default makeStyles((theme) => ({
   progressBox: {
-    height: 'calc(100vh - 72px)',
+    height: 'calc(100vh - 56px)',
+    [theme.breakpoints.up('sm')]: {
+      height: '75vh',
+    },
     display: 'flex',
     position: 'relative',
   },

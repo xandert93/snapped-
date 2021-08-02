@@ -7,12 +7,13 @@ export default makeStyles((theme) => ({
     '&:hover': {
       borderColor: theme.palette.primary.light,
     },
-    width: theme.spacing(10),
-    height: theme.spacing(10),
+    width: theme.spacing(12),
+    height: theme.spacing(12),
     margin: '0 auto',
   },
 
   label: {
+    textAlign: 'center',
     cursor: 'pointer',
   },
 }));

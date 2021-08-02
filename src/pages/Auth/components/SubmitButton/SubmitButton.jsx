@@ -1,12 +1,12 @@
 import { useSelector } from 'react-redux';
-import { isSubmittingSelector } from '../../../../state/app/selectors';
+import { selectIsSubmitting } from '../../../../state/app/selectors';
 import { Button } from '@material-ui/core';
 import useStyles from './styles';
 
 export default function SubmitButton({ children }) {
   const classes = useStyles();
 
-  const isSubmitting = useSelector(isSubmittingSelector);
+  const isSubmitting = useSelector(selectIsSubmitting);
 
   return (
     <Button

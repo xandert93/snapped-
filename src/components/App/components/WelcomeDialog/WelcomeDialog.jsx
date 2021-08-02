@@ -14,22 +14,22 @@ import {
   FormControlLabel,
   Radio,
   FormControl,
+  CircularProgress,
 } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMediaQuery } from '@material-ui/core';
 import { userSelector } from '../../../../state/auth/selectors';
-import { isSubmittingSelector } from '../../../../state/app/selectors';
+import { selectIsSubmitting } from '../../../../state/app/selectors';
 import { UploadAvatar } from '../../../UploadAvatar';
 import { TextField } from '../../../TextField';
-import { closeWelcomeDialog, setIsSubmitting, setSuccessSnackbar } from '../../../../state/app/actions';
-import { fbUpdateUserDetails } from '../../../../services/firebase/firestore/users';
+import { closeWelcomeDialog } from '../../../../state/app/actions';
 import _ from 'lodash';
 import { updateUserDetails } from '../../../../state/auth/actions';
+import { checkIsVPxs } from '../../../../styles/mqSelectors';
 
 let defaultUserDetails = {
-  name: '',
-  dob: '2000-01-01',
-  pronouns: 'Gay',
+  dob: '',
+  pronouns: '',
   bio: '',
   location: '',
   websiteURL: '',
@@ -44,31 +44,23 @@ const charLimits = {
 
 export default function WelcomeDialog() {
   const classes = useStyles();
-  const isVPxs = useMediaQuery(({ breakpoints }) => breakpoints.only('xs'));
+  const isVPxs = useMediaQuery(checkIsVPxs);
 
   const dispatch = useDispatch();
 
   const isOpen = useSelector((state) => state.app.isWelcomeDialogOpen);
   const close = () => dispatch(closeWelcomeDialog());
 
-  const { username, name, followers, profilePicURL } = useSelector(userSelector);
+  const { name, profilePicURL } = useSelector(userSelector);
   const existingUserDetails = useSelector((state) => state.auth.user.details);
   const [userDetails, setUserDetails] = useState(existingUserDetails || defaultUserDetails);
   const { dob, pronouns, bio, location, websiteURL } = userDetails;
 
-  const isUserNew = useSelector((state) => {
-    // let { profilePicURL, bio, followers } = state.auth.user;
-    // return !profilePicURL && !bio && followers.length < 3;
-    return true;
-  });
-
-  console.log(dob);
-
   const handleInputChange = (e) => setUserDetails((x) => ({ ...x, [e.target.name]: e.target.value }));
 
   let isDetailsUnchanged = _.isEqual(existingUserDetails, userDetails);
-  const isSubmitting = useSelector(isSubmittingSelector);
-  const handleSubmit = async () => dispatch(updateUserDetails(userDetails));
+  const isSubmitting = useSelector(selectIsSubmitting);
+  const handleSubmit = () => dispatch(updateUserDetails(userDetails));
 
   return (
     <Dialog fullScreen={isVPxs} open={isOpen} onClose={close}>
@@ -110,7 +102,7 @@ export default function WelcomeDialog() {
                 <FormControlLabel value="He/Him" control={<Radio color="primary" />} label="He/Him" />
                 <FormControlLabel value="She/Her" control={<Radio />} label="She/Her" />
                 <FormControlLabel value="They/Hey/Gay" control={<Radio />} label="They/Hey/Gay" />
-                <FormControlLabel value="Penguin" control={<Radio />} label="Penguin" />
+                <FormControlLabel value="Puss" control={<Radio />} label="Puss" />
               </RadioGroup>
             </FormControl>
           </Grid>
@@ -153,6 +145,7 @@ export default function WelcomeDialog() {
         </Grid>
       </DialogContent>
       <DialogActions>
+        {isSubmitting && <CircularProgress thickness={6} size={30} />}
         <Button disabled={isSubmitting} onClick={close} color="primary">
           Cancel
         </Button>

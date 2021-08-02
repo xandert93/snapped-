@@ -1,38 +1,12 @@
-import { fbUpdatePost } from '../../../../../services/firebase/firestore/posts';
-import { Check } from '@material-ui/icons';
-import { PostForm } from '../../../../PostForm';
-import { useDispatch } from 'react-redux';
-import {
-  setIsSubmitting,
-  setSuccessSnackbar,
-  setFailureSnackbar,
-  closePostEditDialog,
-} from '../../../../../state/app/actions';
+import { useDispatch, useSelector } from 'react-redux';
 import { updatePost } from '../../../../../state/posts/actions';
+import { PostForm } from '../../../../PostForm';
 
-export default function PostEditForm({ post, imageURL }) {
+export default function PostEditForm() {
   const dispatch = useDispatch();
+  const post = useSelector((state) => state.posts.postToEdit);
 
-  const updateHandler = async (newDescription) => {
-    try {
-      await fbUpdatePost(post.id, newDescription);
-      dispatch(updatePost(newDescription));
-      dispatch(setIsSubmitting(false));
-      dispatch(closePostEditDialog());
-      dispatch(setSuccessSnackbar('Your post has been updated.'));
-    } catch (err) {
-      // dispatch(setFailureSnackbar(err.message));
-      // dispatch(setIsSubmitting(false))
-    } finally {
-    }
-  };
+  const submitHandler = (newDescription) => dispatch(updatePost(newDescription));
 
-  return (
-    <PostForm
-      post={post}
-      imageURL={imageURL}
-      submitIcon={<Check color="inherit" />}
-      submitHandler={updateHandler}
-    />
-  );
+  return <PostForm imageURL={post.url} post={post} submitHandler={submitHandler} />;
 }

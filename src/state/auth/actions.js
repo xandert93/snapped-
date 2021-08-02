@@ -9,7 +9,7 @@ import {
 } from './types';
 
 import {
-  addUserToDb,
+  fbCreateUser,
   fbGetUser,
   fbUpdateUserDetails,
   fbUpdateUserProfilePicture,
@@ -76,18 +76,14 @@ export function authenticateUserRecord(fbAuthUser) {
       if (!fbAuthUser.displayName) {
         const { username, name } = getState().authForms.userDetails;
         await fbAuthUser.updateProfile({ displayName: username });
-        await addUserToDb(fbAuthUser, username, name);
+        await fbCreateUser(fbAuthUser, username, name);
         dispatch(setSuccessSnackbar('Account successfully created.'));
       }
       /*either way, then get the user doc from Firestore "Users" collection:*/
       const retrievedUserDoc = await fbGetUser(fbAuthUser.uid);
       dispatch(setUser(retrievedUserDoc));
 
-      let {
-        details: { bio },
-        profilePicURL,
-        followers,
-      } = retrievedUserDoc;
+      let { details: { bio } = {}, profilePicURL, followers } = retrievedUserDoc;
 
       // let isUserNew = !profilePicURL && !bio && followers.length < 3;
       true && dispatch(openWelcomeDialog());

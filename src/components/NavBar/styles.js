@@ -14,6 +14,10 @@ export default makeStyles((theme) => ({
         fontSize: theme.spacing(3.5),
       },
     },
+
+    [theme.breakpoints.down('xs')]: {
+      padding: theme.spacing(0, 1), //*0 16px
+    },
   },
 
   headingButtonBox: ({ isVPsm, isVPmd }) => ({

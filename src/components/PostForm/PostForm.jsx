@@ -7,10 +7,19 @@ import _ from 'lodash';
 
 import { formatTags } from '../../utils/helpers';
 import { useDispatch, useSelector } from 'react-redux';
-import { isSubmittingSelector } from '../../state/app/selectors';
+import { selectIsSubmitting } from '../../state/app/selectors';
 import { setIsSubmitting } from '../../state/app/actions';
 import { TextField } from '../TextField';
 import ChipInput from 'material-ui-chip-input';
+import { useEffect } from 'react';
+import {
+  setDescription,
+  updateDescription,
+  setIsTagsValid,
+  createTag,
+  setIsDescriptionSame,
+  deleteTag,
+} from '../../state/postForm/actions';
 
 const iconStyles = { fontSize: 20, marginLeft: 8, verticalAlign: -4 };
 const visibilities = [
@@ -41,30 +50,33 @@ const defaultDescription = {
   isPrivate: false,
 };
 
-export default function PostForm({ imageURL, post, submitIcon, submitHandler }) {
+export default function PostForm({ imageURL, post, submitHandler }) {
   const classes = useStyles();
-  const isSubmitting = useSelector(isSubmittingSelector);
-  const dispatch = useDispatch();
 
-  // const existingDescription = post?.description && {
-  //   ...post.description,
-  //   tags: post.description.tags.join(', '),
-  // };
+  const dispatch = useDispatch();
+  const isTagsValid = useSelector((state) => state.postForm.isTagsValid);
 
   const existingDescription = post?.description;
 
   const [description, setDescription] = useState(existingDescription || defaultDescription);
 
+  useEffect(() => {
+    let bool = _.isEqual(description, existingDescription);
+    dispatch(setIsDescriptionSame(bool));
+  }, [description]);
+
   const handleInputChange = (e) => setDescription((x) => ({ ...x, [e.target.name]: e.target.value }));
 
-  const [areTagsInvalid, setAreTagsInvalid] = useState(false);
+  const validateTags = (e) => {
+    let bool = /[#\w, ]/.test(e.target.value);
+    dispatch(setIsTagsValid(bool));
+  };
 
-  const checkIfTagsAreInvalid = (e) => setAreTagsInvalid(/[^#\w, ]/.test(e.target.value));
-
-  const handleCreateChip = (tag) => {
+  const handleCreateTag = (tag) => {
     setDescription((x) => ({ ...x, tags: [...x.tags, tag] }));
   };
-  const handleDeleteChip = (tagToDelete) => {
+
+  const handleDeleteTag = (tagToDelete) => {
     setDescription((x) => ({
       ...x,
       tags: x.tags.filter((tag) => tag !== tagToDelete),
@@ -73,14 +85,11 @@ export default function PostForm({ imageURL, post, submitIcon, submitHandler }) 
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(setIsSubmitting(true));
     submitHandler({ ...description, tags: formatTags(description.tags) });
   };
 
-  let isDescriptionUnchanged = _.isEqual(description, existingDescription);
-
   return (
-    <form className={classes.form} onSubmit={handleSubmit}>
+    <form className={classes.form} id="form" onSubmit={handleSubmit}>
       <Box className={classes.imageBox} style={{ position: 'relative' }}>
         <img className={classes.image} src={imageURL} alt="Image Preview" />
       </Box>
@@ -91,30 +100,13 @@ export default function PostForm({ imageURL, post, submitIcon, submitHandler }) 
         onChange={handleInputChange}
       />
       <TextField
-        label="Write your caption!"
+        label="Create a caption!"
         name="caption"
         value={description.caption}
         onChange={handleInputChange}
         multiline
         rows={3}
       />
-
-      {/* <TextField
-        required={false}
-        label="Give it some tags!"
-        name="tags"
-        value={description.tags}
-        onChange={(e) => {
-          handleInputChange(e);
-          setAreTagsInvalid(/[^#\w, ]/.test(e.target.value));
-        }}
-        error={areTagsInvalid}
-        helperText={
-          areTagsInvalid ? 'You cannot include any special characters.' : null
-        }
-        multiline
-        rows={2}
-      /> */}
 
       <ChipInput
         variant="outlined"
@@ -123,11 +115,11 @@ export default function PostForm({ imageURL, post, submitIcon, submitHandler }) 
         name="tags"
         value={description.tags}
         newChipKeyCodes={[32]}
-        onUpdateInput={checkIfTagsAreInvalid}
-        helperText={areTagsInvalid ? 'You cannot include special characters.' : null}
+        onUpdateInput={validateTags}
+        helperText={!isTagsValid ? 'You cannot include special characters.' : null}
         FormHelperTextProps={{ className: classes.chipInputHelperText }}
-        onAdd={handleCreateChip}
-        onDelete={handleDeleteChip}
+        onAdd={handleCreateTag}
+        onDelete={handleDeleteTag}
       />
 
       <TextField
@@ -143,22 +135,30 @@ export default function PostForm({ imageURL, post, submitIcon, submitHandler }) 
           </MenuItem>
         ))}
       </TextField>
-
-      <Box
-      // className={classes.submitButtonBox}
-      >
-        {!isSubmitting ? (
-          <IconButton
-            className={classes.submitButton}
-            type="submit"
-            disabled={isDescriptionUnchanged || areTagsInvalid}
-            variant="contained">
-            {submitIcon}
-          </IconButton>
-        ) : (
-          <CircularProgress />
-        )}
-      </Box>
     </form>
   );
 }
+
+//OLD CAPTIONS TEXTFIELD:
+
+/*   const existingDescription = post?.description && {
+    ...post.description,
+    tags: post.description.tags.join(', '),
+  }; */
+
+/* <TextField
+     required={false}
+     label="Give it some tags!"
+     name="tags"
+     value={description.tags}
+     onChange={(e) => {
+       handleInputChange(e);
+       setIsTagsValid(/[^#\w, ]/.test(e.target.value));
+     }}
+     error={!isTagsValid}
+     helperText={
+       !isTagsValid ? 'You cannot include any special characters.' : null
+     }
+     multiline
+     rows={2}
+/> */

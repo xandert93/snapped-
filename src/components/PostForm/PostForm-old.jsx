@@ -7,7 +7,7 @@ import _ from 'lodash';
 
 import { formatTagsToArr } from '../../utils/helpers';
 import { useDispatch, useSelector } from 'react-redux';
-import { isSubmittingSelector } from '../../state/app/selectors';
+import { selectIsSubmitting } from '../../state/app/selectors';
 import { setIsSubmitting } from '../../state/app/actions';
 import { TextField } from '../TextField';
 
@@ -42,7 +42,7 @@ const defaultDescription = {
 
 export default function PostForm({ imageURL, post, submitIcon, submitHandler }) {
   const classes = useStyles();
-  const isSubmitting = useSelector(isSubmittingSelector);
+  const isSubmitting = useSelector(selectIsSubmitting);
   const dispatch = useDispatch();
 
   const existingDescription = post?.description && {

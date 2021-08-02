@@ -5,6 +5,7 @@ import {
   fbDeletePost,
   fbDeletePostComment,
   fbUpdatePostLikes,
+  fbUpdatePost,
 } from '../../services/firebase/firestore/posts';
 import {
   allPublicTagPostsRef,
@@ -12,7 +13,7 @@ import {
   altUserPublicPostsRef,
   timelinePostsRef,
 } from '../../services/firebase/firestore/refs';
-import { setSuccessSnackbar } from '../app/actions';
+import { closePostCreateDialog, closePostEditDialog, setIsSubmitting, setSuccessSnackbar } from '../app/actions';
 import {
   SET_IS_LOADING,
   SET_TIMELINE_POSTS,
@@ -32,6 +33,7 @@ import {
 } from './types';
 
 import { getUserUsername } from './helpers';
+import { clearCreateForm } from '../upload/actions';
 
 export const setIsPostsLoading = (bool) => ({
   type: SET_IS_LOADING,
@@ -74,12 +76,25 @@ export const setExplorePosts = (tag) => async (dispatch, getState) => {
   dispatch({ type: SET_EXPLORE_POSTS, payload: posts });
 };
 
-export const createPost = (newPost) => ({ type: CREATE_POST, payload: newPost });
+export const createPost = (newPost) => async (dispatch, getState) => {
+  dispatch({ type: CREATE_POST, payload: newPost });
+
+  const newPostCount = getState().posts.user.length;
+
+  dispatch(closePostCreateDialog());
+  dispatch(clearCreateForm());
+  dispatch(setSuccessSnackbar(`Congratulations. You have now made ${newPostCount} posts!`));
+};
 
 export const setPostToEdit = (id) => ({ type: SET_POST_TO_EDIT, payload: id });
 
-export const updatePost = (newDescription) => (dispatch, getState) => {
+export const updatePost = (newDescription) => async (dispatch, getState) => {
+  dispatch(setIsSubmitting(true));
+
+  let postId = getState().posts.postToEdit.id;
   let isPrivacyUpdated = getState().posts.postToEdit.description.isPrivate !== newDescription.isPrivate;
+
+  await fbUpdatePost(postId, newDescription);
 
   dispatch({
     type: UPDATE_POST,
@@ -88,6 +103,10 @@ export const updatePost = (newDescription) => (dispatch, getState) => {
       newIsPrivate: isPrivacyUpdated ? newDescription.isPrivate : null,
     },
   });
+
+  dispatch(setIsSubmitting(false));
+  dispatch(closePostEditDialog());
+  dispatch(setSuccessSnackbar('Your post has been updated.'));
 };
 
 // export const clearPostToEdit = () => ({ type: CLEAR_POST_TO_EDIT });

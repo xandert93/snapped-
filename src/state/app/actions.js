@@ -8,8 +8,8 @@ import {
   CLOSE_WELCOME_DIALOG,
   OPEN_CLICKED_POST_DIALOG,
   CLOSE_CLICKED_POST_DIALOG,
-  OPEN_POST_UPLOAD_DIALOG,
-  CLOSE_POST_UPLOAD_DIALOG,
+  OPEN_POST_CREATE_DIALOG,
+  CLOSE_POST_CREATE_DIALOG,
   OPEN_POST_EDIT_DIALOG,
   CLOSE_POST_EDIT_DIALOG,
   OPEN_CONFIRMATION_DIALOG,
@@ -46,9 +46,9 @@ export const openClickedPostDialog = () => ({ type: OPEN_CLICKED_POST_DIALOG });
 
 export const closeClickedPostDialog = () => ({ type: CLOSE_CLICKED_POST_DIALOG });
 
-export const openPostUploadDialog = () => ({ type: OPEN_POST_UPLOAD_DIALOG });
+export const openPostCreateDialog = () => ({ type: OPEN_POST_CREATE_DIALOG });
 
-export const closePostUploadDialog = () => ({ type: CLOSE_POST_UPLOAD_DIALOG });
+export const closePostCreateDialog = () => ({ type: CLOSE_POST_CREATE_DIALOG });
 
 export const openPostEditDialog = () => ({ type: OPEN_POST_EDIT_DIALOG });
 

@@ -1,6 +1,6 @@
 import { SET_USER_DETAILS, SET_SUCCESS_MESSAGE, SET_FAILURE_MESSAGE, REMOVE_MESSAGE, CLEAR_AUTH_FORM } from './types';
 
-const initialUserDetails = {
+const defaultUserDetails = {
   name: '',
   username: '',
   email: '',
@@ -8,15 +8,15 @@ const initialUserDetails = {
   passwordConfirm: '',
 };
 
-const initialMessageData = {
+const defaultMessageData = {
   showMessage: false,
   isSuccess: true,
   message: '',
 };
 
 const initialState = {
-  userDetails: initialUserDetails,
-  messageData: initialMessageData,
+  userDetails: defaultUserDetails,
+  messageData: defaultMessageData,
 };
 
 export default (state = initialState, { type, payload }) => {
@@ -42,11 +42,7 @@ export default (state = initialState, { type, payload }) => {
         messageData: { ...state.messageData, showMessage: false },
       };
     case CLEAR_AUTH_FORM:
-      return {
-        ...state,
-        userDetails: initialUserDetails,
-        messageData: initialMessageData,
-      };
+      return initialState;
     default:
       return state;
   }
