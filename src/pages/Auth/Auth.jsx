@@ -1,25 +1,13 @@
 import { Box, Paper } from '@material-ui/core';
 import useStyles from './styles';
 
-import {
-  AuthForm,
-  Login,
-  Register,
-  ResetPassword,
-  RedirectLinks,
-  AuthMessage,
-  SubmitButton,
-} from './components';
+import { AuthForm, Login, Register, ResetPassword, RedirectLinks, AuthMessage, SubmitButton } from './components';
 import { ThemeSwitch } from '../../components';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
-import {
-  attemptLogin,
-  attemptPasswordReset,
-  attemptRegister,
-  clearAuthForm,
-} from '../../state/authForms/actions';
+import { attemptLogin, attemptPasswordReset, attemptRegister, clearAuthForm } from '../../state/authForms/actions';
+import { useSetDocumentTitle } from '../../custom-hooks';
 
 const authLookup = {
   register: {
@@ -45,10 +33,10 @@ export default function Auth() {
 
   const { FormControls, submitHandler, submitText } = authLookup[pageName];
 
+  useSetDocumentTitle(submitText);
+
   const dispatch = useDispatch();
-  const { showMessage, isSuccess, message } = useSelector(
-    (state) => state.authForms.messageData
-  );
+  const { showMessage, isSuccess, message } = useSelector((state) => state.authForms.messageData);
 
   useEffect(() => dispatch(clearAuthForm()), [pageName]);
 
@@ -60,9 +48,7 @@ export default function Auth() {
       <Paper className={classes.formPaper} elevation={10}>
         <AuthForm submitHandler={submitHandler}>
           <FormControls />
-          {showMessage && (
-            <AuthMessage isSuccess={isSuccess}>{message}</AuthMessage>
-          )}
+          {showMessage && <AuthMessage isSuccess={isSuccess}>{message}</AuthMessage>}
           <SubmitButton>{submitText}</SubmitButton>
         </AuthForm>
         <RedirectLinks pageName={pageName} />

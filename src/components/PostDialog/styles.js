@@ -13,5 +13,11 @@ export default makeStyles((theme) => ({
         marginLeft: theme.spacing(3),
       },
     },
+
+    '& svg': {
+      [theme.breakpoints.up('sm')]: {
+        fontSize: theme.spacing(4),
+      },
+    },
   },
 }));

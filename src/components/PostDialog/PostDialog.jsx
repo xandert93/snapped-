@@ -3,7 +3,7 @@ import { forwardRef } from 'react';
 import { useSelector } from 'react-redux';
 import { selectIsSubmitting } from '../../state/app/selectors';
 
-import { AppBar, Container, Dialog, Slide, Fade, Toolbar, Typography, useMediaQuery } from '@material-ui/core';
+import { AppBar, Dialog, Slide, Fade, Toolbar, Typography, useMediaQuery, DialogContent } from '@material-ui/core';
 import { DismissButton } from './DismissButton';
 import { SubmitButton } from './SubmitButton';
 
@@ -21,8 +21,9 @@ export default function PostDialog({ isOpen, close, title, SubmitIcon, children 
   return (
     <Dialog
       open={isOpen}
-      onClose={isSubmitting ? null : close}
-      fullWidth={true}
+      onClose={isSubmitting ? null : close} //prevent "Esc" or clickaway when submitting
+      maxWidth="sm" //maxWidth="xs|sm*|md|lg|xs"
+      fullWidth={true} //takes fullWidth of whatever the maxWidth prop is
       fullScreen={isVPxs}
       TransitionComponent={isVPxs ? CustomSlide : Fade}>
       <AppBar className={classes.appBar} position="sticky" component="div">
@@ -34,7 +35,7 @@ export default function PostDialog({ isOpen, close, title, SubmitIcon, children 
           <SubmitButton SubmitIcon={SubmitIcon} />
         </Toolbar>
       </AppBar>
-      <Container maxWidth="md">{children}</Container>
+      <DialogContent>{children}</DialogContent>
     </Dialog>
   );
 }

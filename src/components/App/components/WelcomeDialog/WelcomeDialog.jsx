@@ -62,9 +62,11 @@ export default function WelcomeDialog() {
   const isSubmitting = useSelector(selectIsSubmitting);
   const handleSubmit = () => dispatch(updateUserDetails(userDetails));
 
+  let radioSize = isVPxs ? 'small' : 'medium';
+
   return (
     <Dialog fullScreen={isVPxs} open={isOpen} onClose={close}>
-      <DialogTitle>Welcome to "snapped!", {name.split(' ')[0]}!</DialogTitle>
+      <DialogTitle className={classes.title}>Welcome to "snapped!", {name.split(' ')[0]}!</DialogTitle>
       <DialogContent>
         <DialogContentText>We can see that you're new on the block!</DialogContentText>
         <DialogContentText>Feel free to choose your profile picture:</DialogContentText>
@@ -84,7 +86,7 @@ export default function WelcomeDialog() {
           <Grid item xs={12} sm={6}>
             <TextField
               name="dob"
-              label="Date of Birth"
+              label="🎈 Date of Birth"
               InputLabelProps={{ shrink: true }}
               type="date"
               value={dob}
@@ -96,20 +98,20 @@ export default function WelcomeDialog() {
             <TextField label="Something?" required={false} />
           </Grid>
           <Grid item xs={12}>
-            <FormControl component="fieldset">
-              <FormLabel component="legend">Pronouns</FormLabel>
+            <FormControl className={classes.fieldset} component="fieldset">
+              <FormLabel component="legend">👬 Pronouns</FormLabel>
               <RadioGroup row name="pronouns" value={pronouns} onChange={handleInputChange}>
-                <FormControlLabel value="He/Him" control={<Radio color="primary" />} label="He/Him" />
-                <FormControlLabel value="She/Her" control={<Radio />} label="She/Her" />
-                <FormControlLabel value="They/Hey/Gay" control={<Radio />} label="They/Hey/Gay" />
-                <FormControlLabel value="Puss" control={<Radio />} label="Puss" />
+                <FormControlLabel value="He/Him" control={<Radio color="primary" size={radioSize} />} label="He/Him" />
+                <FormControlLabel value="She/Her" control={<Radio size={radioSize} />} label="She/Her" />
+                <FormControlLabel value="They/Hey/Gay" control={<Radio size={radioSize} />} label="They/Hey/Gay" />
+                <FormControlLabel value="Puss" control={<Radio size={radioSize} />} label="Puss" />
               </RadioGroup>
             </FormControl>
           </Grid>
           <Grid item xs={12}>
             <TextField
               name="bio"
-              label="Bio"
+              label="📜 Bio"
               inputProps={{ maxLength: charLimits.bio }}
               value={bio}
               onChange={handleInputChange}
@@ -122,7 +124,7 @@ export default function WelcomeDialog() {
           <Grid item xs={12}>
             <TextField
               name="location"
-              label="Location"
+              label="📍 Location"
               inputProps={{ maxLength: charLimits.location }}
               value={location}
               onChange={handleInputChange}
@@ -134,7 +136,7 @@ export default function WelcomeDialog() {
             <TextField
               name="websiteURL"
               type="url"
-              label="Website"
+              label="🖥️ Website"
               inputProps={{ maxLength: charLimits.websiteURL }}
               value={websiteURL}
               onChange={handleInputChange}
@@ -156,3 +158,7 @@ export default function WelcomeDialog() {
     </Dialog>
   );
 }
+
+//DialogTitle outputs a <div><h2>{title}<h2></div>
+//DialogContent outputs a scrollable <div>
+//DialogActions are separate from <DC>...never scrolled.

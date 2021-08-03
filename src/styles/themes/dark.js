@@ -1,15 +1,8 @@
-import { createMuiTheme } from '@material-ui/core';
-import {
-  amber,
-  blue,
-  cyan,
-  green,
-  red,
-  yellow,
-} from '@material-ui/core/colors';
+import { createTheme } from '@material-ui/core';
+import { amber, blue, cyan, green, red, yellow } from '@material-ui/core/colors';
 import { base } from '../base/base';
 
-export const dark = createMuiTheme({
+export const dark = createTheme({
   ...base,
   palette: {
     type: 'dark',

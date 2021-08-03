@@ -1,4 +1,4 @@
-import { Box, CircularProgress, Grid, GridList, GridListTile, useMediaQuery } from '@material-ui/core';
+import { Box, CircularProgress, Grid, ImageList, GridListTile, useMediaQuery } from '@material-ui/core';
 import { useGridScroll } from '../../custom-hooks';
 
 import { TileOverlay } from './TileOverlay';
@@ -21,8 +21,8 @@ export default function ImageGrid({ posts, clickHandler }) {
       {isPostsLoading ? (
         <CircularProgress />
       ) : (
-        <GridList
-          className={classes.gridList}
+        <ImageList
+          className={classes.ImageList}
           cellHeight={isVPxs ? 150 : isVPsm ? 200 : isVPmd ? 250 : 300}
           cols={isVPmd ? 3 : 4}>
           {posts.map(
@@ -34,7 +34,7 @@ export default function ImageGrid({ posts, clickHandler }) {
                 </GridListTile>
               )
           )}
-        </GridList>
+        </ImageList>
       )}
     </Box>
   );

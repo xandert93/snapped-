@@ -52,7 +52,7 @@ export const usePostsCollection = () => {
           return dispatch(setIsPostsLoading(false));
 
         case ROUTES.ALT_PROFILE:
-          return dispatch(setAltUserPosts(username));
+          return dispatch(setAltUserPosts(username.toLowerCase()));
 
         case ROUTES.EXPLORE:
           return dispatch(setExplorePosts(tag));

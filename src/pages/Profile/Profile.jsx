@@ -8,7 +8,7 @@ import { userUsernameSelector } from '../../state/auth/selectors';
 
 export default function Profile() {
   const { username } = useParams();
-  useSetDocumentTitle(username);
+  useSetDocumentTitle(username.toLowerCase());
 
   const userUsername = useSelector(userUsernameSelector);
   const isUsersProfile = userUsername === username;

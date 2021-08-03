@@ -12,14 +12,6 @@ export const base = {
       },
     },
 
-    // MuiToolbar: {
-    //   gutters: {
-    //     '@media (max-width: 576px)': {
-    //       padding: '0 8px', //0 16px*
-    //     },
-    //   },
-    // },
-
     MuiContainer: {
       root: {
         '@media (max-width: 576px)': {
@@ -76,6 +68,7 @@ export const base = {
       },
     },
 
+    //<TextField label=""/> size (basically, the placeholder)
     MuiFormLabel: {
       root: {
         '@media (max-width: 576px)': {
@@ -86,6 +79,24 @@ export const base = {
 
     MuiInputBase: {
       root: {
+        '@media (max-width: 576px)': {
+          fontSize: 16, //*1.17rem (slightly too big)
+        },
+      },
+    },
+
+    //<TextField select />'s popover paper
+    MuiMenuItem: {
+      root: {
+        '@media (max-width: 576px)': {
+          fontSize: 16, //*1.17rem (slightly too big)
+        },
+      },
+    },
+
+    //<RadioGroup>'s labels
+    MuiFormControlLabel: {
+      label: {
         '@media (max-width: 576px)': {
           fontSize: 16, //*1.17rem (slightly too big)
         },
@@ -188,7 +199,15 @@ export const base = {
     },
     MuiTab: {
       root: {
-        minWidth: '56px', //72* (too big)
+        minWidth: 56, //72* (too big)
+      },
+    },
+
+    MuiDialogTitle: {
+      root: {
+        '@media (max-width: 576px)': {
+          padding: '12px 24px', //16px 24px* (too big)
+        },
       },
     },
   },

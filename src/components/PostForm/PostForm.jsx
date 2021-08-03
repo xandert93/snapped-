@@ -1,25 +1,17 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import useStyles from './styles';
 
-import { Box, CircularProgress, IconButton, MenuItem, useMediaQuery } from '@material-ui/core';
+import { Box, Grid, MenuItem } from '@material-ui/core';
 import { Lock, Public } from '@material-ui/icons';
 import _ from 'lodash';
 
 import { formatTags } from '../../utils/helpers';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectIsSubmitting } from '../../state/app/selectors';
-import { setIsSubmitting } from '../../state/app/actions';
+
 import { TextField } from '../TextField';
 import ChipInput from 'material-ui-chip-input';
-import { useEffect } from 'react';
-import {
-  setDescription,
-  updateDescription,
-  setIsTagsValid,
-  createTag,
-  setIsDescriptionSame,
-  deleteTag,
-} from '../../state/postForm/actions';
+
+import { setIsTagsValid, setIsDescriptionSame } from '../../state/postForm/actions';
 
 const iconStyles = { fontSize: 20, marginLeft: 8, verticalAlign: -4 };
 const visibilities = [
@@ -89,53 +81,63 @@ export default function PostForm({ imageURL, post, submitHandler }) {
   };
 
   return (
-    <form className={classes.form} id="form" onSubmit={handleSubmit}>
-      <Box className={classes.imageBox} style={{ position: 'relative' }}>
-        <img className={classes.image} src={imageURL} alt="Image Preview" />
-      </Box>
-      <TextField
-        label="Where was this taken?"
-        name="location"
-        value={description.location}
-        onChange={handleInputChange}
-      />
-      <TextField
-        label="Create a caption!"
-        name="caption"
-        value={description.caption}
-        onChange={handleInputChange}
-        multiline
-        rows={3}
-      />
+    <Grid container spacing={2} component="form" id="form" onSubmit={handleSubmit}>
+      <Grid item xs={12}>
+        <Box className={classes.imageBox}>
+          <img src={imageURL} alt="Image Preview" />
+        </Box>
+      </Grid>
 
-      <ChipInput
-        variant="outlined"
-        fullWidth
-        label="Give it some tags!"
-        name="tags"
-        value={description.tags}
-        newChipKeyCodes={[32]}
-        onUpdateInput={validateTags}
-        helperText={!isTagsValid ? 'You cannot include special characters.' : null}
-        FormHelperTextProps={{ className: classes.chipInputHelperText }}
-        onAdd={handleCreateTag}
-        onDelete={handleDeleteTag}
-      />
+      <Grid item xs={12}>
+        <TextField
+          label="Where was this taken?"
+          name="location"
+          value={description.location}
+          onChange={handleInputChange}
+        />
+      </Grid>
+      <Grid item xs={12}>
+        <TextField
+          label="Create a caption!"
+          name="caption"
+          value={description.caption}
+          onChange={handleInputChange}
+          multiline
+          rows={3}
+        />
+      </Grid>
+      <Grid item xs={12}>
+        <ChipInput
+          variant="outlined"
+          fullWidth
+          label="Give it some tags!"
+          name="tags"
+          value={description.tags}
+          newChipKeyCodes={[32]}
+          onUpdateInput={validateTags}
+          helperText={!isTagsValid ? 'You cannot include special characters.' : null}
+          FormHelperTextProps={{ className: classes.chipInputHelperText }}
+          onAdd={handleCreateTag}
+          onDelete={handleDeleteTag}
+        />
+      </Grid>
 
-      <TextField
-        select
-        label="Choose post visibility:"
-        name="isPrivate"
-        value={description.isPrivate}
-        onChange={handleInputChange}
-        helperText="Public posts are visible to all users!">
-        {visibilities.map((option) => (
-          <MenuItem key={option.value} value={option.value}>
-            {option.label}
-          </MenuItem>
-        ))}
-      </TextField>
-    </form>
+      <Grid item xs={12}>
+        <TextField
+          select
+          label="Choose post visibility:"
+          name="isPrivate"
+          value={description.isPrivate}
+          onChange={handleInputChange}
+          helperText="Public posts are visible to all users!">
+          {visibilities.map((option) => (
+            <MenuItem key={option.value} value={option.value}>
+              {option.label}
+            </MenuItem>
+          ))}
+        </TextField>
+      </Grid>
+    </Grid>
   );
 }
 
