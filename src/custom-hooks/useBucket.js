@@ -4,12 +4,12 @@ import { useSelector } from 'react-redux';
 import { bucket, FieldValue } from '../lib/firebase/config';
 import { fbCreatePost } from '../services/firebase/firestore/posts';
 import { setFailureSnackbar } from '../state/app/actions';
-import { userIdSelector, userUsernameSelector } from '../state/auth/selectors';
+import { userIdSelector, selectUserUsername } from '../state/auth/selectors';
 import { createCompressedFile } from '../utils/helpers';
 
 export function useBucket(file, description) {
   const dispatch = useDispatch();
-  const username = useSelector(userUsernameSelector);
+  const username = useSelector(selectUserUsername);
   const userId = useSelector(userIdSelector);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [firestoreDoc, setFirestoreDoc] = useState(null);
@@ -24,8 +24,7 @@ export function useBucket(file, description) {
 
       imageRef.put(compressedFile).on(
         'state_changed',
-        ({ bytesTransferred, totalBytes }) =>
-          setUploadProgress((bytesTransferred / totalBytes) * 100),
+        ({ bytesTransferred, totalBytes }) => setUploadProgress((bytesTransferred / totalBytes) * 100),
         (err) => dispatch(setFailureSnackbar(err.message)),
         async () => {
           const url = await imageRef.getDownloadURL();

@@ -5,7 +5,7 @@ import { Redirect, useLocation } from 'react-router-dom';
 import { buildProfilePath, ROUTES } from '../../constants/routes';
 import { useQuery, useSetDocumentTitle } from '../../custom-hooks';
 import { fbGetAltUsersBySearch } from '../../services/firebase/firestore/users';
-import { userUsernameSelector } from '../../state/auth/selectors';
+import { selectUserUsername } from '../../state/auth/selectors';
 import useStyles from './styles';
 import { Link, PostCard } from '../../components';
 import { db } from '../../lib/firebase/config';
@@ -23,7 +23,7 @@ export default function Search() {
   const [altUsers, setAltUsers] = useState([]);
   const [posts, setPosts] = useState([]);
 
-  const userUsername = useSelector(userUsernameSelector);
+  const userUsername = useSelector(selectUserUsername);
   const lookup = useSelector((state) => state.lookups.profilePics);
 
   const dispatch = useDispatch();

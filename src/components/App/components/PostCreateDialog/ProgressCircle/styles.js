@@ -2,7 +2,7 @@ import { makeStyles } from '@material-ui/core';
 
 export default makeStyles((theme) => ({
   progressBox: {
-    height: 'calc(100vh - 72px)', //subtract toolbar height + dialog top/bottom padding
+    height: 'calc(100vh - 80px)', //subtract toolbar height + dialog top/bottom padding
     [theme.breakpoints.up('sm')]: {
       height: '75vh',
     },

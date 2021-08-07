@@ -45,10 +45,14 @@ export const updateUserProfilePicture = (file) => async (dispatch, getState) => 
 export const updateUserDetails = (updateObj) => async (dispatch, getState) => {
   dispatch(setIsSubmitting(true));
 
-  const { id } = getState().auth.user;
-  await fbUpdateUserDetails(id, updateObj);
+  const id = getState().auth.user.id;
 
-  dispatch({ type: UPDATE_USER_DETAILS, payload: updateObj });
+  let trimmedUpdateObj = {};
+  for (let key in updateObj) trimmedUpdateObj[key] = updateObj[key].trim();
+
+  await fbUpdateUserDetails(id, trimmedUpdateObj);
+
+  dispatch({ type: UPDATE_USER_DETAILS, payload: trimmedUpdateObj });
   dispatch(closeWelcomeDialog());
   dispatch(setSuccessSnackbar('Your details have been updated.'));
   dispatch(setIsSubmitting(false));

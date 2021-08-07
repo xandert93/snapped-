@@ -2,16 +2,9 @@ import { Button } from '@material-ui/core';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import {
-  fbUpdateAltUserFollowers,
-  fbUpdateUserFollowing,
-} from '../../services/firebase/firestore/users';
+import { fbUpdateAltUserFollowers, fbUpdateUserFollowing } from '../../services/firebase/firestore/users';
 import { updateUserFollowing } from '../../state/auth/actions';
-import {
-  userFollowingSelector,
-  userIdSelector,
-  userUsernameSelector,
-} from '../../state/auth/selectors';
+import { userFollowingSelector, userIdSelector, selectUserUsername } from '../../state/auth/selectors';
 import useStyles from './styles';
 
 const buttons = {
@@ -25,17 +18,13 @@ export default function FollowButton({ altUser, setAltUser }) {
 
   const dispatch = useDispatch();
   const userId = useSelector(userIdSelector);
-  const userUsername = useSelector(userUsernameSelector);
+  const userUsername = useSelector(selectUserUsername);
   const userFollowing = useSelector(userFollowingSelector);
 
   const initialIsAltUserFollowed = userFollowing.includes(altUser.username);
 
-  const [isAltUserFollowed, setIsAltUserFollowed] = useState(
-    initialIsAltUserFollowed
-  );
-  const [buttonData, setButtonData] = useState(
-    initialIsAltUserFollowed ? buttons.following : buttons.follow
-  );
+  const [isAltUserFollowed, setIsAltUserFollowed] = useState(initialIsAltUserFollowed);
+  const [buttonData, setButtonData] = useState(initialIsAltUserFollowed ? buttons.following : buttons.follow);
 
   const clickHandler = async () => {
     await fbUpdateUserFollowing(userId, altUser.username, isAltUserFollowed);
@@ -63,12 +52,8 @@ export default function FollowButton({ altUser, setAltUser }) {
         className={classes.followBtn}
         size="small"
         onClick={clickHandler}
-        onMouseEnter={() =>
-          isAltUserFollowed && setButtonData(buttons.unfollow)
-        }
-        onMouseLeave={() =>
-          isAltUserFollowed && setButtonData(buttons.following)
-        }
+        onMouseEnter={() => isAltUserFollowed && setButtonData(buttons.unfollow)}
+        onMouseLeave={() => isAltUserFollowed && setButtonData(buttons.following)}
         variant="contained"
         color={buttonData[1]}>
         {buttonData[0]}

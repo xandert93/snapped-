@@ -1,8 +1,8 @@
 import { Box, CardMedia, Fade, Grow } from '@material-ui/core';
-import { Favorite as HeartIcon } from '@material-ui/icons';
-import { useContext } from 'react';
+import { Whatshot as FlameIcon } from '@material-ui/icons';
+
 import { useState } from 'react';
-import { CardContext } from '../../PostCard';
+import { useCard } from '../../context';
 // import { useHistory } from 'react-router-dom';
 import useStyles from './styles';
 
@@ -13,22 +13,23 @@ export default function PostCardMedia({ url }) {
     // id,
     username,
     location,
-    handleHeartIconClick,
-  } = useContext(CardContext);
+    handleFlameClick,
+    uiIsLikedByUser,
+  } = useCard();
 
-  const classes = useStyles();
+  const classes = useStyles({ uiIsLikedByUser });
   // const history = useHistory();
 
-  const [showHeart, setShowHeart] = useState(false);
+  const [showFlame, setShowFlame] = useState(false);
 
   const handleTouch = (e) => {
     if (!wasTouchedTwice) {
       wasTouchedTwice = true;
       return setTimeout(() => (wasTouchedTwice = false), 250);
     }
-    handleHeartIconClick();
-    setShowHeart(true);
-    setTimeout(setShowHeart, 600, false);
+    handleFlameClick();
+    setShowFlame(true);
+    setTimeout(setShowFlame, 600, false);
   };
 
   return (
@@ -41,9 +42,9 @@ export default function PostCardMedia({ url }) {
           // onClick={() => history.push(`/posts/${id}`)}
           onTouchStart={handleTouch}
         />
-        <Grow in={showHeart} timeout={1000} unmountOnExit>
+        <Grow in={showFlame} timeout={1000} unmountOnExit>
           <Box className={classes.heartBox}>
-            <HeartIcon />
+            <FlameIcon className={classes.flameSVG} />
           </Box>
         </Grow>
       </Box>

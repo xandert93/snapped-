@@ -1,4 +1,4 @@
-import { Box, CircularProgress, Grid, ImageList, GridListTile, useMediaQuery } from '@material-ui/core';
+import { Box, CircularProgress, Grid, ImageList, ImageListItem, useMediaQuery } from '@material-ui/core';
 import { useGridScroll } from '../../custom-hooks';
 
 import { TileOverlay } from './TileOverlay';
@@ -28,10 +28,10 @@ export default function ImageGrid({ posts, clickHandler }) {
           {posts.map(
             ({ id, username, url, likes, comments }, idx) =>
               idx < noOfPostsShown && (
-                <GridListTile key={id} className={classes.tile} cols={1} onClick={() => clickHandler(id)}>
+                <ImageListItem key={id} className={classes.tile} cols={1} onClick={() => clickHandler(id)}>
                   <img src={url} alt={`${username}'s post`} />
-                  {!isVPsm && <TileOverlay noOfLikes={likes.length} noOfComments={comments.length} />}
-                </GridListTile>
+                  {!isVPsm && <TileOverlay likesCount={likes.length} commentsCount={comments.length} />}
+                </ImageListItem>
               )
           )}
         </ImageList>

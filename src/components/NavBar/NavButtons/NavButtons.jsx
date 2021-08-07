@@ -6,11 +6,11 @@ import { AccountCircle, CameraRoll, ExitToApp } from '@material-ui/icons';
 import { buildProfilePath, ROUTES } from '../../../constants/routes';
 import { useSelector } from 'react-redux';
 import { fbLogout } from '../../../services/firebase/auth';
-import { userUsernameSelector } from '../../../state/auth/selectors';
+import { selectUserUsername } from '../../../state/auth/selectors';
 
 const NavButtons = ({ isVPsm, toggleDrawer }) => {
   const classes = useStyles();
-  const userUsername = useSelector(userUsernameSelector);
+  const userUsername = useSelector(selectUserUsername);
 
   return (
     <Box
@@ -19,25 +19,15 @@ const NavButtons = ({ isVPsm, toggleDrawer }) => {
         if (!isVPsm) return;
         toggleDrawer();
       }}>
-      <Button
-        component={RouterLink}
-        to={buildProfilePath(userUsername)}
-        startIcon={<CameraRoll />}>
+      <Button component={RouterLink} to={buildProfilePath(userUsername)} startIcon={<CameraRoll />}>
         My Profile
       </Button>
       {isVPsm && <Divider />}
-      <Button
-        component={RouterLink}
-        to={ROUTES.ACCOUNT}
-        startIcon={<AccountCircle />}>
+      <Button component={RouterLink} to={ROUTES.ACCOUNT} startIcon={<AccountCircle />}>
         My Account
       </Button>
       {isVPsm && <Divider />}
-      <Button
-        variant="contained"
-        color="secondary"
-        onClick={fbLogout}
-        startIcon={<ExitToApp />}>
+      <Button variant="contained" color="secondary" onClick={fbLogout} startIcon={<ExitToApp />}>
         Logout
       </Button>
     </Box>

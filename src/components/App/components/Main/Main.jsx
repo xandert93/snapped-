@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Container, Toolbar, useMediaQuery } from '@material-ui/core';
+import { Container } from '@material-ui/core';
 import { AddToPhotos } from '@material-ui/icons';
 import useStyles from './styles';
 import { useDispatch, useSelector } from 'react-redux';
@@ -10,7 +10,6 @@ import { setFailureSnackbar } from '../../../../state/app/actions';
 
 export default function Main({ reader, children }) {
   const classes = useStyles();
-  const isVPsm = useMediaQuery(({ breakpoints }) => breakpoints.down('sm'));
 
   const dispatch = useDispatch();
   const user = useSelector(userSelector);
@@ -32,14 +31,10 @@ export default function Main({ reader, children }) {
     setIsDragged(false);
     let droppedFile = e.dataTransfer.files[0];
     if (!isFileImage(droppedFile)) {
-      return dispatch(
-        setFailureSnackbar('Please choose an image file (.png or .jpeg)')
-      );
+      return dispatch(setFailureSnackbar('Please choose an image file (.png or .jpeg)'));
     }
     if (!isFileSizeSmall(droppedFile)) {
-      return dispatch(
-        setFailureSnackbar('Please select an image smaller than 6MB.')
-      );
+      return dispatch(setFailureSnackbar('Please select an image smaller than 12MB.'));
     } else {
       dispatch(setSelectedFile(droppedFile));
       reader.readAsDataURL(droppedFile);
@@ -47,12 +42,9 @@ export default function Main({ reader, children }) {
   };
 
   return (
-    <>
-      <Container className={classes.root} component="main" maxWidth={false}>
-        {children}
-      </Container>
-      {isVPsm && user && <Toolbar className={classes.bottomNavSpacer} />}
-    </>
+    <Container className={classes.main} component="main" maxWidth={false}>
+      {children}
+    </Container>
   );
 
   return !user ? (
@@ -69,14 +61,10 @@ export default function Main({ reader, children }) {
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         onDragEnd={() => setIsDragged(false)}>
-        <div className={classes[!isDragged ? 'container' : 'containerHidden']}>
-          {children}
-        </div>
+        <div className={classes[!isDragged ? 'container' : 'containerHidden']}>{children}</div>
       </Container>
 
-      {isDragged && (
-        <AddToPhotos className={classes.uploadIcon} color="secondary" />
-      )}
+      {isDragged && <AddToPhotos className={classes.uploadIcon} color="secondary" />}
     </>
   );
 }

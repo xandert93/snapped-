@@ -23,7 +23,7 @@ export default function ImageTabs() {
   const [selectedTabIdx, setSelectedTabIdx] = useState(idxLookup[tabName]);
 
   const tabChangeHandler = (e, tabIdx) => {
-    push(`/profiles/${username}/${tabNameLookup[tabIdx]}`);
+    push(`/p/${username}/${tabNameLookup[tabIdx]}`);
     setSelectedTabIdx(tabIdx);
   };
 

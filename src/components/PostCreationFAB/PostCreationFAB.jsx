@@ -17,14 +17,10 @@ export default function PostCreationFAB({ reader, isScrolledDown }) {
     let pickedFile = e.target.files[0];
     if (pickedFile) {
       if (!isFileImage(pickedFile)) {
-        return dispatch(
-          setFailureSnackbar('Please choose an image file (.png or .jpeg)')
-        );
+        return dispatch(setFailureSnackbar('Please choose an image file (.png or .jpeg)'));
       }
       if (!isFileSizeSmall(pickedFile)) {
-        return dispatch(
-          setFailureSnackbar('Please select an image smaller than 6MB.')
-        );
+        return dispatch(setFailureSnackbar('Please select an image smaller than 12MB.'));
       } else {
         dispatch(setSelectedFile(pickedFile));
         reader.readAsDataURL(pickedFile);

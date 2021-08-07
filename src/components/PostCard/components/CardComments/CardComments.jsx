@@ -1,12 +1,12 @@
 import { CardContent } from '@material-ui/core';
-import { useContext } from 'react';
-import { CardContext } from '../../PostCard';
+
+import { useCard } from '../../context';
 import { Comment, CommentsPagination, CommentsInput } from './components';
 import useStyles from './styles';
 
 export default function CardComments({ comments }) {
   const { commentsCount, pageSliceIndex, handlePageChange, pageNum, calcPageCount, commentInputRef, maxCommentsShown } =
-    useContext(CardContext);
+    useCard();
 
   const classes = useStyles();
 

@@ -1,17 +1,17 @@
 import { Box, Grow, Typography } from '@material-ui/core';
-import { useContext } from 'react';
+
 import { useDispatch, useSelector } from 'react-redux';
 import { buildProfilePath } from '../../../../../../constants/routes';
-import { userUsernameSelector } from '../../../../../../state/auth/selectors';
+import { selectUserUsername } from '../../../../../../state/auth/selectors';
 import { deletePostComment } from '../../../../../../state/posts/actions';
 import { Link } from '../../../../../Link';
-import { CardContext } from '../../../../PostCard';
+import { useCard } from '../../../../context';
 
 export default function Comment({ comment }) {
-  const { id, handlePageChange, calcPageCount } = useContext(CardContext);
+  const { id, handlePageChange, calcPageCount } = useCard();
 
   const dispatch = useDispatch();
-  const userUsername = useSelector(userUsernameSelector);
+  const userUsername = useSelector(selectUserUsername);
 
   const handleCommentDoubleClick = async (commentToDelete) => {
     dispatch(deletePostComment(id, commentToDelete));

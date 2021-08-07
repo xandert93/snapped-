@@ -60,9 +60,10 @@ export default function WelcomeDialog() {
 
   let isDetailsUnchanged = _.isEqual(existingUserDetails, userDetails);
   const isSubmitting = useSelector(selectIsSubmitting);
-  const handleSubmit = () => dispatch(updateUserDetails(userDetails));
-
-  let radioSize = isVPxs ? 'small' : 'medium';
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    dispatch(updateUserDetails(userDetails));
+  };
 
   return (
     <Dialog fullScreen={isVPxs} open={isOpen} onClose={close}>
@@ -78,7 +79,7 @@ export default function WelcomeDialog() {
           />
         </DialogContentText>
         <DialogContentText>Want to tell folks more about yourself?</DialogContentText>
-        <Grid container spacing={2}>
+        <Grid container spacing={2} component="form" id="user_details-form" onSubmit={handleSubmit}>
           {/* <Grid item xs={12}>
             <TextField id="" label="Name" required={false} />
           </Grid> */}
@@ -101,10 +102,10 @@ export default function WelcomeDialog() {
             <FormControl className={classes.fieldset} component="fieldset">
               <FormLabel component="legend">👬 Pronouns</FormLabel>
               <RadioGroup row name="pronouns" value={pronouns} onChange={handleInputChange}>
-                <FormControlLabel value="He/Him" control={<Radio color="primary" size={radioSize} />} label="He/Him" />
-                <FormControlLabel value="She/Her" control={<Radio size={radioSize} />} label="She/Her" />
-                <FormControlLabel value="They/Hey/Gay" control={<Radio size={radioSize} />} label="They/Hey/Gay" />
-                <FormControlLabel value="Puss" control={<Radio size={radioSize} />} label="Puss" />
+                <FormControlLabel value="He/Him" control={<Radio color="primary" />} label="He/Him" />
+                <FormControlLabel value="She/Her" control={<Radio />} label="She/Her" />
+                <FormControlLabel value="They/Hey/Gay" control={<Radio />} label="They/Hey/Gay" />
+                <FormControlLabel value="Puss" control={<Radio />} label="Puss" />
               </RadioGroup>
             </FormControl>
           </Grid>
@@ -151,7 +152,7 @@ export default function WelcomeDialog() {
         <Button disabled={isSubmitting} onClick={close} color="primary">
           Cancel
         </Button>
-        <Button disabled={isDetailsUnchanged || isSubmitting} onClick={handleSubmit} color="secondary">
+        <Button type="submit" form="user_details-form" disabled={isDetailsUnchanged || isSubmitting} color="secondary">
           Save
         </Button>
       </DialogActions>

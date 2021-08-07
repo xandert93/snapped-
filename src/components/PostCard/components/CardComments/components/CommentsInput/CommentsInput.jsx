@@ -1,14 +1,14 @@
 import { IconButton, Input, InputAdornment } from '@material-ui/core';
 import { Create as PenIcon } from '@material-ui/icons';
-import { useContext } from 'react';
+
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { createPostComment } from '../../../../../../state/posts/actions';
-import { CardContext } from '../../../../PostCard';
+import { useCard } from '../../../../context';
 import useStyles from './styles';
 
 export default function CommentsInput({ commentInputRef }) {
-  const { id, commentsCount, calcPageCount, handlePageChange } = useContext(CardContext);
+  const { id, commentsCount, calcPageCount, handlePageChange } = useCard();
   const classes = useStyles();
 
   const dispatch = useDispatch();

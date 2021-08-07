@@ -1,10 +1,10 @@
 import { Box, Slide } from '@material-ui/core';
 import { Pagination } from '@material-ui/lab';
-import { useContext } from 'react';
-import { CardContext } from '../../../../PostCard';
+
+import { useCard } from '../../../../context';
 
 export default function CommentsPagination({ pageNum, calcPageCount, handlePageChange }) {
-  const { commentsCount, maxCommentsShown } = useContext(CardContext);
+  const { commentsCount, maxCommentsShown } = useCard();
 
   return (
     <Slide in={commentsCount > maxCommentsShown} timeout={800} direction="left" unmountOnExit>

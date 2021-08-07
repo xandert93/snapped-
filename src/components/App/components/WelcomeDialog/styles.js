@@ -8,6 +8,12 @@ export default makeStyles((theme) => ({
 
     '& > [role="radiogroup"]': {
       justifyContent: 'center',
+
+      '& svg': {
+        [theme.breakpoints.only('xs')]: {
+          fontSize: 22,
+        },
+      },
     },
   },
 }));

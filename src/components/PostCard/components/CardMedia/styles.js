@@ -29,12 +29,16 @@ export default makeStyles((theme) => ({
     alignItems: 'center',
 
     '& svg': {
-      fill: theme.palette.secondary.dark,
-      stroke: theme.palette.background.default,
       fontSize: theme.spacing(20),
       [theme.breakpoints.only('sm')]: {
         fontSize: theme.spacing(30),
       },
     },
+  },
+
+  flameSVG: {
+    fill: ({ uiIsLikedByUser }) => theme.palette[uiIsLikedByUser ? 'secondary' : 'primary'].main,
+    stroke: ({ uiIsLikedByUser }) => (uiIsLikedByUser ? theme.palette.secondary.dark : 'white'),
+    strokeWidth: 0.2,
   },
 }));

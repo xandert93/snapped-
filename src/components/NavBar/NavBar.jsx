@@ -1,6 +1,3 @@
-import { Link as RouterLink } from 'react-router-dom';
-import ConditionalWrapper from './ConditionalWrapper';
-import { NavButtons } from './NavButtons';
 import useStyles from './styles';
 import {
   AppBar,
@@ -18,118 +15,44 @@ import {
 import logo from '../../assets/images/snapped.ico';
 
 import { buildProfilePath, ROUTES } from '../../constants/routes';
-import { ThemeSwitch } from '../ThemeSwitch';
 import BackToTopFAB from './BackToTopFAB/BackToTopFAB';
-import {
-  AccountCircle,
-  Brightness4,
-  ContactSupport,
-  ExitToApp,
-  Favorite,
-  Folder,
-  Inbox,
-  Restore,
-  LocationOn,
-  Menu,
-  Notifications,
-  Search,
-  Settings,
-} from '@material-ui/icons';
+import { AccountCircle, ExitToApp, Notifications, Settings } from '@material-ui/icons';
 import { PostCreationFAB } from '../PostCreationFAB';
-import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { BottomNav } from './BottomNav';
+import { BottomNavigation } from './BottomNavigation';
 import { SearchBar } from './SearchBar';
-import { IconButton, SwipeableDrawer, List, ListItemIcon, ListItemText, Badge, Divider } from '@material-ui/core';
+import { IconButton, Badge } from '@material-ui/core';
 import { Link } from '../Link';
-import { fbLogout } from '../../services/firebase/auth';
-import { userProfilePicURLSelector, userUsernameSelector } from '../../state/auth/selectors';
+import { userProfilePicURLSelector, selectUserUsername } from '../../state/auth/selectors';
 import { setConfirmationDialog } from '../../state/app/actions';
+import { SideDrawer } from './SideDrawer';
+import { logoutDialogData } from './logoutDialogData';
 
-const logoutDialogData = {
-  isOpen: true,
-  title: 'logout?',
-  content: 'You will not be missed.',
-  choices: ['hola!', 'adios'],
-  confirmHandler: () => fbLogout(),
-};
-
-const NavBar = ({ reader }) => {
-  const userUsername = useSelector(userUsernameSelector);
+export default function NavBar({ reader }) {
+  const userUsername = useSelector(selectUserUsername);
   const userProfilePicURL = useSelector(userProfilePicURLSelector);
-  const isVPsm = useMediaQuery(({ breakpoints }) => breakpoints.down('sm')); //is viewport width less than 768px
-  const isVPmd = useMediaQuery(({ breakpoints }) => breakpoints.down('md'));
-  const classes = useStyles({ isVPsm, isVPmd });
+  const isVPmaxSm = useMediaQuery(({ breakpoints }) => breakpoints.down('sm')); //is viewport width less than 768px
+  const isVPmaxMd = useMediaQuery(({ breakpoints }) => breakpoints.down('md'));
+  const isVPminLg = useMediaQuery(({ breakpoints }) => breakpoints.up('lg'));
+  const classes = useStyles({ isVPmaxSm, isVPmaxMd });
 
   const isScrolledDown = useScrollTrigger({ target: window, threshold: 100 });
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-
-  const toggleDrawer = (newState) => () => setIsDrawerOpen(newState);
 
   const dispatch = useDispatch();
 
-  const handleLogout = () => dispatch(setConfirmationDialog(logoutDialogData));
-
-  //refactor into [].map()
-  function zeList() {
-    return (
-      <Box className={classes.drawerContentBox}>
-        <List>
-          <ListItem>
-            <ListItemIcon>
-              <Brightness4 />
-            </ListItemIcon>
-            <ThemeSwitch />
-          </ListItem>
-          <Divider />
-          <ListItem button>
-            <ListItemIcon>
-              <Settings color="primary" />
-            </ListItemIcon>
-            <ListItemText primary="settings" secondary="change shit" />
-          </ListItem>
-          <Divider />
-          <ListItem button>
-            <ListItemIcon>
-              <ContactSupport className={classes.contactSVG} />
-            </ListItemIcon>
-            <ListItemText primary="contact us" secondary="tissues for ur issues" />
-          </ListItem>
-          <Divider />
-          <ListItem button onClick={handleLogout}>
-            <ListItemIcon>
-              <ExitToApp color="secondary" />
-            </ListItemIcon>
-            <ListItemText primary="logout" secondary="ruuuuude" />
-          </ListItem>
-        </List>
-      </Box>
-    );
-  }
+  const handleLogoutClick = () => dispatch(setConfirmationDialog(logoutDialogData));
 
   return (
     <>
       <Slide in={!isScrolledDown} timeout={500}>
-        <AppBar elevation={0} className={classes.appBar} color="inherit">
+        <AppBar className={classes.appBar} color="inherit">
           <Toolbar className={classes.toolbar}>
             <Box className={classes.headingButtonBox}>
-              {isVPmd && (
-                <>
-                  <IconButton onClick={toggleDrawer(true)}>
-                    <Menu color="secondary" />
-                  </IconButton>
-                  <SwipeableDrawer
-                    anchor="left"
-                    open={isDrawerOpen}
-                    onClose={toggleDrawer(false)}
-                    onOpen={toggleDrawer(true)}>
-                    {zeList()}
-                  </SwipeableDrawer>
-                </>
-              )}
-              <Button component={RouterLink} to={ROUTES.HOME}>
+              {isVPmaxMd && <SideDrawer />}
+
+              <Button disabled={isVPmaxSm} component={Link} to={ROUTES.HOME}>
                 <img src={logo} alt="snapped!" className={classes.logoImg} />
-                {!isVPmd && (
+                {!isVPmaxMd && (
                   <Typography variant="h4" component="h1" className={classes.headingPrimary}>
                     snapped!
                   </Typography>
@@ -137,7 +60,7 @@ const NavBar = ({ reader }) => {
               </Button>
             </Box>
 
-            {!isVPsm && <SearchBar />}
+            {!isVPmaxSm && <SearchBar />}
 
             <Box className={classes.actionsBox}>
               <IconButton className={classes.notificationButton}>
@@ -148,7 +71,8 @@ const NavBar = ({ reader }) => {
                   <Notifications />
                 </Badge>
               </IconButton>
-              {!isVPsm && (
+
+              {!isVPmaxSm && (
                 <IconButton>
                   <Link to={buildProfilePath(userUsername)}>
                     <Avatar src={userProfilePicURL} className={classes.avatar}>
@@ -158,36 +82,33 @@ const NavBar = ({ reader }) => {
                 </IconButton>
               )}
 
-              {!isVPmd && (
-                <IconButton>
-                  <Link to={ROUTES.ACCOUNT}>
-                    <Settings />
-                  </Link>
-                </IconButton>
-              )}
-              {!isVPmd && (
-                <IconButton edge="end" color="secondary" onClick={handleLogout}>
-                  <ExitToApp />
-                </IconButton>
+              {isVPminLg && (
+                <>
+                  <IconButton>
+                    <Link to={ROUTES.ACCOUNT}>
+                      <Settings />
+                    </Link>
+                  </IconButton>
+                  <IconButton edge="end" color="secondary" onClick={handleLogoutClick}>
+                    <ExitToApp />
+                  </IconButton>
+                </>
               )}
             </Box>
-
-            {/* <Box>
-              <ConditionalWrapper isVPsm={isVPsm}>
-                <NavButtons />
-              </ConditionalWrapper>
-            </Box> */}
           </Toolbar>
         </AppBar>
       </Slide>
-      <Toolbar />
+      <Toolbar className={classes.topNavSpacer} />
 
-      {!isVPsm && <BackToTopFAB isScrolledDown={isScrolledDown} />}
+      {!isVPmaxSm && <BackToTopFAB isScrolledDown={isScrolledDown} />}
       <PostCreationFAB reader={reader} isScrolledDown={isScrolledDown} />
 
-      {isVPsm && <BottomNav />}
+      {isVPmaxSm && <BottomNavigation />}
     </>
   );
-};
+}
 
-export default NavBar;
+/*
+<ListItem> outputs <li>. Passing Boolean "button" prop turns this to <div> which ripples and uses "cursor:pointer"
+
+*/

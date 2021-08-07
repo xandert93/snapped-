@@ -1,16 +1,16 @@
 import { CardHeader } from '@material-ui/core';
-import { useContext } from 'react';
+
 import { useSelector } from 'react-redux';
-import { userUsernameSelector } from '../../../../state/auth/selectors';
-import { CardContext } from '../../PostCard';
+import { selectUserUsername } from '../../../../state/auth/selectors';
+import { useCard } from '../../context';
 import { UserCardAvatar, AltUserCardAvatar, CardTitle, MoreAction } from './components';
 import useStyles from './styles';
 
 export default function PostCardHeader({ location }) {
-  const { id, username } = useContext(CardContext);
+  const { id, username } = useCard();
   const classes = useStyles();
 
-  const isUserCard = useSelector(userUsernameSelector) === username;
+  const isUserCard = useSelector(selectUserUsername) === username;
 
   return (
     <CardHeader

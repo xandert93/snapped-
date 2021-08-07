@@ -1,20 +1,20 @@
 import { Box, Typography } from '@material-ui/core';
-import { FavoriteBorder, MessageOutlined } from '@material-ui/icons';
+import { WhatshotOutlined, MessageOutlined } from '@material-ui/icons';
 
 import useStyles from './styles';
 
-export default function TileOverlay({ noOfLikes, noOfComments }) {
+export default function TileOverlay({ likesCount, commentsCount }) {
   const classes = useStyles();
 
   return (
     <Box className={classes.overlay}>
-      <FavoriteBorder className={classes.overlayIcon} />
+      <WhatshotOutlined className={classes.overlayIcon} />
       <Typography variant="h5" component="span">
-        {noOfLikes}
+        {likesCount}
       </Typography>{' '}
       <MessageOutlined className={classes.overlayIcon} />
       <Typography variant="h5" component="span">
-        {noOfComments}
+        {commentsCount}
       </Typography>
     </Box>
   );

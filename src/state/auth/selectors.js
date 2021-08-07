@@ -4,7 +4,7 @@ export const userSelector = (state) => state.auth.user;
 
 export const userIdSelector = (state) => state.auth.user.id;
 
-export const userUsernameSelector = (state) => state.auth.user.username;
+export const selectUserUsername = (state) => state.auth.user.username;
 
 export const userProfilePicURLSelector = (state) => state.auth.user.profilePicURL;
 

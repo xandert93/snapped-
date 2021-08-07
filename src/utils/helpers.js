@@ -6,7 +6,7 @@ export const isFileImage = (file) => {
 };
 
 export const isFileSizeSmall = (file) => {
-  return file.size < 6291456;
+  return file.size < 12582912;
 };
 
 export const formatTags = (arr) =>
@@ -35,3 +35,5 @@ export const areArraysDifferent = (arr1, arr2) => {
   if (JSON.stringify(arr1.sort()) !== JSON.stringify(arr2.sort())) return true;
   else return false;
 };
+
+export const numOf = (num, str) => `${num} ${str}${num !== 1 ? 's' : ''}`;

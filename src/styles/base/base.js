@@ -1,10 +1,14 @@
 import { Card } from '@material-ui/core';
 
+const isVPxs = '@media (max-width: 576px)';
+const isVPnotXs = '@media (min-width: 576px)';
+const isVPmaxSm = '@media (max-width: 768px)';
+
 export const base = {
   overrides: {
     MuiCssBaseline: {
       '@global': {
-        '@media (max-width: 768px)': {
+        [isVPmaxSm]: {
           body: {
             userSelect: 'none',
           },
@@ -12,9 +16,17 @@ export const base = {
       },
     },
 
+    MuiToolbar: {
+      root: {
+        [isVPxs]: {
+          padding: '0 8px', //0 16px* (too big)
+        },
+      },
+    },
+
     MuiContainer: {
       root: {
-        '@media (max-width: 576px)': {
+        [isVPxs]: {
           padding: 0, //0 16px*
         },
       },
@@ -71,7 +83,7 @@ export const base = {
     //<TextField label=""/> size (basically, the placeholder)
     MuiFormLabel: {
       root: {
-        '@media (max-width: 576px)': {
+        [isVPxs]: {
           fontSize: 16, //*1.17rem (slightly too big)
         },
       },
@@ -79,7 +91,7 @@ export const base = {
 
     MuiInputBase: {
       root: {
-        '@media (max-width: 576px)': {
+        [isVPxs]: {
           fontSize: 16, //*1.17rem (slightly too big)
         },
       },
@@ -88,7 +100,7 @@ export const base = {
     //<TextField select />'s popover paper
     MuiMenuItem: {
       root: {
-        '@media (max-width: 576px)': {
+        [isVPxs]: {
           fontSize: 16, //*1.17rem (slightly too big)
         },
       },
@@ -97,7 +109,7 @@ export const base = {
     //<RadioGroup>'s labels
     MuiFormControlLabel: {
       label: {
-        '@media (max-width: 576px)': {
+        [isVPxs]: {
           fontSize: 16, //*1.17rem (slightly too big)
         },
       },
@@ -105,7 +117,7 @@ export const base = {
 
     MuiAvatar: {
       root: {
-        '@media (min-width: 576px)': {
+        [isVPnotXs]: {
           height: 56,
           width: 56,
         },
@@ -121,7 +133,7 @@ export const base = {
     MuiCardHeader: {
       root: {
         padding: '8px 10px', //16px*
-        '@media (min-width: 576px)': {
+        [isVPnotXs]: {
           padding: '12px 13px 11px',
         },
       },
@@ -133,13 +145,13 @@ export const base = {
       title: {
         fontWeight: 600,
         letterSpacing: 2,
-        '@media (max-width: 576px)': {
+        [isVPxs]: {
           lineHeight: 1.4, //1.5*
         },
       },
 
       subheader: {
-        '@media (max-width: 576px)': {
+        [isVPxs]: {
           lineHeight: 1.4, //1.6*
         },
       },
@@ -154,7 +166,7 @@ export const base = {
     MuiCardContent: {
       root: {
         padding: '10px 14px', //16px*
-        '@media (max-width: 576px)': {
+        [isVPxs]: {
           padding: '8px 12px',
         },
         '&:last-child': {
@@ -166,7 +178,7 @@ export const base = {
 
     MuiBottomNavigation: {
       root: {
-        '@media (min-width: 576px)': {
+        [isVPnotXs]: {
           height: 64, //otherwise always 56px*
         },
       },
@@ -174,7 +186,7 @@ export const base = {
 
     MuiListItemIcon: {
       root: {
-        '@media (max-width: 768px)': {
+        [isVPmaxSm]: {
           minWidth: 48, //56* (too big)
         },
       },
@@ -183,7 +195,7 @@ export const base = {
     MuiStepper: {
       root: {
         padding: '0 24px',
-        '@media (max-width: 576px)': {
+        [isVPxs]: {
           padding: 0,
         },
         marginRight: 24,
@@ -192,7 +204,7 @@ export const base = {
 
     MuiStepConnector: {
       lineVertical: {
-        '@media (max-width: 576px)': {
+        [isVPxs]: {
           minHeight: 0,
         },
       },
@@ -205,9 +217,27 @@ export const base = {
 
     MuiDialogTitle: {
       root: {
-        '@media (max-width: 576px)': {
-          padding: '12px 24px', //16px 24px* (too big)
+        [isVPxs]: {
+          padding: '12px 16px', //16px 24px* (too big)
         },
+      },
+    },
+
+    MuiDialogContent: {
+      root: {
+        [isVPxs]: {
+          padding: '12px 16px', //8px 24px* (too wide)
+        },
+      },
+    },
+
+    MuiBottomNavigationAction: {
+      root: {
+        maxWidth: 'initial',
+        minWidth: 'initial',
+        width: '100%',
+        height: '100%',
+        padding: 0,
       },
     },
   },
@@ -227,6 +257,7 @@ export const base = {
       variant: 'outlined',
       fullWidth: true,
       required: true,
+      autoComplete: 'off', //particularly on mobile, if a lot of options available, makes UI ugly
     },
     MuiBottomNavigationAction: {
       disableRipple: true,

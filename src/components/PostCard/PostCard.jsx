@@ -1,4 +1,5 @@
-import { createContext, useState, useCallback, useRef, memo } from 'react';
+import { useState, useCallback, useRef, memo } from 'react';
+import { CardProvider } from './context';
 import { useDispatch } from 'react-redux';
 import { updatePostLikes } from '../../state/posts/actions';
 
@@ -7,8 +8,6 @@ import { CardHeader, CardMedia, CardTags, CardActions, CardCaption, CardComments
 import useStyles from './styles';
 
 const maxCommentsShown = 3; //maximum no of comments shown in UI at any given time
-
-export const CardContext = createContext();
 
 function PostCard({ post }) {
   const classes = useStyles();
@@ -35,7 +34,7 @@ function PostCard({ post }) {
   const [uiIsLikedByUser, setUIisLikedByUser] = useState(isLikedByUser);
   const [uiLikesCount, setUILikesCount] = useState(likes.length);
 
-  const handleHeartIconClick = useCallback(async () => {
+  const handleFlameClick = useCallback(async () => {
     setUIisLikedByUser((x) => !x); //immediately reflected in UI
     dispatch(updatePostLikes(id, !uiIsLikedByUser)); //Firebase + Redux Store
     setUILikesCount((x) => x + (!uiIsLikedByUser ? 1 : -1));
@@ -60,7 +59,7 @@ function PostCard({ post }) {
     username,
     uiIsLikedByUser,
     uiLikesCount,
-    handleHeartIconClick,
+    handleFlameClick,
     commentsCount,
     pageNum,
     pageSliceIndex,
@@ -71,7 +70,7 @@ function PostCard({ post }) {
   };
 
   return (
-    <CardContext.Provider value={contextValue}>
+    <CardProvider value={contextValue}>
       <Card className={classes.postCard} raised>
         <CardHeader location={location} />
         <CardMedia url={url} />
@@ -81,7 +80,7 @@ function PostCard({ post }) {
         <CardComments comments={comments} />
         <CardFooter createdAt={createdAt} />
       </Card>
-    </CardContext.Provider>
+    </CardProvider>
   );
 }
 

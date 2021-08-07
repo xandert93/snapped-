@@ -23,7 +23,6 @@ export default (state = initialState, { type, payload }) => {
         description: payload.description,
       };
     case CLEAR_CREATE_FORM:
-      console.log('called');
       return initialState;
     default:
       return state;

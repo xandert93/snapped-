@@ -1,38 +1,31 @@
+import { useCard } from '../../context';
 import { Box, CardActions, IconButton, Typography } from '@material-ui/core';
-import {
-  Favorite as FilledHeartIcon,
-  FavoriteBorderTwoTone as OutlinedHeartIcon,
-  ChatBubbleOutline as OutlinedChatIcon,
-} from '@material-ui/icons';
-import { useContext } from 'react';
-import { CardContext } from '../../PostCard';
-
+import { ChatBubbleOutline as ChatIcon, Whatshot as FlameIcon } from '@material-ui/icons';
 import useStyles from './styles';
 
-export default function PostCardActions() {
-  const { handleHeartIconClick, uiIsLikedByUser, uiLikesCount, commentsCount, commentInputRef } =
-    useContext(CardContext);
+import { numOf } from '../../../../utils/helpers';
 
-  const classes = useStyles();
+export default function PostCardActions() {
+  const { handleFlameClick, uiIsLikedByUser, uiLikesCount, commentsCount, commentInputRef } = useCard();
+
+  const classes = useStyles({ uiIsLikedByUser });
 
   return (
     <CardActions className={classes.cardActions}>
       <Box>
-        <IconButton onClick={handleHeartIconClick}>
-          {uiIsLikedByUser ? <FilledHeartIcon color="secondary" /> : <OutlinedHeartIcon color="primary" />}
+        <IconButton onClick={handleFlameClick}>
+          <FlameIcon className={classes.flameSVG} />
         </IconButton>
-
         <Typography variant="caption" component="p">
-          {uiLikesCount} like{uiLikesCount !== 1 && 's'}
+          {numOf(uiLikesCount, "that's hot")}
         </Typography>
       </Box>
       <Box>
-        <IconButton onClick={() => commentInputRef.current.focus()}>
-          <OutlinedChatIcon color="primary" className={classes.commentSVG} />
+        <IconButton onClick={() => commentInputRef.current.focus()} disableRipple>
+          <ChatIcon color="primary" className={classes.commentSVG} />
         </IconButton>
         <Typography variant="caption" component="p">
-          {commentsCount} comment
-          {commentsCount !== 1 && 's'}
+          {numOf(commentsCount, 'comment')}
         </Typography>
       </Box>
     </CardActions>

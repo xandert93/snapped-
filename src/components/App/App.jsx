@@ -71,7 +71,7 @@ export default function App() {
             <Redirect exact from={'/'} to={ROUTES.HOME} />
             <ProtectedRoute exact path={ROUTES.HOME} component={Home} />
 
-            <Redirect exact from={`/profiles/${user?.username}`} to={`/profiles/${user?.username}/public`} />
+            <Redirect exact from={`/p/${user?.username}`} to={`/p/${user?.username}/public`} />
 
             <ProtectedRoute exact path={ROUTES.USER_PROFILE} component={Profile} />
             <ProtectedRoute exact path={ROUTES.ALT_PROFILE} component={Profile} />

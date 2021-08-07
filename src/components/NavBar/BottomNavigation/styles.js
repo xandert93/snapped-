@@ -1,22 +1,11 @@
 import { makeStyles } from '@material-ui/core';
 
 export default makeStyles((theme) => ({
-  root: {
+  bottomNavigation: {
     position: 'fixed',
     bottom: 0,
     width: '100%',
-    zIndex: 100,
-    [theme.breakpoints.up('xs')]: {
-      padding: theme.spacing(2, 1),
-    },
-
-    '& .MuiBottomNavigationAction-iconOnly': {
-      color: theme.palette.text.primary,
-    },
-
-    '& .Mui-selected': {
-      color: theme.palette.secondary.main,
-    },
+    zIndex: 1200,
 
     '& svg': {
       fontSize: theme.spacing(5),
@@ -24,10 +13,15 @@ export default makeStyles((theme) => ({
         fontSize: theme.spacing(3.5),
       },
     },
+
+    '& .MuiBottomNavigationAction-root.MuiBottomNavigationAction-iconOnly, & .MuiBottomNavigationAction-root.Mui-selected':
+      {
+        paddingTop: 0, //16px* nearly impossible to get rid of
+      },
   },
 
   avatar: {
-    border: '2px solid ' + theme.palette.text.primary,
+    border: '2px solid currentColor', //element's "color" inherit's from parent. Access this with "currentColor"
     height: theme.spacing(5),
     width: theme.spacing(5),
     [theme.breakpoints.down('xs')]: {

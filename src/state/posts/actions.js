@@ -130,7 +130,7 @@ export const updatePostLikes = (id, wasLiked) => {
 
 export const createPostComment = (id, commentText) => async (dispatch, getState) => {
   let userUsername = getUserUsername(getState);
-  let newComment = { username: userUsername, text: commentText };
+  let newComment = { username: userUsername, text: commentText.trim() };
 
   await fbCreatePostComment(id, newComment);
   dispatch({ type: CREATE_POST_COMMENT, payload: { id, newComment } });
