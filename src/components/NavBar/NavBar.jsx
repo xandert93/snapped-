@@ -23,14 +23,14 @@ import { BottomNavigation } from './BottomNavigation';
 import { SearchBar } from './SearchBar';
 import { IconButton, Badge } from '@material-ui/core';
 import { Link } from '../Link';
-import { userProfilePicURLSelector, selectUserUsername } from '../../state/auth/selectors';
+import { selectUserProfilePicURL, selectUserUsername } from '../../state/auth/selectors';
 import { setConfirmationDialog } from '../../state/app/actions';
 import { SideDrawer } from './SideDrawer';
 import { logoutDialogData } from './logoutDialogData';
 
 export default function NavBar({ reader }) {
   const userUsername = useSelector(selectUserUsername);
-  const userProfilePicURL = useSelector(userProfilePicURLSelector);
+  const userProfilePicURL = useSelector(selectUserProfilePicURL);
   const isVPmaxSm = useMediaQuery(({ breakpoints }) => breakpoints.down('sm')); //is viewport width less than 768px
   const isVPmaxMd = useMediaQuery(({ breakpoints }) => breakpoints.down('md'));
   const isVPminLg = useMediaQuery(({ breakpoints }) => breakpoints.up('lg'));

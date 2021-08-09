@@ -5,7 +5,7 @@ import { useSetDocumentTitle } from '../../custom-hooks';
 import { db } from '../../lib/firebase/config';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUser } from '../../state/auth/actions';
-import { fbAuthUserSelector, userSelector } from '../../state/auth/selectors';
+import { selectFbAuthUser, selectUser } from '../../state/auth/selectors';
 import { TextField } from '../../components';
 
 // import { updatePostsUsername } from '../../../../services/firebase/firestore';
@@ -14,8 +14,8 @@ export default function Account() {
   const classes = useStyles();
   useSetDocumentTitle('My Account');
 
-  const fbAuthUser = useSelector(fbAuthUserSelector);
-  const user = useSelector(userSelector);
+  const fbAuthUser = useSelector(selectFbAuthUser);
+  const user = useSelector(selectUser);
   const dispatch = useDispatch();
 
   // const { updateProfileData } = useContext(authContext);

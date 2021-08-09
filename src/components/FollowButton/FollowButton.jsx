@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { fbUpdateAltUserFollowers, fbUpdateUserFollowing } from '../../services/firebase/firestore/users';
 import { updateUserFollowing } from '../../state/auth/actions';
-import { userFollowingSelector, userIdSelector, selectUserUsername } from '../../state/auth/selectors';
+import { selectUserFollowings, selectUserId, selectUserUsername } from '../../state/auth/selectors';
 import useStyles from './styles';
 
 const buttons = {
@@ -17,9 +17,9 @@ export default function FollowButton({ altUser, setAltUser }) {
   const classes = useStyles();
 
   const dispatch = useDispatch();
-  const userId = useSelector(userIdSelector);
+  const userId = useSelector(selectUserId);
   const userUsername = useSelector(selectUserUsername);
-  const userFollowing = useSelector(userFollowingSelector);
+  const userFollowing = useSelector(selectUserFollowings);
 
   const initialIsAltUserFollowed = userFollowing.includes(altUser.username);
 

@@ -1,8 +1,7 @@
 export const ROUTES = {
   AUTH: '/auth/:pageName',
-  HOME: '/home',
-  USER_PROFILE: '/p/:username/:tabName',
-  ALT_PROFILE: '/p/:username',
+  HOME: '/home/',
+  PROFILE: '/p/:username',
   EXPLORE: '/explore/tags/:tag',
   SINGLE_POST: '/post/:postId',
   SEARCH: '/search', //query string is a separate entity from "pathname", so "/search" still matches irrespective of the query string

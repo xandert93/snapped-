@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { userProfilePicURLSelector, selectUserUsername } from '../../../state/auth/selectors';
+import { selectUserProfilePicURL, selectUserUsername } from '../../../state/auth/selectors';
 
 import { BottomNavigation as MuiBottomNavigation, BottomNavigationAction, Avatar } from '@material-ui/core';
 import { Search as SearchIcon, AccountCircle as AccountIcon, AmpStories as TimelineIcon } from '@material-ui/icons';
@@ -25,7 +25,7 @@ export default function BottomNavigation() {
   const classes = useStyles();
 
   const userUsername = useSelector(selectUserUsername);
-  const userProfilePicURL = useSelector(userProfilePicURLSelector);
+  const userProfilePicURL = useSelector(selectUserProfilePicURL);
 
   //Since this component is outside of a <Route/>, can't use "{path} = useRouteMatch()" to get page pattern of the current page
   //using this crap workaround for now

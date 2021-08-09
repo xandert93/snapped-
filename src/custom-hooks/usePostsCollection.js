@@ -14,13 +14,17 @@ import {
 import { useParams, useRouteMatch } from 'react-router-dom';
 import { ROUTES } from '../constants/routes';
 import { selectTimelinePosts, selectUserPosts } from '../state/posts/selectors';
+import { selectUserUsername } from '../state/auth/selectors';
 
 export const usePostsCollection = () => {
   const dispatch = useDispatch();
   const { path } = useRouteMatch();
   const { username, tag, postId } = useParams();
+  let _username = username?.toLowerCase();
 
+  const userUsername = useSelector(selectUserUsername);
   const lookup = useSelector((state) => state.lookups.profilePics);
+
   const timelinePostsExist = !!useSelector(selectTimelinePosts).length;
   const userPostsExist = !!useSelector(selectUserPosts).length;
   const isUserFollowingChanged = useSelector((state) => state.auth.user.following !== state.auth.user.prevFollowing);
@@ -46,13 +50,15 @@ export const usePostsCollection = () => {
         case ROUTES.SINGLE_POST:
           return dispatch(setSinglePost(postId));
 
-        case ROUTES.USER_PROFILE:
-          //if first visit to "Profile" page...
-          if (!userPostsExist) return dispatch(setUserPosts());
-          return dispatch(setIsPostsLoading(false));
-
-        case ROUTES.ALT_PROFILE:
-          return dispatch(setAltUserPosts(username.toLowerCase()));
+        case ROUTES.PROFILE:
+          //if first visit to user's "Profile" page...
+          if (userUsername === _username) {
+            if (!userPostsExist) return dispatch(setUserPosts());
+            return dispatch(setIsPostsLoading(false));
+          } else {
+            //For any visit to altUser's "Profile" page...
+            return dispatch(setAltUserPosts(_username));
+          }
 
         case ROUTES.EXPLORE:
           return dispatch(setExplorePosts(tag));

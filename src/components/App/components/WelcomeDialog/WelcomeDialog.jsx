@@ -18,7 +18,7 @@ import {
 } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMediaQuery } from '@material-ui/core';
-import { userSelector } from '../../../../state/auth/selectors';
+import { selectUser } from '../../../../state/auth/selectors';
 import { selectIsSubmitting } from '../../../../state/app/selectors';
 import { UploadAvatar } from '../../../UploadAvatar';
 import { TextField } from '../../../TextField';
@@ -51,7 +51,7 @@ export default function WelcomeDialog() {
   const isOpen = useSelector((state) => state.app.isWelcomeDialogOpen);
   const close = () => dispatch(closeWelcomeDialog());
 
-  const { name, profilePicURL } = useSelector(userSelector);
+  const { name, profilePicURL } = useSelector(selectUser);
   const existingUserDetails = useSelector((state) => state.auth.user.details);
   const [userDetails, setUserDetails] = useState(existingUserDetails || defaultUserDetails);
   const { dob, pronouns, bio, location, websiteURL } = userDetails;

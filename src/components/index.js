@@ -3,7 +3,6 @@ export { Link } from './Link';
 export { NavBar } from './NavBar';
 export { ImageGrid } from './ImageGrid';
 export { FollowButton } from './FollowButton';
-export { ProfileHeader } from './ProfileHeader';
 export { PostCreationFAB } from './PostCreationFAB';
 export { PostForm } from './PostForm';
 export { PostDialog } from './PostDialog';

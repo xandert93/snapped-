@@ -5,6 +5,7 @@ import { ImageGrid } from '../../../../components';
 import { openPostEditDialog } from '../../../../state/app/actions';
 import { setPostToEdit } from '../../../../state/posts/actions';
 import { selectUserPosts } from '../../../../state/posts/selectors';
+import { ImageTabs } from '../ImageTabs';
 
 export default function UserImageGrid() {
   const dispatch = useDispatch();
@@ -33,5 +34,10 @@ export default function UserImageGrid() {
     dispatch(openPostEditDialog());
   };
 
-  return <ImageGrid posts={tabbedPosts} clickHandler={userImageClickHandler} />;
+  return (
+    <>
+      <ImageTabs />
+      <ImageGrid posts={tabbedPosts} clickHandler={userImageClickHandler} />
+    </>
+  );
 }

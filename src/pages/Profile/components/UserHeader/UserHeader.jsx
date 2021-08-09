@@ -1,10 +1,10 @@
-import { ProfileHeader } from '../../../../components';
+import { ProfileHeader } from '../../components';
 import { useSelector } from 'react-redux';
-import { userSelector } from '../../../../state/auth/selectors';
+import { selectUser } from '../../../../state/auth/selectors';
 import { selectUserPosts } from '../../../../state/posts/selectors';
 
 export default function UserHeader() {
-  const user = useSelector(userSelector);
+  const user = useSelector(selectUser);
 
   const postCount = useSelector(selectUserPosts).length;
 

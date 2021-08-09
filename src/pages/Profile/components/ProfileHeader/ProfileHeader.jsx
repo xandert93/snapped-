@@ -1,37 +1,28 @@
-import {
-  AppBar,
-  Avatar,
-  Box,
-  Button,
-  ButtonGroup,
-  Dialog,
-  DialogTitle,
-  Grid,
-  Paper,
-  Slide,
-  Tab,
-  Tabs,
-  Typography,
-} from '@material-ui/core';
-import { Lock, Publish } from '@material-ui/icons';
-import { useEffect } from 'react';
-import { forwardRef, useState } from 'react';
+import { Avatar, Box, Button, Grid, Paper, Typography } from '@material-ui/core';
+
+import { useEffect, useState } from 'react';
+
 import { useDispatch, useSelector } from 'react-redux';
-import { FollowButton } from '../FollowButton';
-import { Link } from '../Link';
+import { FollowButton } from '../../../../components';
 
 import useStyles from './styles';
-import UploadAvatar from '../UploadAvatar/UploadAvatar';
-import { userFollowingSelector, selectUserUsername } from '../../state/auth/selectors';
-import { createFollowUsersLookup } from '../../state/lookups/actions';
-import { buildProfilePath } from '../../constants/routes';
-import { numOf } from '../../utils/helpers';
+import { UploadAvatar } from '../../../../components';
+import { selectUserFollowings, selectUserUsername } from '../../../../state/auth/selectors';
+import { createFollowUsersLookup } from '../../../../state/lookups/actions';
+
+import { numOf } from '../../../../utils/helpers';
 import FollowDialog from './components/FollowDialog/FollowDialog';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { Route, useHistory, useParams, useRouteMatch } from 'react-router-dom';
+
+const dialogNameLookup = {
+  0: 'following',
+  1: 'followers',
+};
 
 export default function ProfileHeader({ profile, setProfile, postCount }) {
   const classes = useStyles();
   const { url, path } = useRouteMatch();
+  const { push } = useHistory();
 
   const { username, name, followers, following } = profile;
 
@@ -46,25 +37,18 @@ export default function ProfileHeader({ profile, setProfile, postCount }) {
 
   const dispatch = useDispatch();
   const userUsername = useSelector(selectUserUsername);
-  const userFollowing = useSelector(userFollowingSelector);
+  const userFollowing = useSelector(selectUserFollowings);
 
   //e.g. people that altUser is followed by, that user also follows
   const mutualFollow = followers.filter((f) => userFollowing.includes(f));
 
   const isUsersPage = userUsername === username;
 
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-
   const [selectedTab, setSelectedTab] = useState(0);
 
-  const handleTabChange = (e, tabIdx) => {
-    // push(`/${username}/${tabNameToIdx[tabIdx]}`);
-    setSelectedTab(tabIdx);
-  };
-
-  const handleFollowshipClick = (newTabIdx) => {
-    setIsDialogOpen(true);
+  const handleTabChange = (e, newTabIdx) => {
     setSelectedTab(newTabIdx);
+    push(url + '/' + dialogNameLookup[newTabIdx]);
   };
 
   return (
@@ -81,10 +65,10 @@ export default function ProfileHeader({ profile, setProfile, postCount }) {
             <span>OTW, my G.</span>
           ) : (
             <Grid item xs={4}>
-              <Button variant="outlined" onClick={() => handleFollowshipClick(1)}>
-                {numOf(followingCount, 'following')}
+              <Button variant="outlined" onClick={() => handleTabChange(null, 0)}>
+                {`${followingCount} following`}
               </Button>
-              <Button variant="outlined" onClick={() => handleFollowshipClick(0)}>
+              <Button variant="outlined" onClick={() => handleTabChange(null, 1)}>
                 {numOf(followerCount, 'follower')}
               </Button>{' '}
             </Grid>
@@ -112,15 +96,20 @@ export default function ProfileHeader({ profile, setProfile, postCount }) {
         </Grid>
       </Paper>
 
-      <FollowDialog
-        {...{
-          followers,
-          following,
-          setIsDialogOpen,
-          selectedTab,
-          handleTabChange,
-          isDialogOpen,
-        }}
+      <Route
+        path={path + '/:dialogName'}
+        children={() => (
+          <FollowDialog
+            {...{
+              followers,
+              following,
+              selectedTab,
+              setSelectedTab,
+              handleTabChange,
+              parentURL: url,
+            }}
+          />
+        )}
       />
     </>
   );

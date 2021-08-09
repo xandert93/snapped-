@@ -1,11 +1,11 @@
-export const fbAuthUserSelector = (state) => state.auth.fbAuthUser;
+export const selectFbAuthUser = (state) => state.auth.fbAuthUser;
 
-export const userSelector = (state) => state.auth.user;
+export const selectUser = (state) => state.auth.user;
 
-export const userIdSelector = (state) => state.auth.user.id;
+export const selectUserId = (state) => state.auth.user.id;
 
 export const selectUserUsername = (state) => state.auth.user.username;
 
-export const userProfilePicURLSelector = (state) => state.auth.user.profilePicURL;
+export const selectUserProfilePicURL = (state) => state.auth.user.profilePicURL;
 
-export const userFollowingSelector = (state) => state.auth.user.following;
+export const selectUserFollowings = (state) => state.auth.user.following;

@@ -3,7 +3,7 @@ import { auth } from '../../lib/firebase/config';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { isDarkModeSelector } from '../../state/app/selectors';
-import { userSelector } from '../../state/auth/selectors';
+import { selectUser } from '../../state/auth/selectors';
 import { authenticateUserRecord } from '../../state/auth/actions';
 import { setDataURL } from '../../state/upload/actions';
 import { openPostCreateDialog } from '../../state/app/actions';
@@ -34,7 +34,7 @@ export default function App() {
   const dispatch = useDispatch();
   const isDarkMode = useSelector(isDarkModeSelector);
   const isCheckingUser = useSelector((state) => state.auth.isCheckingUser);
-  const user = useSelector(userSelector);
+  const user = useSelector(selectUser);
   //because we're selecting user, everytime user state updates, whole app will re-render :(
   //user updates when we add/remove following, change pfp etc.
 
@@ -70,12 +70,7 @@ export default function App() {
 
             <Redirect exact from={'/'} to={ROUTES.HOME} />
             <ProtectedRoute exact path={ROUTES.HOME} component={Home} />
-
-            <Redirect exact from={`/p/${user?.username}`} to={`/p/${user?.username}/public`} />
-
-            <ProtectedRoute exact path={ROUTES.USER_PROFILE} component={Profile} />
-            <ProtectedRoute exact path={ROUTES.ALT_PROFILE} component={Profile} />
-
+            <ProtectedRoute path={ROUTES.PROFILE} component={Profile} />
             <ProtectedRoute exact path={ROUTES.EXPLORE} component={Explore} />
             <ProtectedRoute exact path={ROUTES.SINGLE_POST} component={SinglePost} />
             <ProtectedRoute exact path={ROUTES.SEARCH} component={Search} />
@@ -86,7 +81,7 @@ export default function App() {
           </Switch>
         </Main>
 
-        {user && <WelcomeDialog />}
+        {/* {user && <WelcomeDialog />} */}
         <PostCreateDialog />
         <PostClickDialog />
         <PostEditDialog />

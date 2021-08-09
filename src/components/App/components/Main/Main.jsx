@@ -3,7 +3,7 @@ import { Container } from '@material-ui/core';
 import { AddToPhotos } from '@material-ui/icons';
 import useStyles from './styles';
 import { useDispatch, useSelector } from 'react-redux';
-import { userSelector } from '../../../../state/auth/selectors';
+import { selectUser } from '../../../../state/auth/selectors';
 import { setSelectedFile } from '../../../../state/upload/actions';
 import { isFileImage, isFileSizeSmall } from '../../../../utils/helpers';
 import { setFailureSnackbar } from '../../../../state/app/actions';
@@ -12,7 +12,7 @@ export default function Main({ reader, children }) {
   const classes = useStyles();
 
   const dispatch = useDispatch();
-  const user = useSelector(userSelector);
+  const user = useSelector(selectUser);
 
   const [isDragged, setIsDragged] = useState(false);
 

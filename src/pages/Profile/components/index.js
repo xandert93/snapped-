@@ -1,3 +1,4 @@
+export { ProfileHeader } from './ProfileHeader';
 export { UserHeader } from './UserHeader';
 export { AltUserHeader } from './AltUserHeader';
 export { ImageTabs } from './ImageTabs';

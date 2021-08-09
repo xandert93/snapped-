@@ -2,12 +2,12 @@ import { Grid } from '@material-ui/core';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { fbGetSuggestedAltUsers } from '../../../../services/firebase/firestore/users';
-import { userFollowingSelector, selectUserUsername } from '../../../../state/auth/selectors';
+import { selectUserFollowings, selectUserUsername } from '../../../../state/auth/selectors';
 import SuggestedProfile from './SuggestedProfile';
 
 export default function SuggestedProfiles() {
   const userUsername = useSelector(selectUserUsername);
-  const userFollowing = useSelector(userFollowingSelector);
+  const userFollowing = useSelector(selectUserFollowings);
 
   const [altUsers, setAltUsers] = useState([]);
 

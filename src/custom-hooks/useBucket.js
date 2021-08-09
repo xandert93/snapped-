@@ -4,13 +4,13 @@ import { useSelector } from 'react-redux';
 import { bucket, FieldValue } from '../lib/firebase/config';
 import { fbCreatePost } from '../services/firebase/firestore/posts';
 import { setFailureSnackbar } from '../state/app/actions';
-import { userIdSelector, selectUserUsername } from '../state/auth/selectors';
+import { selectUserId, selectUserUsername } from '../state/auth/selectors';
 import { createCompressedFile } from '../utils/helpers';
 
 export function useBucket(file, description) {
   const dispatch = useDispatch();
   const username = useSelector(selectUserUsername);
-  const userId = useSelector(userIdSelector);
+  const userId = useSelector(selectUserId);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [firestoreDoc, setFirestoreDoc] = useState(null);
 

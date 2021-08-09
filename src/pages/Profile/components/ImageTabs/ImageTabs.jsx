@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory, useParams, useRouteMatch } from 'react-router-dom';
 import useStyles from './styles';
 import { AppBar, Tab, Tabs } from '@material-ui/core';
 import { Lock, PhotoLibrary, Public } from '@material-ui/icons';
@@ -17,14 +17,15 @@ const tabNameLookup = {
 
 export default function ImageTabs() {
   const classes = useStyles();
-  const { username, tabName } = useParams();
+  const { url } = useRouteMatch();
+  const { tabName } = useParams();
   const { push } = useHistory();
 
   const [selectedTabIdx, setSelectedTabIdx] = useState(idxLookup[tabName]);
 
   const tabChangeHandler = (e, tabIdx) => {
-    push(`/p/${username}/${tabNameLookup[tabIdx]}`);
     setSelectedTabIdx(tabIdx);
+    push(url.replace(tabName, tabNameLookup[tabIdx]));
   };
 
   return (

@@ -1,17 +1,20 @@
 import { usePostsCollection, useSetDocumentTitle } from '../../custom-hooks';
-import { useParams } from 'react-router-dom';
+import { Redirect, Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
-import { UserHeader, ImageTabs, UserImageGrid, AltUserHeader, AltImageGrid } from './components';
+import { UserHeader, UserImageGrid, AltUserHeader, AltImageGrid } from './components';
 import { Container } from '@material-ui/core';
 import { selectUserUsername } from '../../state/auth/selectors';
 
 export default function Profile() {
   const { username } = useParams();
-  useSetDocumentTitle(username.toLowerCase());
+  let _username = username.toLowerCase();
+  const { url, path } = useRouteMatch();
+
+  useSetDocumentTitle(_username);
 
   const userUsername = useSelector(selectUserUsername);
-  const isUsersProfile = userUsername === username;
+  const isUsersProfile = userUsername === _username;
 
   usePostsCollection();
 
@@ -20,8 +23,10 @@ export default function Profile() {
       {isUsersProfile ? (
         <>
           <UserHeader />
-          <ImageTabs />
-          <UserImageGrid />
+          <Switch>
+            <Redirect exact from={url} to={url + '/public'} />
+            <Route exact path={path + '/:tabName'} component={UserImageGrid} />
+          </Switch>
         </>
       ) : (
         <>
