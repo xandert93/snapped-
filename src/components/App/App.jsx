@@ -81,7 +81,7 @@ export default function App() {
           </Switch>
         </Main>
 
-        {/* {user && <WelcomeDialog />} */}
+        {user && <WelcomeDialog />}
         <PostCreateDialog />
         <PostClickDialog />
         <PostEditDialog />

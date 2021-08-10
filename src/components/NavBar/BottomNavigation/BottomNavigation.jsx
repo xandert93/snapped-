@@ -45,15 +45,16 @@ export default function BottomNavigation() {
     2: buildProfilePath(userUsername),
   };
 
-  let initialTabIdx = idxLookup[pageName];
+  const getTabIdx = () =>
+    pageName !== 'p' || (pageName === 'p' && pathname.includes(userUsername)) ? idxLookup[pageName] : undefined;
 
-  const [tabIdx, setTabIdx] = useState(initialTabIdx);
+  const [tabIdx, setTabIdx] = useState(getTabIdx());
 
-  useEffect(() => setTabIdx(idxLookup[pageName]), [pageName]);
+  useEffect(() => setTabIdx(getTabIdx()), [pathname]);
 
-  const handleChange = (e, newTabIdx) => {
-    push(pathnameLookup[newTabIdx]);
+  const handleTabChange = (e, newTabIdx) => {
     setTabIdx(newTabIdx);
+    push(pathnameLookup[newTabIdx]);
   };
 
   const MyProfileIcon = () => (
@@ -66,7 +67,7 @@ export default function BottomNavigation() {
     <MuiBottomNavigation
       className={classes.bottomNavigation + ' mui-fixed'}
       value={tabIdx}
-      onChange={handleChange}
+      onChange={handleTabChange}
       // showLabels
     >
       <BottomNavigationAction /* label="Explore" */ icon={<SearchIcon />} />

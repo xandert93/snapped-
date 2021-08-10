@@ -6,14 +6,13 @@ const posts = db.collection('Posts');
 export async function fbGetPosts(ref, username) {
   const { docs: docRefs } = await ref.get();
 
-  let extractedPosts = [];
-  for (let i = 0; i < docRefs.length; i++) {
-    extractedPosts.push({
-      ...docRefs[i].data(),
-      isLikedByUser: docRefs[i].data().likes.includes(username),
-      id: docRefs[i].id,
-    });
-  }
+  let extractedPosts = docRefs.reduce((acca, docRef) => {
+    let post = docRef.data();
+    acca[docRef.id] = { ...post, isLikedByUser: post.likes.includes(username), id: docRef.id };
+    return acca;
+  }, {});
+
+  //document insertion order maintained in object, since keys are non-integer Strings
   return extractedPosts;
 }
 
@@ -37,9 +36,7 @@ export const fbDeletePost = async (docId, fileName) => {
 /*post likes CRUD*/
 export const fbUpdatePostLikes = async (docId, username, wasLiked) => {
   await posts.doc(docId).update({
-    likes: wasLiked
-      ? FieldValue.arrayUnion(username)
-      : FieldValue.arrayRemove(username),
+    likes: wasLiked ? FieldValue.arrayUnion(username) : FieldValue.arrayRemove(username),
   });
 };
 

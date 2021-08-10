@@ -44,100 +44,132 @@ export default (state = initialState, { type, payload }) => {
     case CREATE_POST:
       let newPost = payload;
       let { isPrivate } = newPost.description;
+
       return {
         ...state,
-        timeline: !isPrivate ? [newPost, ...state.timeline] : state.timeline, //must be inserted first (newest --> oldest)
-        user: [newPost, ...state.user],
+        timeline: !isPrivate ? { [newPost.id]: newPost, ...state.timeline } : state.timeline, //must be inserted first (newest --> oldest)
+        user: { [newPost.id]: newPost, ...state.user },
       };
 
-    case SET_POST_TO_EDIT:
+    case SET_POST_TO_EDIT: {
+      let id = payload;
       return {
         ...state,
-        postToEdit: state.user.find((post) => post.id === payload),
+        postToEdit: state.user[id],
       };
+    }
 
-    case UPDATE_POST:
+    case UPDATE_POST: {
       const { newDescription, newIsPrivate } = payload;
+      let post = state.postToEdit;
+      const id = state.postToEdit.id;
 
-      const mapCB0 = (post) => (post.id === state.postToEdit.id ? { ...post, description: newDescription } : post);
+      let updatedTimelinePosts;
+
+      if (newIsPrivate === true) {
+        let { [id]: _, ...rest } = state.timeline;
+        updatedTimelinePosts = rest;
+      } else if (newIsPrivate === false) {
+        let unsortedTimelinePosts = { [id]: post, ...state.timeline };
+        updatedTimelinePosts = Object.values(unsortedTimelinePosts)
+          .sort((post1, post2) => post2.createdAt.seconds - post1.createdAt.seconds)
+          .reduce((acca, post) => {
+            acca[post.id] = post;
+            return acca;
+          }, {});
+      } else updatedTimelinePosts = { ...state.timeline, [id]: { ...post, description: newDescription } };
 
       return {
         ...state,
-
-        timeline:
-          newIsPrivate === true
-            ? state.timeline.filter((post) => post.id !== state.postToEdit.id)
-            : newIsPrivate === false
-            ? state.timeline
-                .concat(state.postToEdit)
-                .sort((post1, post2) => post2.createdAt.seconds - post1.createdAt.seconds)
-            : state.timeline.map(mapCB0),
-
-        //no need to replicated on "Profile" page - "tabbedPosts" recalculated when this state changes:
-        user: state.user.map(mapCB0),
+        timeline: updatedTimelinePosts,
+        //no need to replicate on "Profile" page - "tabbedPosts" recalculated when this state changes:
+        user: { ...state.user, [id]: { ...post, description: newDescription } },
       };
-
+    }
     // case CLEAR_POST_TO_EDIT:
     //   return {
     //     ...state,
     //     postToEdit: initialState.postToEdit,
     //   };
 
-    case DELETE_POST:
-      const filterCB = (post) => post.id !== state.postToEdit.id;
+    case DELETE_POST: {
+      const id = state.postToEdit.id;
+
+      const deletePost = (stateSlice) => {
+        const { [id]: _, ...rest } = stateSlice;
+        return rest;
+      };
+
       return {
         ...state,
-        timeline: state.timeline.filter(filterCB),
-        user: state.user.filter(filterCB),
+        timeline: deletePost(state.timeline),
+        user: deletePost(state.user),
         postToEdit: initialState.postToEdit,
       };
+    }
 
-    case UPDATE_POST_LIKES:
+    case UPDATE_POST_LIKES: {
       const { id, wasLiked, userUsername } = payload;
 
-      const mapCB1 = (post) =>
-        post.id === id
-          ? {
-              ...post,
-              likes: wasLiked
-                ? [...post.likes, userUsername]
-                : post.likes.filter((username) => username !== userUsername),
-              isLikedByUser: wasLiked,
-            }
-          : post;
+      const updatePostLikes = (stateSlice) => {
+        let post = stateSlice[id];
+        if (!post) return stateSlice; //if user hasn't liked their own post, post won't be found in "state.user"
 
-      return {
-        ...state,
-        timeline: state.timeline.map(mapCB1),
-        user: state.user.map(mapCB1),
+        return {
+          ...stateSlice,
+          [id]: {
+            ...stateSlice[id],
+            likes: wasLiked
+              ? [...post.likes, userUsername]
+              : post.likes.filter((username) => username !== userUsername),
+            isLikedByUser: wasLiked,
+          },
+        };
       };
 
+      return {
+        ...state,
+        timeline: updatePostLikes(state.timeline),
+        user: updatePostLikes(state.user),
+      };
+    }
     case CREATE_POST_COMMENT: {
       const { id, newComment } = payload;
-      const mapCB2 = (post) => (post.id === id ? { ...post, comments: [...post.comments, newComment] } : post);
+
+      const createPostComment = (stateSlice) => {
+        let post = stateSlice[id];
+        if (!post) return stateSlice; //if user hasn't commented on their own post, post won't be found in "state.user"
+
+        return {
+          ...stateSlice,
+          [id]: { ...post, comments: [...post.comments, newComment] },
+        };
+      };
 
       return {
         ...state,
-        timeline: state.timeline.map(mapCB2),
-        user: state.user.map(mapCB2),
+        timeline: createPostComment(state.timeline),
+        user: createPostComment(state.user),
       };
     }
 
     case DELETE_POST_COMMENT: {
       const { id, commentToDelete } = payload;
 
-      const mapCB3 = (post) =>
-        post.id === id
-          ? {
-              ...post,
-              comments: post.comments.filter((comment) => comment !== commentToDelete),
-            }
-          : post;
+      const deletePostComment = (stateSlice) => {
+        let post = stateSlice[id];
+        if (!post) return stateSlice; //if user hasn't deleted comment on their own post, post won't be found in "state.user"
+
+        return {
+          ...stateSlice,
+          [id]: { ...post, comments: post.comments.filter((comment) => comment !== commentToDelete) },
+        };
+      };
 
       return {
         ...state,
-        timeline: state.timeline.map(mapCB3),
-        user: state.user.map(mapCB3),
+        timeline: deletePostComment(state.timeline),
+        user: deletePostComment(state.user),
       };
     }
 

@@ -39,7 +39,7 @@ export default function Search() {
       .where('description.isPrivate', '==', false)
       .where('description.tags', 'array-contains', searchTerm);
 
-    fbGetPosts(allPublicTagPostsRef, userUsername).then(setPosts);
+    fbGetPosts(allPublicTagPostsRef, userUsername).then((postsObj) => setPosts(Object.values(postsObj)));
   }, [searchTerm]);
 
   if (!searchTerm) return <Redirect to={ROUTES.EXPLORE} />;
